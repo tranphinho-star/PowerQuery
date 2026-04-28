@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
+<script>if(sessionStorage.getItem('pq_authenticated')!=='true'){window.location.href='login.html';}</script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chuong XI: Python, R v� AI trong Power Query - Gi�o tr�nh Power Query Excel</title>
-  <meta name="description" content="T�ch h?p Python, R scripting v� AI Insights (Text Analytics, Vision) trong Power Query Excel v� Power BI.">
+  <title>Chương XI: Python, R và AI trong Power Query - Giáo trình Power Query Excel</title>
+  <meta name="description" content="Tích hợp Python, R scripting và AI Insights (Text Analytics, Vision) trong Power Query Excel và Power BI.">
   <link rel="stylesheet" href="index.css">
 </head>
 <body>
@@ -16,153 +17,153 @@
 
   <nav class="sidebar" id="sidebar">
     <div class="sidebar-brand">
-      <div class="brand-icon">?</div>
-      <div class="brand-text">Power Query Excel<span>Gi�o tr�nh d�o t?o</span></div>
+      <div class="brand-icon">⚡</div>
+      <div class="brand-text">Power Query Excel<span>Giáo trình đào tạo</span></div>
     </div>
     <div class="sidebar-nav">
       <div class="nav-section">
-        <div class="nav-section-title">Trang ch?</div>
-        <a href="index.html" class="nav-item"><span class="nav-icon">??</span>T?ng quan gi�o tr�nh</a>
+        <div class="nav-section-title">Trang chủ</div>
+        <a href="index.html" class="nav-item"><span class="nav-icon">🏠</span>Tổng quan giáo trình</a>
       </div>
       <div class="nav-section">
-        <div class="nav-section-title">N?i dung chuong</div>
-        <a href="chuong1-tong-quan.html" class="nav-item"><span class="nav-number">I</span>T?ng quan v? Power Query</a>
-        <a href="chuong2-ung-dung.html" class="nav-item"><span class="nav-number">II</span>?ng d?ng x? l� d? li?u</a>
-        <a href="chuong3-cai-dat.html" class="nav-item"><span class="nav-number">III</span>C�i d?t v� hi?n th?</a>
-        <a href="chuong4-ket-noi.html" class="nav-item"><span class="nav-number">IV</span>K?t n?i & c?p nh?t d? li?u</a>
-        <a href="chuong5-tach-du-lieu.html" class="nav-item"><span class="nav-number">V</span>T�ch d? li?u</a>
-        <a href="chuong6-gop-du-lieu.html" class="nav-item"><span class="nav-number">VI</span>G?p d? li?u</a>
-        <a href="chuong7-chuyen-doi.html" class="nav-item"><span class="nav-number">VII</span>Chuy?n d?i c?u tr�c</a>
-        <a href="chuong8-column.html" class="nav-item"><span class="nav-number">VIII</span>X? l� v?i Column</a>
-        <a href="chuong9-cong-thuc-ham.html" class="nav-item"><span class="nav-number">IX</span>C�ng th?c v� h�m</a>
-        <a href="chuong10-lam-sach.html" class="nav-item"><span class="nav-number">X</span>L�m s?ch d? li?u</a>
-        <a href="chuong11-python-r-ai.html" class="nav-item active"><span class="nav-number">XI</span>Python, R v� AI</a>
-        <a href="chuong12-nang-cao.html" class="nav-item"><span class="nav-number">XII</span>K? thu?t n�ng cao</a>
-        <a href="chuong13-tu-dong-hoa.html" class="nav-item"><span class="nav-number">XIII</span>T? d?ng h�a</a>
+        <div class="nav-section-title">Nội dung chương</div>
+        <a href="chuong1-tong-quan.html" class="nav-item"><span class="nav-number">I</span>Tổng quan về Power Query</a>
+        <a href="chuong2-ung-dung.html" class="nav-item"><span class="nav-number">II</span>Ứng dụng xử lý dữ liệu</a>
+        <a href="chuong3-cai-dat.html" class="nav-item"><span class="nav-number">III</span>Cài đặt và hiển thị</a>
+        <a href="chuong4-ket-noi.html" class="nav-item"><span class="nav-number">IV</span>Kết nối & cập nhật dữ liệu</a>
+        <a href="chuong5-tach-du-lieu.html" class="nav-item"><span class="nav-number">V</span>Tách dữ liệu</a>
+        <a href="chuong6-gop-du-lieu.html" class="nav-item"><span class="nav-number">VI</span>Gộp dữ liệu</a>
+        <a href="chuong7-chuyen-doi.html" class="nav-item"><span class="nav-number">VII</span>Chuyển đổi cấu trúc</a>
+        <a href="chuong8-column.html" class="nav-item"><span class="nav-number">VIII</span>Xử lý với Column</a>
+        <a href="chuong9-cong-thuc-ham.html" class="nav-item"><span class="nav-number">IX</span>Công thức và hàm</a>
+        <a href="chuong10-lam-sach.html" class="nav-item"><span class="nav-number">X</span>Làm sạch dữ liệu</a>
+        <a href="chuong11-python-r-ai.html" class="nav-item active"><span class="nav-number">XI</span>Python, R và AI</a>
+        <a href="chuong12-nang-cao.html" class="nav-item"><span class="nav-number">XII</span>Kỹ thuật nâng cao</a>
+        <a href="chuong13-tu-dong-hoa.html" class="nav-item"><span class="nav-number">XIII</span>Tự động hóa</a>
       </div>
     
       <div class="nav-section">
-        <div class="nav-section-title">B�i t?p</div>
-        <a href="bai-tap-tong-hop.html" class="nav-item"><span class="nav-icon">??</span>20 B�i t?p t?ng h?p</a>
+        <div class="nav-section-title">Bài tập</div>
+        <a href="bai-tap-tong-hop.html" class="nav-item"><span class="nav-icon">📝</span>20 Bài tập tổng hợp</a>
       </div>
     </div>
   </nav>
 
   <header class="mobile-header">
-    <button class="menu-toggle" onclick="toggleSidebar()">?</button>
-    <span style="margin-left:12px;font-weight:600;font-size:15px;">Chuong XI</span>
+    <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+    <span style="margin-left:12px;font-weight:600;font-size:15px;">Chương XI</span>
   </header>
   <div class="sidebar-overlay" id="overlay" onclick="toggleSidebar()"></div>
 
   <main class="main-content">
     <div class="chapter-header">
       <div class="chapter-breadcrumb">
-        <a href="index.html">Trang ch?</a><span class="sep">�</span><span>Chuong XI</span>
+        <a href="index.html">Trang chủ</a><span class="sep">›</span><span>Chương XI</span>
       </div>
-      <div class="chapter-number">?? CHUONG XI</div>
-      <h1>S? d?ng Python, R v� AI trong Power Query</h1>
-      <p class="chapter-desc">M? r?ng s?c m?nh Power Query v?i Python scripting, R scripting, v� AI Insights (Text Analytics, Vision, Azure ML).</p>
+      <div class="chapter-number">📘 CHƯƠNG XI</div>
+      <h1>Sử dụng Python, R và AI trong Power Query</h1>
+      <p class="chapter-desc">Mở rộng sức mạnh Power Query với Python scripting, R scripting, và AI Insights (Text Analytics, Vision, Azure ML).</p>
     </div>
 
     <div class="chapter-body">
 
-      <h2>11.1 Gi?i thi?u</h2>
-      <p>Power Query h? tr? t�ch h?p <strong>Python</strong> v� <strong>R</strong> d? th?c hi?n c�c ph�p bi?n d?i ph?c t?p m� M language kh�ng h? tr? tr?c ti?p. Ngo�i ra, <strong>AI Insights</strong> cho ph�p s? d?ng c�c m� h�nh AI tr?c ti?p trong qu� tr�nh x? l� d? li?u.</p>
+      <h2>11.1 Giới thiệu</h2>
+      <p>Power Query hỗ trợ tích hợp <strong>Python</strong> và <strong>R</strong> để thực hiện các phép biến đổi phức tạp mà M language không hỗ trợ trực tiếp. Ngoài ra, <strong>AI Insights</strong> cho phép sử dụng các mô hình AI trực tiếp trong quá trình xử lý dữ liệu.</p>
 
       <div class="figure">
-        <img src="images/python_r_powerquery.png" alt="Python, R v� AI trong Power Query">
-        <div class="caption">H�nh 11.1: T�ch h?p Python, R v� AI trong Power Query</div>
+        <img src="images/python_r_powerquery.png" alt="Python, R và AI trong Power Query">
+        <div class="caption">Hình 11.1: Tích hợp Python, R và AI trong Power Query</div>
       </div>
 
       <div class="info-box warning">
-        <span class="info-icon">??</span>
+        <span class="info-icon">⚠️</span>
         <div>
-          <strong>Y�u c?u:</strong> Python/R scripting c� s?n trong <strong>Power BI Desktop</strong>. Trong <strong>Excel</strong>, t�nh nang n�y c� h?n ch? hon v� c?n c�i d?t b? sung. AI Insights ch? c� s?n trong Power BI Premium/Pro.
+          <strong>Yêu cầu:</strong> Python/R scripting có sẵn trong <strong>Power BI Desktop</strong>. Trong <strong>Excel</strong>, tính năng này có hạn chế hơn và cần cài đặt bổ sung. AI Insights chỉ có sẵn trong Power BI Premium/Pro.
         </div>
       </div>
 
       <h2>11.2 Python scripting trong Power Query</h2>
 
-      <h3>C�i d?t m�i tru?ng</h3>
+      <h3>Cài đặt môi trường</h3>
       <div class="step-card">
         <div class="step-num">1</div>
         <div class="step-content">
-          <h4>C�i Python</h4>
-          <p>T?i v� c�i <a href="https://python.org">Python 3.x</a> ho?c <a href="https://anaconda.com">Anaconda Distribution</a></p>
+          <h4>Cài Python</h4>
+          <p>Tải và cài <a href="https://python.org">Python 3.x</a> hoặc <a href="https://anaconda.com">Anaconda Distribution</a></p>
         </div>
       </div>
       <div class="step-card">
         <div class="step-num">2</div>
         <div class="step-content">
-          <h4>C�i thu vi?n b?t bu?c</h4>
-          <p>M? Terminal/CMD: <span class="inline-code">pip install pandas matplotlib</span></p>
+          <h4>Cài thư viện bắt buộc</h4>
+          <p>Mở Terminal/CMD: <span class="inline-code">pip install pandas matplotlib</span></p>
         </div>
       </div>
       <div class="step-card">
         <div class="step-num">3</div>
         <div class="step-content">
-          <h4>C?u h�nh du?ng d?n</h4>
-          <p>Power BI: File ? Options ? Python scripting ? ch?n du?ng d?n Python</p>
+          <h4>Cấu hình đường dẫn</h4>
+          <p>Power BI: File → Options → Python scripting → chọn đường dẫn Python</p>
         </div>
       </div>
 
-      <h3>Ch?y Python script</h3>
+      <h3>Chạy Python script</h3>
       <ol>
-        <li>Trong Power Query Editor ? Transform ? <strong>Run Python Script</strong></li>
-        <li>D? li?u hi?n t?i du?c truy?n v�o bi?n <span class="inline-code">dataset</span> (pandas DataFrame)</li>
-        <li>Vi?t code Python ? k?t qu? ph?i l� DataFrame</li>
+        <li>Trong Power Query Editor → Transform → <strong>Run Python Script</strong></li>
+        <li>Dữ liệu hiện tại được truyền vào biến <span class="inline-code">dataset</span> (pandas DataFrame)</li>
+        <li>Viết code Python → kết quả phải là DataFrame</li>
       </ol>
 
       <div class="code-block">
-        <div class="code-header"><span>Python - X? l� d? li?u v?i pandas</span></div>
-        <pre><code># dataset: l� DataFrame ch?a d? li?u hi?n t?i
+        <div class="code-header"><span>Python - Xử lý dữ liệu với pandas</span></div>
+        <pre><code># dataset: là DataFrame chứa dữ liệu hiện tại
 import pandas as pd
 
-# V� d? 1: X�a d�ng tr�ng l?p n�ng cao
+# Ví dụ 1: Xóa dòng trùng lặp nâng cao
 dataset = dataset.drop_duplicates(subset=['Email'], keep='last')
 
-# V� d? 2: T?o c?t m?i
+# Ví dụ 2: Tạo cột mới
 dataset['TenVietTat'] = dataset['HoTen'].apply(
     lambda x: ''.join([w[0] for w in x.split()])
 )
 
-# V� d? 3: Ph�n nh�m theo ng�y
+# Ví dụ 3: Phân nhóm theo ngày
 dataset['Thang'] = pd.to_datetime(dataset['NgayDat']).dt.month
 dataset['Quy'] = pd.to_datetime(dataset['NgayDat']).dt.quarter
 
-# V� d? 4: Regex - tr�ch xu?t s? di?n tho?i
+# Ví dụ 4: Regex - trích xuất số điện thoại
 import re
 dataset['SDT_Clean'] = dataset['SDT'].str.extract(r'(\d{10,11})')
 
-# K?t qu?: tr? v? dataset d� x? l�</code></pre>
+# Kết quả: trả về dataset đã xử lý</code></pre>
       </div>
 
       <h2>11.3 R scripting trong Power Query</h2>
 
-      <h3>C�i d?t</h3>
+      <h3>Cài đặt</h3>
       <ol>
-        <li>T?i v� c�i <a href="https://cran.r-project.org">R</a></li>
-        <li>C?u h�nh: File ? Options ? R scripting ? ch?n du?ng d?n R</li>
+        <li>Tải và cài <a href="https://cran.r-project.org">R</a></li>
+        <li>Cấu hình: File → Options → R scripting → chọn đường dẫn R</li>
       </ol>
 
-      <h3>Ch?y R script</h3>
+      <h3>Chạy R script</h3>
       <ol>
-        <li>Transform ? <strong>Run R Script</strong></li>
-        <li>D? li?u du?c truy?n v�o bi?n <span class="inline-code">dataset</span> (data.frame)</li>
+        <li>Transform → <strong>Run R Script</strong></li>
+        <li>Dữ liệu được truyền vào biến <span class="inline-code">dataset</span> (data.frame)</li>
       </ol>
 
       <div class="code-block">
-        <div class="code-header"><span>R - X? l� d? li?u</span></div>
-        <pre><code># dataset: l� data.frame ch?a d? li?u hi?n t?i
+        <div class="code-header"><span>R - Xử lý dữ liệu</span></div>
+        <pre><code># dataset: là data.frame chứa dữ liệu hiện tại
 
-# V� d? 1: Th?ng k� m� t?
+# Ví dụ 1: Thống kê mô tả
 output <- data.frame(
   Col = names(dataset),
   Mean = sapply(dataset, function(x) if(is.numeric(x)) mean(x, na.rm=TRUE) else NA),
   SD = sapply(dataset, function(x) if(is.numeric(x)) sd(x, na.rm=TRUE) else NA)
 )
 
-# V� d? 2: Outlier detection (Z-score)
+# Ví dụ 2: Outlier detection (Z-score)
 library(dplyr)
 dataset <- dataset %>%
   mutate(
@@ -170,104 +171,104 @@ dataset <- dataset %>%
     Is_Outlier = abs(Z_Score) > 2
   )
 
-# V� d? 3: Linear regression
+# Ví dụ 3: Linear regression
 model <- lm(DoanhThu ~ ChiPhi + SoNhanVien, data = dataset)
 dataset$Predicted <- predict(model, dataset)</code></pre>
       </div>
 
       <h2>11.4 AI Insights (Power BI)</h2>
-      <p><strong>AI Insights</strong> cho ph�p s? d?ng c�c m� h�nh AI du?c d�o t?o s?n trong Power Query (Power BI Premium/Pro):</p>
+      <p><strong>AI Insights</strong> cho phép sử dụng các mô hình AI được đào tạo sẵn trong Power Query (Power BI Premium/Pro):</p>
 
       <h3>Text Analytics</h3>
       <table class="styled-table">
-        <thead><tr><th>Ch?c nang</th><th>M� t?</th><th>K?t qu?</th></tr></thead>
+        <thead><tr><th>Chức năng</th><th>Mô tả</th><th>Kết quả</th></tr></thead>
         <tbody>
-          <tr><td><strong>Sentiment Analysis</strong></td><td>Ph�n t�ch c?m x�c van b?n</td><td>Score 0?1 (Negative ? Positive)</td></tr>
-          <tr><td><strong>Key Phrase Extraction</strong></td><td>Tr�ch xu?t t? kh�a quan tr?ng</td><td>Danh s�ch phrases</td></tr>
-          <tr><td><strong>Language Detection</strong></td><td>Nh?n di?n ng�n ng?</td><td>"Vietnamese", "English"...</td></tr>
+          <tr><td><strong>Sentiment Analysis</strong></td><td>Phân tích cảm xúc văn bản</td><td>Score 0→1 (Negative → Positive)</td></tr>
+          <tr><td><strong>Key Phrase Extraction</strong></td><td>Trích xuất từ khóa quan trọng</td><td>Danh sách phrases</td></tr>
+          <tr><td><strong>Language Detection</strong></td><td>Nhận diện ngôn ngữ</td><td>"Vietnamese", "English"...</td></tr>
         </tbody>
       </table>
 
       <h3>Vision</h3>
       <table class="styled-table">
-        <thead><tr><th>Ch?c nang</th><th>M� t?</th></tr></thead>
+        <thead><tr><th>Chức năng</th><th>Mô tả</th></tr></thead>
         <tbody>
-          <tr><td><strong>Tag Images</strong></td><td>G?n th? t? d?ng cho h�nh ?nh</td></tr>
-          <tr><td><strong>OCR (Extract Text)</strong></td><td>Tr�ch xu?t text t? h�nh ?nh</td></tr>
+          <tr><td><strong>Tag Images</strong></td><td>Gắn thẻ tự động cho hình ảnh</td></tr>
+          <tr><td><strong>OCR (Extract Text)</strong></td><td>Trích xuất text từ hình ảnh</td></tr>
         </tbody>
       </table>
 
       <h3>Azure Machine Learning</h3>
-      <p>Li�n k?t m� h�nh ML d� deploy tr�n Azure v�o Power Query:</p>
+      <p>Liên kết mô hình ML đã deploy trên Azure vào Power Query:</p>
       <ol>
-        <li>Tab Home ? <strong>Azure Machine Learning</strong></li>
-        <li>Ch?n model d� deploy</li>
-        <li>Map c?t d? li?u v�o input parameters c?a model</li>
-        <li>K?t qu? prediction du?c th�m v�o b?ng</li>
+        <li>Tab Home → <strong>Azure Machine Learning</strong></li>
+        <li>Chọn model đã deploy</li>
+        <li>Map cột dữ liệu vào input parameters của model</li>
+        <li>Kết quả prediction được thêm vào bảng</li>
       </ol>
 
-      <h2>11.5 So s�nh M vs Python vs R</h2>
+      <h2>11.5 So sánh M vs Python vs R</h2>
       <table class="styled-table">
-        <thead><tr><th>Ti�u ch�</th><th>M Language</th><th>Python</th><th>R</th></tr></thead>
+        <thead><tr><th>Tiêu chí</th><th>M Language</th><th>Python</th><th>R</th></tr></thead>
         <tbody>
-          <tr><td><strong>T?c d?</strong></td><td>Nhanh nh?t (native)</td><td>Trung b�nh</td><td>Trung b�nh</td></tr>
-          <tr><td><strong>Query Folding</strong></td><td>? C�</td><td>? Kh�ng</td><td>? Kh�ng</td></tr>
-          <tr><td><strong>Refresh scheduled</strong></td><td>? C�</td><td>?? H?n ch?</td><td>?? H?n ch?</td></tr>
-          <tr><td><strong>X? l� th?ng k�</strong></td><td>Co b?n</td><td>? M?nh (pandas, scipy)</td><td>? R?t m?nh</td></tr>
-          <tr><td><strong>Machine Learning</strong></td><td>?</td><td>? scikit-learn, TensorFlow</td><td>? caret, randomForest</td></tr>
-          <tr><td><strong>Regex</strong></td><td>? Kh�ng native</td><td>? M?nh</td><td>? M?nh</td></tr>
-          <tr><td><strong>Visualization</strong></td><td>?</td><td>? matplotlib, seaborn</td><td>? ggplot2</td></tr>
+          <tr><td><strong>Tốc độ</strong></td><td>Nhanh nhất (native)</td><td>Trung bình</td><td>Trung bình</td></tr>
+          <tr><td><strong>Query Folding</strong></td><td>✅ Có</td><td>❌ Không</td><td>❌ Không</td></tr>
+          <tr><td><strong>Refresh scheduled</strong></td><td>✅ Có</td><td>⚠️ Hạn chế</td><td>⚠️ Hạn chế</td></tr>
+          <tr><td><strong>Xử lý thống kê</strong></td><td>Cơ bản</td><td>✅ Mạnh (pandas, scipy)</td><td>✅ Rất mạnh</td></tr>
+          <tr><td><strong>Machine Learning</strong></td><td>❌</td><td>✅ scikit-learn, TensorFlow</td><td>✅ caret, randomForest</td></tr>
+          <tr><td><strong>Regex</strong></td><td>❌ Không native</td><td>✅ Mạnh</td><td>✅ Mạnh</td></tr>
+          <tr><td><strong>Visualization</strong></td><td>❌</td><td>✅ matplotlib, seaborn</td><td>✅ ggplot2</td></tr>
         </tbody>
       </table>
 
       <div class="info-box tip">
-        <span class="info-icon">??</span>
+        <span class="info-icon">💡</span>
         <div>
-          <strong>Khuy?n ngh?:</strong> Uu ti�n d�ng <strong>M language</strong> cho m?i x? l� co b?n (v� h? tr? Query Folding). Ch? d�ng Python/R khi c?n: Regex ph?c t?p, th?ng k� n�ng cao, Machine Learning, ho?c x? l� m� M kh�ng h? tr?.
+          <strong>Khuyến nghị:</strong> Ưu tiên dùng <strong>M language</strong> cho mọi xử lý cơ bản (vì hỗ trợ Query Folding). Chỉ dùng Python/R khi cần: Regex phức tạp, thống kê nâng cao, Machine Learning, hoặc xử lý mà M không hỗ trợ.
         </div>
       </div>
 
       <!-- Practice -->
       <div class="practice-box">
-        <h3>B�i t?p 11.1: Python � X? l� text n�ng cao</h3>
-        <p><strong>M?c ti�u:</strong> S? d?ng Python script trong Power Query (Power BI)</p>
+        <h3>Bài tập 11.1: Python — Xử lý text nâng cao</h3>
+        <p><strong>Mục tiêu:</strong> Sử dụng Python script trong Power Query (Power BI)</p>
         <ol>
-          <li>T?o b?ng ch?a c?t "MoTa" v?i c�c do?n text m� t? s?n ph?m</li>
-          <li>M? Power Query ? Transform ? Run Python Script</li>
-          <li>Vi?t code tr�ch xu?t t�n vi?t t?t:
+          <li>Tạo bảng chứa cột "MoTa" với các đoạn text mô tả sản phẩm</li>
+          <li>Mở Power Query → Transform → Run Python Script</li>
+          <li>Viết code trích xuất tên viết tắt:
             <div class="code-block"><pre><code>import pandas as pd
 dataset['VietTat'] = dataset['MoTa'].apply(
     lambda x: ''.join([w[0].upper() for w in str(x).split()[:3]])
 )</code></pre></div>
           </li>
-          <li>Nh?n OK ? Expand k?t qu?</li>
+          <li>Nhấn OK → Expand kết quả</li>
           <li>Close & Load</li>
         </ol>
       </div>
 
       <div class="practice-box">
-        <h3>B�i t?p 11.2: Python � Regex d? tr�ch xu?t d? li?u</h3>
-        <p><strong>M?c ti�u:</strong> S? d?ng Regex qua Python</p>
+        <h3>Bài tập 11.2: Python — Regex để trích xuất dữ liệu</h3>
+        <p><strong>Mục tiêu:</strong> Sử dụng Regex qua Python</p>
         <ol>
-          <li>T?o b?ng ch?a c?t "DiaChi" c� format l?n x?n:
+          <li>Tạo bảng chứa cột "DiaChi" có format lộn xộn:
             <ul>
-              <li>"123 Nguy?n Hu?, Q.1, TP.HCM"</li>
-              <li>"45/2 Tr?n Hung �?o, Qu?n 5, HCM"</li>
-              <li>"S? 78, L� L?i, P. B?n Th�nh, Q1, HCM"</li>
+              <li>"123 Nguyễn Huệ, Q.1, TP.HCM"</li>
+              <li>"45/2 Trần Hưng Đạo, Quận 5, HCM"</li>
+              <li>"Số 78, Lê Lợi, P. Bến Thành, Q1, HCM"</li>
             </ul>
           </li>
-          <li>Vi?t Python script d�ng Regex tr�ch xu?t s? nh�, t�n du?ng, qu?n</li>
+          <li>Viết Python script dùng Regex trích xuất số nhà, tên đường, quận</li>
           <li>Close & Load</li>
         </ol>
       </div>
 
       <div class="practice-box">
-        <h3>B�i t?p 11.3: R � Th?ng k� m� t?</h3>
-        <p><strong>M?c ti�u:</strong> S? d?ng R cho ph�n t�ch th?ng k�</p>
+        <h3>Bài tập 11.3: R — Thống kê mô tả</h3>
+        <p><strong>Mục tiêu:</strong> Sử dụng R cho phân tích thống kê</p>
         <ol>
-          <li>T?o b?ng doanh thu 12 th�ng v?i c?t Thang, DoanhThu, ChiPhi</li>
-          <li>Run R Script d? t�nh: Mean, Median, SD, Correlation</li>
-          <li>T?o b?ng output ch?a k?t qu? th?ng k�</li>
+          <li>Tạo bảng doanh thu 12 tháng với cột Thang, DoanhThu, ChiPhi</li>
+          <li>Run R Script để tính: Mean, Median, SD, Correlation</li>
+          <li>Tạo bảng output chứa kết quả thống kê</li>
           <li>Close & Load</li>
         </ol>
       </div>
@@ -276,21 +277,21 @@ dataset['VietTat'] = dataset['MoTa'].apply(
       <div class="chapter-nav">
         <a href="chuong10-lam-sach.html" class="nav-prev">
           <div>
-            <div class="nav-label">? Chuong tru?c</div>
-            <div class="nav-title">X. L�m s?ch d? li?u</div>
+            <div class="nav-label">← Chương trước</div>
+            <div class="nav-title">X. Làm sạch dữ liệu</div>
           </div>
         </a>
         <a href="chuong12-nang-cao.html" class="nav-next">
           <div>
-            <div class="nav-label">Chuong ti?p ?</div>
-            <div class="nav-title">XII. K? thu?t n�ng cao</div>
+            <div class="nav-label">Chương tiếp →</div>
+            <div class="nav-title">XII. Kỹ thuật nâng cao</div>
           </div>
         </a>
       </div>
     </div>
 
     <footer class="footer">
-      <p>?? Gi�o tr�nh Power Query Excel � Chuy�n d? d�o t?o &copy; 2026</p>
+      <p>📘 Giáo trình Power Query Excel — Chuyên đề đào tạo &copy; 2026</p>
     </footer>
   </main>
 
