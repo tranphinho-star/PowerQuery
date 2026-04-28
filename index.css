@@ -514,6 +514,16 @@ img {
   padding: 48px 48px 40px;
   position: relative;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.chapter-header > * {
+  width: 100%;
+  max-width: 900px;
+  position: relative;
+  z-index: 1;
 }
 
 .chapter-header::before {
@@ -525,6 +535,13 @@ img {
   height: 300px;
   background: radial-gradient(circle, rgba(255,255,255,0.06) 0%, transparent 70%);
   border-radius: 50%;
+}
+
+.chapter-header-inner {
+  max-width: 900px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
 }
 
 .chapter-breadcrumb {
@@ -581,6 +598,7 @@ img {
 .chapter-body {
   padding: 40px 48px 60px;
   max-width: 900px;
+  margin: 0 auto;
 }
 
 .chapter-body h2 {
