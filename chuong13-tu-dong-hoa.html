@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chương XIII: Tự động hóa Power Query - Giáo trình Power Query Excel</title>
+  <meta name="description" content="Scheduled Refresh, VBA Macro, Power Automate, Data Gateway, Best Practices tổng hợp trong Power Query.">
+  <link rel="stylesheet" href="index.css">
+</head>
+<body>
+  <script>
+    if (sessionStorage.getItem('pq_logged_in') !== 'true') {
+      window.location.href = 'login.html';
+    }
+  </script>
+
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-icon">⚡</div>
+      <div class="brand-text">Power Query Excel<span>Giáo trình đào tạo</span></div>
+    </div>
+    <div class="sidebar-nav">
+      <div class="nav-section">
+        <div class="nav-section-title">Trang chủ</div>
+        <a href="index.html" class="nav-item"><span class="nav-icon">🏠</span>Tổng quan giáo trình</a>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-title">Nội dung chương</div>
+        <a href="chuong1-tong-quan.html" class="nav-item"><span class="nav-number">I</span>Tổng quan về Power Query</a>
+        <a href="chuong2-ung-dung.html" class="nav-item"><span class="nav-number">II</span>Ứng dụng xử lý dữ liệu</a>
+        <a href="chuong3-cai-dat.html" class="nav-item"><span class="nav-number">III</span>Cài đặt và hiển thị</a>
+        <a href="chuong4-ket-noi.html" class="nav-item"><span class="nav-number">IV</span>Kết nối & cập nhật dữ liệu</a>
+        <a href="chuong5-tach-du-lieu.html" class="nav-item"><span class="nav-number">V</span>Tách dữ liệu</a>
+        <a href="chuong6-gop-du-lieu.html" class="nav-item"><span class="nav-number">VI</span>Gộp dữ liệu</a>
+        <a href="chuong7-chuyen-doi.html" class="nav-item"><span class="nav-number">VII</span>Chuyển đổi cấu trúc</a>
+        <a href="chuong8-column.html" class="nav-item"><span class="nav-number">VIII</span>Xử lý với Column</a>
+        <a href="chuong9-cong-thuc-ham.html" class="nav-item"><span class="nav-number">IX</span>Công thức và hàm</a>
+        <a href="chuong10-lam-sach.html" class="nav-item"><span class="nav-number">X</span>Làm sạch dữ liệu</a>
+        <a href="chuong11-python-r-ai.html" class="nav-item"><span class="nav-number">XI</span>Python, R và AI</a>
+        <a href="chuong12-nang-cao.html" class="nav-item"><span class="nav-number">XII</span>Kỹ thuật nâng cao</a>
+        <a href="chuong13-tu-dong-hoa.html" class="nav-item active"><span class="nav-number">XIII</span>Tự động hóa</a>
+      </div>
+    
+      <div class="nav-section">
+        <div class="nav-section-title">Bài tập</div>
+        <a href="bai-tap-tong-hop.html" class="nav-item"><span class="nav-icon">📝</span>20 Bài tập tổng hợp</a>
+      </div>
+    </div>
+  </nav>
+
+  <header class="mobile-header">
+    <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+    <span style="margin-left:12px;font-weight:600;font-size:15px;">Chương XIII</span>
+  </header>
+  <div class="sidebar-overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+  <main class="main-content">
+    <div class="chapter-header">
+      <div class="chapter-breadcrumb">
+        <a href="index.html">Trang chủ</a><span class="sep">›</span><span>Chương XIII</span>
+      </div>
+      <div class="chapter-number">📘 CHƯƠNG XIII</div>
+      <h1>Tự động hóa và tối ưu Power Query</h1>
+      <p class="chapter-desc">Scheduled Refresh, VBA Macro, Power Automate, Data Gateway và Best Practices toàn diện.</p>
+    </div>
+
+    <div class="chapter-body">
+
+      <h2>13.1 Scheduled Refresh trong Power BI Service</h2>
+      <p>Khi publish báo cáo lên Power BI Service, bạn có thể lên lịch refresh tự động:</p>
+
+      <div class="figure">
+        <img src="images/automation_refresh.png" alt="Tự động hóa refresh Power Query">
+        <div class="caption">Hình 13.1: Các phương pháp tự động hóa refresh trong Power Query</div>
+      </div>
+
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h4>Publish báo cáo</h4>
+          <p>Power BI Desktop → Home → <strong>Publish</strong> → chọn Workspace</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h4>Cấu hình Scheduled Refresh</h4>
+          <p>Power BI Service → Dataset → Settings → <strong>Scheduled Refresh</strong></p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h4>Thiết lập lịch</h4>
+          <p>Chọn tần suất: hàng ngày, hàng tuần. Thiết lập múi giờ và lên đến <strong>8 lần/ngày</strong> (Pro) hoặc <strong>48 lần/ngày</strong> (Premium).</p>
+        </div>
+      </div>
+
+      <table class="styled-table">
+        <thead><tr><th>License</th><th>Tần suất tối đa</th><th>Incremental Refresh</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Pro</strong></td><td>8 lần/ngày</td><td>❌</td></tr>
+          <tr><td><strong>Premium Per User</strong></td><td>48 lần/ngày</td><td>✅</td></tr>
+          <tr><td><strong>Premium Capacity</strong></td><td>48 lần/ngày</td><td>✅ + XMLA endpoint</td></tr>
+        </tbody>
+      </table>
+
+      <h2>13.2 Refresh bằng VBA Macro trong Excel</h2>
+      <p>Trong Excel, có thể dùng VBA để refresh Power Query khi mở file hoặc theo lịch:</p>
+
+      <div class="code-block">
+        <div class="code-header"><span>VBA - Refresh tất cả queries</span></div>
+        <pre><code>' Refresh tất cả connections khi mở file
+Private Sub Workbook_Open()
+    ThisWorkbook.RefreshAll
+End Sub
+
+' Refresh query cụ thể
+Sub RefreshSpecificQuery()
+    ActiveWorkbook.Connections("Query - SalesData").Refresh
+End Sub
+
+' Refresh và đợi hoàn thành
+Sub RefreshAndWait()
+    Dim conn As WorkbookConnection
+    For Each conn In ThisWorkbook.Connections
+        conn.OLEDBConnection.BackgroundQuery = False
+        conn.Refresh
+    Next conn
+    MsgBox "Đã refresh xong tất cả queries!"
+End Sub
+
+' Tự động refresh mỗi 30 phút
+Sub AutoRefreshTimer()
+    ThisWorkbook.RefreshAll
+    Application.OnTime Now + TimeValue("00:30:00"), "AutoRefreshTimer"
+End Sub</code></pre>
+      </div>
+
+      <div class="info-box warning">
+        <span class="info-icon">⚠️</span>
+        <div>
+          <strong>Lưu ý:</strong> Khi dùng <span class="inline-code">Workbook_Open</span>, đảm bảo bật Macro: File → Options → Trust Center → Enable Macros.
+        </div>
+      </div>
+
+      <h2>13.3 Power Automate + Power Query</h2>
+      <p><strong>Power Automate</strong> (Microsoft Flow) cho phép tự động hóa refresh based on events:</p>
+
+      <h3>Ví dụ workflow phổ biến</h3>
+      <table class="styled-table">
+        <thead><tr><th>Trigger</th><th>Action</th><th>Ứng dụng</th></tr></thead>
+        <tbody>
+          <tr><td>File mới trong SharePoint</td><td>Refresh dataset Power BI</td><td>Tự động cập nhật khi có dữ liệu mới</td></tr>
+          <tr><td>Email nhận được</td><td>Extract attachment → lưu SharePoint → Refresh</td><td>Báo cáo tự động từ email</td></tr>
+          <tr><td>Lịch (hàng ngày 6h sáng)</td><td>Refresh + gửi email kết quả</td><td>Dashboard cập nhật trước giờ làm</td></tr>
+          <tr><td>Nút bấm (Manual trigger)</td><td>Refresh dataset</td><td>Refresh theo yêu cầu</td></tr>
+        </tbody>
+      </table>
+
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h4>Tạo Flow trong Power Automate</h4>
+          <p>https://flow.microsoft.com → Create → Automated cloud flow</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h4>Chọn Trigger</h4>
+          <p>Ví dụ: "When a file is created in a folder" (SharePoint)</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h4>Thêm Action</h4>
+          <p>Power BI connector → <strong>Refresh a dataset</strong> → chọn Workspace + Dataset</p>
+        </div>
+      </div>
+
+      <h2>13.4 Data Gateway (Cổng kết nối)</h2>
+      <p>Khi dữ liệu nằm trên server nội bộ (on-premises), cần <strong>On-premises Data Gateway</strong> để Power BI Service truy cập:</p>
+
+      <div class="comparison-grid">
+        <div class="comparison-card">
+          <div class="comp-icon">🏢</div>
+          <h4>Standard Gateway</h4>
+          <p>Cho tổ chức: nhiều user dùng chung, quản lý tập trung, hỗ trợ Live Connection.</p>
+        </div>
+        <div class="comparison-card">
+          <div class="comp-icon">👤</div>
+          <h4>Personal Gateway</h4>
+          <p>Cho cá nhân: chỉ 1 user, import mode only, không chia sẻ, chạy trên máy cá nhân.</p>
+        </div>
+      </div>
+
+      <h3>Cài đặt và cấu hình</h3>
+      <ol>
+        <li>Tải On-premises Data Gateway từ <a href="https://powerbi.microsoft.com/gateway/">Microsoft</a></li>
+        <li>Cài đặt trên server → đăng nhập tài khoản Microsoft 365</li>
+        <li>Power BI Service → Settings → Manage Gateways → <strong>Add data source</strong></li>
+        <li>Chỉ định loại nguồn (SQL Server, File, etc.) + credentials</li>
+        <li>Trong dataset setting → Gateway connection → chọn gateway đã cấu hình</li>
+      </ol>
+
+      <h2>13.5 Best Practices tổng hợp</h2>
+      <p>Tổng hợp các best practices từ sách "Master Your Data with Power Query":</p>
+
+      <h3>📋 Naming Convention</h3>
+      <table class="styled-table">
+        <thead><tr><th>Loại</th><th>Prefix</th><th>Ví dụ</th></tr></thead>
+        <tbody>
+          <tr><td>Raw query</td><td><span class="inline-code">raw_</span></td><td><span class="inline-code">raw_SalesCSV</span></td></tr>
+          <tr><td>Staging query</td><td><span class="inline-code">stg_</span></td><td><span class="inline-code">stg_Sales</span></td></tr>
+          <tr><td>End table</td><td>Tên rõ ràng</td><td><span class="inline-code">Sales</span>, <span class="inline-code">DimProduct</span></td></tr>
+          <tr><td>Parameter</td><td><span class="inline-code">p</span></td><td><span class="inline-code">pFilePath</span>, <span class="inline-code">pYear</span></td></tr>
+          <tr><td>Custom function</td><td><span class="inline-code">fn</span></td><td><span class="inline-code">fnCleanText</span></td></tr>
+        </tbody>
+      </table>
+
+      <h3>⚡ Performance Checklist</h3>
+      <ul>
+        <li>✅ Giữ <strong>Query Folding</strong> càng lâu càng tốt</li>
+        <li>✅ <strong>Disable Load</strong> cho staging queries</li>
+        <li>✅ <strong>Remove unnecessary columns</strong> sớm</li>
+        <li>✅ <strong>Filter rows</strong> trước khi transform nặng</li>
+        <li>✅ Dùng <strong>Table.Buffer</strong> cho self-join</li>
+        <li>✅ Set <strong>Privacy Levels</strong> phù hợp (tránh Formula.Firewall)</li>
+        <li>✅ Tránh <strong>Column from Examples</strong> cho production (khó maintain)</li>
+        <li>✅ Dùng <strong>Parameters</strong> cho đường dẫn và thông tin kết nối</li>
+      </ul>
+
+      <h3>📝 Documentation</h3>
+      <ul>
+        <li>Đặt mô tả (Description) cho mỗi query: Right-click → Properties → Description</li>
+        <li>Comment trong Advanced Editor: <span class="inline-code">// Comment dòng</span> hoặc <span class="inline-code">/* Block comment */</span></li>
+        <li>Đặt tên bước (Step) có ý nghĩa thay vì giữ tên tự động</li>
+      </ul>
+
+      <div class="info-box important">
+        <span class="info-icon">🏆</span>
+        <div>
+          <strong>Tổng kết giáo trình:</strong> Bạn đã hoàn thành 13 chương Power Query — từ cơ bản (ETL, kết nối, transform) đến nâng cao (M language, Python/R, Query Folding, Parameters, Automation). Hãy áp dụng các kỹ thuật này vào dự án thực tế để thành thạo Power Query!
+        </div>
+      </div>
+
+      <h2>13.6 10 Tips tối ưu Power Query</h2>
+      <p>Từ sách "Power Pivot & Power Query For Dummies" — 10 mẹo giúp query chạy nhanh hơn:</p>
+      <table class="styled-table">
+        <thead><tr><th>#</th><th>Tip</th><th>Chi tiết</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td><strong>Giới hạn cột</strong></td><td>Chỉ giữ cột cần thiết bằng <code>Table.SelectColumns</code> — giảm RAM</td></tr>
+          <tr><td>2</td><td><strong>Giới hạn dòng sớm</strong></td><td>Filter dòng ở bước đầu tiên (trước transform) → Query Folding tối ưu</td></tr>
+          <tr><td>3</td><td><strong>Tắt Background Refresh</strong></td><td>Query Properties → bỏ tick "Enable background refresh" cho query nặng</td></tr>
+          <tr><td>4</td><td><strong>Dùng Native Query</strong></td><td>Khi kết nối SQL: viết trực tiếp SQL query thay vì để PQ generate</td></tr>
+          <tr><td>5</td><td><strong>Disable auto-detect types</strong></td><td>File → Options → Data → bỏ "Automatically detect column types" — tự set types</td></tr>
+          <tr><td>6</td><td><strong>Dùng Table.Buffer</strong></td><td>Buffer dữ liệu nhỏ được dùng nhiều lần (lookup tables)</td></tr>
+          <tr><td>7</td><td><strong>Staging queries = Connection Only</strong></td><td>Không load staging vào sheet → giảm dung lượng workbook</td></tr>
+          <tr><td>8</td><td><strong>Tránh Custom Column phức tạp</strong></td><td>Thay custom column bằng Conditional Column hoặc hàm có sẵn khi có thể</td></tr>
+          <tr><td>9</td><td><strong>Dùng Views trên DB</strong></td><td>Tạo SQL View (đã filter/join) → PQ import view thay vì raw tables</td></tr>
+          <tr><td>10</td><td><strong>Đặt tên steps rõ ràng</strong></td><td>Rename Applied Steps → dễ debug, dễ bảo trì khi query phức tạp</td></tr>
+        </tbody>
+      </table>
+
+      <h2>13.7 Collaboration & Sharing Queries</h2>
+      <p>Power Query hỗ trợ <strong>chia sẻ và cộng tác</strong> trên queries giữa nhiều người/hệ thống:</p>
+
+      <h3>Shared Queries trong Excel</h3>
+      <table class="styled-table">
+        <thead><tr><th>Phương pháp</th><th>Cách dùng</th><th>Ưu/Nhược</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Copy M Code</strong></td><td>Copy code từ Advanced Editor → paste vào Blank Query</td><td>Đơn giản, nhưng không auto-sync</td></tr>
+          <tr><td><strong>Template File (.xltx)</strong></td><td>Lưu workbook chứa queries làm template</td><td>Chuẩn hóa cấu trúc team</td></tr>
+          <tr><td><strong>Shared Folder Source</strong></td><td>Đặt file nguồn trên SharePoint/OneDrive</td><td>Team dùng chung query + data</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Dataflows trong Power BI Service</h3>
+      <p>Khi dùng Power BI, <strong>Dataflows</strong> cho phép tạo queries dùng chung trên cloud:</p>
+      <ol>
+        <li><strong>Power BI Service → Workspace → New → Dataflow</strong></li>
+        <li>Thiết kế queries (giống PQ Editor)</li>
+        <li>Publish → Tất cả reports trong workspace dùng chung Dataflow</li>
+      </ol>
+      <div class="info-box tip">
+        <span class="info-icon">💡</span>
+        <div>
+          <strong>Lợi ích Dataflows:</strong> Xử lý dữ liệu 1 lần trên server (không trên máy cá nhân), team dùng chung logic chuẩn hóa, giảm trùng lặp queries giữa các reports.
+        </div>
+      </div>
+
+      <h3>Excel ↔ Power BI: Chia sẻ Queries</h3>
+      <div class="code-block">
+        <div class="code-header"><span>Export/Import queries</span></div>
+        <pre><code>// Từ Excel → Power BI:
+// Copy M code từ Advanced Editor → Paste vào PBI Desktop Blank Query
+
+// Từ Power BI → Excel:
+// Power BI Desktop → Transform Data → chọn query → Copy M code
+// Excel → Data → Get Data → From Other Sources → Blank Query → Paste
+
+// Hoặc dùng Power BI Dataflow → Excel kết nối:
+// Excel → Data → Get Data → From Power BI → chọn Dataflow</code></pre>
+      </div>
+
+      <h2>13.8 Workflow: Raw Data → Dashboard</h2>
+      <p>Quy trình <strong>end-to-end</strong> xây dựng dashboard tự động cập nhật:</p>
+
+      <h3>Pipeline 6 bước</h3>
+      <table class="styled-table">
+        <thead><tr><th>Bước</th><th>Công cụ</th><th>Hành động</th></tr></thead>
+        <tbody>
+          <tr><td><strong>1. Thu thập</strong></td><td>Power Query</td><td>Import từ files/DB/Web → Raw queries</td></tr>
+          <tr><td><strong>2. Chuẩn hóa</strong></td><td>Power Query</td><td>Clean, transform, merge → Staging queries</td></tr>
+          <tr><td><strong>3. Tải</strong></td><td>Power Query</td><td>Load → Table hoặc Data Model</td></tr>
+          <tr><td><strong>4. Phân tích</strong></td><td>PivotTable</td><td>Tạo PivotTable + Calculated Fields/Items</td></tr>
+          <tr><td><strong>5. Trực quan</strong></td><td>PivotChart + Slicer</td><td>Charts + Slicers + Timeline trên Dashboard sheet</td></tr>
+          <tr><td><strong>6. Tự động</strong></td><td>VBA / Refresh</td><td>Auto-refresh khi mở, timer, hoặc nút Refresh</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Thiết kế Dashboard Sheet</h3>
+      <div class="code-block">
+        <div class="code-header"><span>Checklist Dashboard</span></div>
+        <pre><code>✅ Tạo sheet riêng "Dashboard" — ẩn các sheet data
+✅ View → bỏ Gridlines, bỏ Headings
+✅ Đặt background: màu trắng hoặc gradient nhẹ
+✅ Thêm Title (Merge cells + font lớn)
+✅ Bố trí: Slicers bên trái, Charts ở giữa + phải
+✅ Format Charts: xóa Chart Title trùng, thêm Data Labels
+✅ Kết nối tất cả Charts với cùng Slicers
+✅ Protect Sheet (cho phép filter, không cho edit)
+✅ Thêm nút "🔄 Refresh" (Macro: ThisWorkbook.RefreshAll)
+✅ File → Save as .xlsm (macro-enabled)</code></pre>
+      </div>
+
+      <!-- Practice -->
+      <div class="practice-box">
+        <h3>Bài tập 13.1: VBA Auto-Refresh Excel</h3>
+        <p><strong>Mục tiêu:</strong> Tạo macro tự động refresh khi mở file</p>
+        <ol>
+          <li>Tạo workbook có 1 Power Query kết nối file CSV</li>
+          <li>Mở VBA Editor (Alt+F11)</li>
+          <li>Trong <span class="inline-code">ThisWorkbook</span>, thêm:
+            <div class="code-block"><pre><code>Private Sub Workbook_Open()
+    ThisWorkbook.RefreshAll
+End Sub</code></pre></div>
+          </li>
+          <li>Lưu file dạng <span class="inline-code">.xlsm</span> (Macro-Enabled)</li>
+          <li>Đóng và mở lại → xác nhận dữ liệu được refresh tự động</li>
+        </ol>
+      </div>
+
+      <div class="practice-box">
+        <h3>Bài tập 13.2: Thiết lập ETL 3-Layer</h3>
+        <p><strong>Mục tiêu:</strong> Tổ chức queries theo pattern Raw → Staging → End Table</p>
+        <ol>
+          <li>Tải 2 file CSV: NhanVien.csv và PhongBan.csv</li>
+          <li>Tạo Raw queries:
+            <ul>
+              <li><span class="inline-code">raw_NhanVien</span> → Disable Load</li>
+              <li><span class="inline-code">raw_PhongBan</span> → Disable Load</li>
+            </ul>
+          </li>
+          <li>Reference tạo Staging:
+            <ul>
+              <li><span class="inline-code">stg_NhanVien</span>: Rename columns, Set types → Disable Load</li>
+              <li><span class="inline-code">stg_PhongBan</span>: Rename, Clean text → Disable Load</li>
+            </ul>
+          </li>
+          <li>Reference tạo End Tables:
+            <ul>
+              <li><span class="inline-code">NhanVienChiTiet</span>: Merge NV + PB → Enable Load</li>
+              <li><span class="inline-code">ThongKePhongBan</span>: Group By → Enable Load</li>
+            </ul>
+          </li>
+          <li>Tổ chức vào Groups: "01_Raw", "02_Staging", "03_Output"</li>
+          <li>View → Query Dependencies → screenshot biểu đồ</li>
+          <li>Close & Load</li>
+        </ol>
+      </div>
+
+      <div class="practice-box">
+        <h3>Bài tập 13.3: Naming Convention & Documentation</h3>
+        <p><strong>Mục tiêu:</strong> Áp dụng best practices cho project thực tế</p>
+        <ol>
+          <li>Lấy bài tập 13.2 và bổ sung:</li>
+          <li>Thêm Description cho mỗi query (Properties)</li>
+          <li>Đổi tên mỗi Step thành tên có ý nghĩa (ví dụ: "Changed Type" → "SetColumnTypes")</li>
+          <li>Thêm Parameters:
+            <ul>
+              <li><span class="inline-code">pDataFolder</span> = đường dẫn đến thư mục chứa CSV</li>
+            </ul>
+          </li>
+          <li>Thay hardcoded path bằng pDataFolder trong raw queries</li>
+          <li>Advanced Editor → thêm comments giải thích logic</li>
+          <li>Close & Load</li>
+        </ol>
+      </div>
+
+      <!-- Navigation -->
+      <div class="chapter-nav">
+        <a href="chuong12-nang-cao.html" class="nav-prev">
+          <div>
+            <div class="nav-label">← Chương trước</div>
+            <div class="nav-title">XII. Kỹ thuật nâng cao</div>
+          </div>
+        </a>
+        <a href="index.html" class="nav-next">
+          <div>
+            <div class="nav-label">Hoàn thành →</div>
+            <div class="nav-title">Về trang chủ</div>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <footer class="footer">
+      <p>📘 Giáo trình Power Query Excel — Chuyên đề đào tạo &copy; 2026</p>
+    </footer>
+  </main>
+
+  <script>
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('open');
+      document.getElementById('overlay').classList.toggle('open');
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chương VI: Gộp dữ liệu trong Power Query - Giáo trình Power Query Excel</title>
+  <meta name="description" content="Merge Queries (Join), Append Queries (nối dọc), Merge Columns, Combine Files trong Power Query Excel.">
+  <link rel="stylesheet" href="index.css">
+</head>
+<body>
+  <script>
+    if (sessionStorage.getItem('pq_logged_in') !== 'true') {
+      window.location.href = 'login.html';
+    }
+  </script>
+
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-icon">⚡</div>
+      <div class="brand-text">Power Query Excel<span>Giáo trình đào tạo</span></div>
+    </div>
+    <div class="sidebar-nav">
+      <div class="nav-section">
+        <div class="nav-section-title">Trang chủ</div>
+        <a href="index.html" class="nav-item"><span class="nav-icon">🏠</span>Tổng quan giáo trình</a>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-title">Nội dung chương</div>
+        <a href="chuong1-tong-quan.html" class="nav-item"><span class="nav-number">I</span>Tổng quan về Power Query</a>
+        <a href="chuong2-ung-dung.html" class="nav-item"><span class="nav-number">II</span>Ứng dụng xử lý dữ liệu</a>
+        <a href="chuong3-cai-dat.html" class="nav-item"><span class="nav-number">III</span>Cài đặt và hiển thị</a>
+        <a href="chuong4-ket-noi.html" class="nav-item"><span class="nav-number">IV</span>Kết nối & cập nhật dữ liệu</a>
+        <a href="chuong5-tach-du-lieu.html" class="nav-item"><span class="nav-number">V</span>Tách dữ liệu</a>
+        <a href="chuong6-gop-du-lieu.html" class="nav-item active"><span class="nav-number">VI</span>Gộp dữ liệu</a>
+        <a href="chuong7-chuyen-doi.html" class="nav-item"><span class="nav-number">VII</span>Chuyển đổi cấu trúc</a>
+        <a href="chuong8-column.html" class="nav-item"><span class="nav-number">VIII</span>Xử lý với Column</a>
+        <a href="chuong9-cong-thuc-ham.html" class="nav-item"><span class="nav-number">IX</span>Công thức và hàm</a>
+        <a href="chuong10-lam-sach.html" class="nav-item"><span class="nav-number">X</span>Làm sạch dữ liệu</a>
+        <a href="chuong11-python-r-ai.html" class="nav-item"><span class="nav-number">XI</span>Python, R và AI</a>
+        <a href="chuong12-nang-cao.html" class="nav-item"><span class="nav-number">XII</span>Kỹ thuật nâng cao</a>
+        <a href="chuong13-tu-dong-hoa.html" class="nav-item"><span class="nav-number">XIII</span>Tự động hóa</a>
+      </div>
+    
+      <div class="nav-section">
+        <div class="nav-section-title">Bài tập</div>
+        <a href="bai-tap-tong-hop.html" class="nav-item"><span class="nav-icon">📝</span>20 Bài tập tổng hợp</a>
+      </div>
+    </div>
+  </nav>
+
+  <header class="mobile-header">
+    <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+    <span style="margin-left:12px;font-weight:600;font-size:15px;">Chương VI</span>
+  </header>
+  <div class="sidebar-overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+  <main class="main-content">
+    <div class="chapter-header">
+      <div class="chapter-breadcrumb">
+        <a href="index.html">Trang chủ</a><span class="sep">›</span><span>Chương VI</span>
+      </div>
+      <div class="chapter-number">📘 CHƯƠNG VI</div>
+      <h1>Gộp dữ liệu trong Power Query</h1>
+      <p class="chapter-desc">Nắm vững kỹ thuật Merge Queries (JOIN), Append Queries (nối dọc), Merge Columns (gộp cột) và Combine Files từ thư mục.</p>
+    </div>
+
+    <div class="chapter-body">
+
+      <h2>6.1 Tổng quan về gộp dữ liệu</h2>
+      <p>Power Query cung cấp ba cách chính để gộp dữ liệu:</p>
+
+      <div class="comparison-grid">
+        <div class="comparison-card">
+          <div class="comp-icon">🔗</div>
+          <h4>Merge Queries</h4>
+          <p>Gộp ngang — kết hợp cột từ 2 bảng dựa trên khóa chung (tương tự JOIN trong SQL)</p>
+        </div>
+        <div class="comparison-card">
+          <div class="comp-icon">📋</div>
+          <h4>Append Queries</h4>
+          <p>Gộp dọc — nối các dòng từ nhiều bảng có cùng cấu trúc (tương tự UNION)</p>
+        </div>
+        <div class="comparison-card">
+          <div class="comp-icon">📎</div>
+          <h4>Merge Columns</h4>
+          <p>Gộp nội dung nhiều cột thành 1 cột duy nhất với delimiter tùy chọn</p>
+        </div>
+      </div>
+
+      <h2>6.2 Merge Queries (Nối ngang - JOIN)</h2>
+      <p>Merge Queries kết hợp hai bảng dựa trên các giá trị khớp từ cột khóa — tương tự các phép JOIN trong SQL.</p>
+
+      <div class="figure">
+        <img src="images/merge_queries.png" alt="Các loại Join trong Merge Queries">
+        <div class="caption">Hình 6.1: Các loại Join trong Power Query Merge Queries</div>
+      </div>
+
+      <h3>Các bước thực hiện Merge Queries</h3>
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h4>Mở Merge</h4>
+          <p>Trong Power Query Editor → tab Home → <strong>Merge Queries</strong> (hoặc Merge Queries as New)</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h4>Chọn bảng thứ hai</h4>
+          <p>Từ dropdown, chọn bảng (query) muốn gộp vào bảng hiện tại</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h4>Chọn cột khóa</h4>
+          <p>Nhấp vào cột khóa trên bảng thứ nhất và cột khóa tương ứng trên bảng thứ hai. Giữ <kbd>Ctrl</kbd> để chọn nhiều cột khóa.</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <h4>Chọn Join Kind</h4>
+          <p>Chọn loại nối phù hợp (xem bảng bên dưới)</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">5</div>
+        <div class="step-content">
+          <h4>Expand cột kết quả</h4>
+          <p>Sau khi Merge, một cột Table xuất hiện. Nhấp icon ↔️ trên tiêu đề cột → chọn cột muốn thêm → OK</p>
+        </div>
+      </div>
+
+      <h3>6 loại Join Kind</h3>
+      <table class="styled-table">
+        <thead>
+          <tr>
+            <th>Join Kind</th>
+            <th>Mô tả</th>
+            <th>SQL tương đương</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Left Outer</strong> (mặc định)</td>
+            <td>Tất cả dòng từ bảng trái + dòng khớp từ bảng phải</td>
+            <td>LEFT JOIN</td>
+          </tr>
+          <tr>
+            <td><strong>Right Outer</strong></td>
+            <td>Tất cả dòng từ bảng phải + dòng khớp từ bảng trái</td>
+            <td>RIGHT JOIN</td>
+          </tr>
+          <tr>
+            <td><strong>Full Outer</strong></td>
+            <td>Tất cả dòng từ cả hai bảng (khớp và không khớp)</td>
+            <td>FULL OUTER JOIN</td>
+          </tr>
+          <tr>
+            <td><strong>Inner</strong></td>
+            <td>Chỉ các dòng có giá trị khớp ở cả hai bảng</td>
+            <td>INNER JOIN</td>
+          </tr>
+          <tr>
+            <td><strong>Left Anti</strong></td>
+            <td>Chỉ các dòng từ bảng trái KHÔNG có match ở bảng phải</td>
+            <td>NOT IN / NOT EXISTS</td>
+          </tr>
+          <tr>
+            <td><strong>Right Anti</strong></td>
+            <td>Chỉ các dòng từ bảng phải KHÔNG có match ở bảng trái</td>
+            <td>NOT IN / NOT EXISTS</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="info-box tip">
+        <span class="info-icon">💡</span>
+        <div>
+          <strong>Mẹo chọn Join Kind:</strong>
+          <ul style="margin-top:6px;">
+            <li><strong>Left Outer:</strong> Khi muốn giữ tất cả dữ liệu gốc và bổ sung thông tin</li>
+            <li><strong>Inner:</strong> Khi chỉ cần dữ liệu có match ở cả hai bảng</li>
+            <li><strong>Left Anti:</strong> Khi cần tìm dữ liệu KHÔNG tồn tại trong bảng kia (rất hữu ích!)</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span>M Language - Merge Queries</span></div>
+        <pre><code>// Merge bảng DonHang với bảng SanPham theo cột MaSP
+= Table.NestedJoin(
+    DonHang,          // Bảng trái
+    {"MaSP"},         // Cột khóa bảng trái
+    SanPham,          // Bảng phải
+    {"MaSP"},         // Cột khóa bảng phải
+    "SanPham",        // Tên cột kết quả
+    JoinKind.LeftOuter // Loại join
+)</code></pre>
+      </div>
+
+      <h2>6.3 Append Queries (Nối dọc - UNION)</h2>
+      <p>Append Queries kết hợp các dòng từ nhiều bảng theo chiều dọc — tất cả bảng nên có <strong>cùng tên cột</strong>.</p>
+
+      <h3>Các bước thực hiện</h3>
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h4>Mở Append</h4>
+          <p>Tab Home → <strong>Append Queries</strong> (vào query hiện tại) hoặc <strong>Append Queries as New</strong> (tạo query mới)</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h4>Chọn số bảng</h4>
+          <p><strong>Two tables:</strong> Nối 2 bảng. <strong>Three or more tables:</strong> Chọn nhiều bảng từ danh sách Available → nhấn Add.</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h4>Kết quả</h4>
+          <p>Tất cả dòng từ các bảng được xếp chồng. Nếu tên cột không khớp, cột sẽ chứa <span class="inline-code">null</span>.</p>
+        </div>
+      </div>
+
+      <div class="info-box warning">
+        <span class="info-icon">⚠️</span>
+        <div>
+          <strong>Lưu ý quan trọng:</strong> Append nối dựa trên <strong>tên cột</strong>, không phải vị trí. Nếu bảng A có cột "Họ tên" và bảng B có cột "HoTen" → hai cột này sẽ KHÔNG được nối, mà tạo thành 2 cột riêng biệt với giá trị null.
+        </div>
+      </div>
+
+      <h2>6.4 Merge Columns (Gộp cột)</h2>
+      <p>Gộp nội dung nhiều cột thành 1 cột với ký tự phân cách tùy chọn:</p>
+
+      <ol>
+        <li>Chọn nhiều cột muốn gộp (giữ <kbd>Ctrl</kbd> + nhấp chọn)</li>
+        <li>Tab Transform → <strong>Merge Columns</strong></li>
+        <li>Chọn Separator: Space, Comma, Tab, Semicolon, hoặc Custom</li>
+        <li>Nhập tên cho cột mới → OK</li>
+      </ol>
+
+      <h3>Ví dụ</h3>
+      <table class="styled-table">
+        <thead>
+          <tr><th>Họ đệm</th><th>Tên</th><th>Separator</th><th>Kết quả (Gộp)</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Nguyễn Văn</td><td>An</td><td>Space</td><td>Nguyễn Văn An</td></tr>
+          <tr><td>Trần Thị</td><td>Bình</td><td>Comma</td><td>Trần Thị, Bình</td></tr>
+        </tbody>
+      </table>
+
+      <div class="info-box note">
+        <span class="info-icon">📋</span>
+        <div>
+          <strong>Lưu ý:</strong> Merge Columns sẽ <strong>xóa các cột gốc</strong> và thay thế bằng cột mới. Nếu muốn giữ cột gốc, hãy <strong>Duplicate Column</strong> trước khi merge.
+        </div>
+      </div>
+
+      <h2>6.5 Combine Files from Folder</h2>
+      <p>Gộp tất cả file trong thư mục thành một query duy nhất (đã giới thiệu ở Chương IV):</p>
+
+      <ol>
+        <li>Data → Get Data → From File → <strong>From Folder</strong></li>
+        <li>Chọn thư mục → <strong>Combine & Transform Data</strong></li>
+        <li>Chọn file mẫu → OK</li>
+        <li>Power Query tự động:
+          <ul>
+            <li>Tạo helper queries (Parameter, Function, Sample File)</li>
+            <li>Đọc mỗi file theo cùng logic</li>
+            <li>Gộp tất cả vào 1 bảng với cột <span class="inline-code">Source.Name</span></li>
+          </ul>
+        </li>
+      </ol>
+
+      <h2>6.6 Fuzzy Merge (So khớp mờ)</h2>
+      <p><strong>Fuzzy Merge</strong> cho phép nối bảng ngay cả khi giá trị khóa <em>không khớp chính xác</em> — rất hữu ích khi dữ liệu có lỗi chính tả, khoảng trắng thừa, hoặc định dạng không đồng nhất.</p>
+
+      <h3>Cách sử dụng</h3>
+      <ol>
+        <li>Thực hiện Merge Queries như bình thường</li>
+        <li>Đánh dấu ☑️ <strong>Use fuzzy matching to perform the merge</strong></li>
+        <li>Nhấn <strong>⚙️ Fuzzy matching options</strong> để cấu hình:
+          <ul>
+            <li><strong>Similarity threshold:</strong> 0.0 → 1.0 (0.8 = 80% giống nhau)</li>
+            <li><strong>Ignore case:</strong> Bỏ qua hoa/thường</li>
+            <li><strong>Match by combining text parts:</strong> Ghép từng phần</li>
+            <li><strong>Number of matches:</strong> Số lượng kết quả khớp tối đa</li>
+            <li><strong>Transformation table:</strong> Bảng mapping thay thế (ví dụ: "TP.HCM" = "Hồ Chí Minh")</li>
+          </ul>
+        </li>
+      </ol>
+
+      <h3>Ví dụ</h3>
+      <table class="styled-table">
+        <thead><tr><th>Bảng A (Khách hàng)</th><th>Bảng B (Đơn hàng)</th><th>Fuzzy Match?</th></tr></thead>
+        <tbody>
+          <tr><td>Nguyễn Văn An</td><td>Nguyen Van An</td><td>✅ (bỏ dấu)</td></tr>
+          <tr><td>Công ty ABC</td><td>Cty ABC</td><td>✅ (viết tắt)</td></tr>
+          <tr><td>Microsoft Corp</td><td>Microsoft Corporation</td><td>✅ (threshold 0.7)</td></tr>
+        </tbody>
+      </table>
+
+      <div class="code-block">
+        <div class="code-header"><span>M Language - Fuzzy Merge</span></div>
+        <pre><code>= Table.FuzzyNestedJoin(
+    BangA, {"TenKH"},
+    BangB, {"TenKH"},
+    "Matched",
+    JoinKind.LeftOuter,
+    [
+        Threshold = 0.8,
+        IgnoreCase = true,
+        IgnoreSpace = true
+    ]
+)</code></pre>
+      </div>
+
+      <h2>6.7 Cross Join (Tích Descartes)</h2>
+      <p><strong>Cross Join</strong> tạo tất cả tổ hợp có thể giữa các dòng từ hai bảng. Power Query không có nút Cross Join trực tiếp, nhưng có thể thực hiện qua Custom Column:</p>
+
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h4>Thêm cột Custom</h4>
+          <p>Trong bảng A, thêm Custom Column: <span class="inline-code">= BangB</span> (tham chiếu toàn bộ bảng B)</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h4>Expand cột Table</h4>
+          <p>Nhấp icon ↔️ trên cột mới → chọn tất cả cột từ bảng B → OK</p>
+        </div>
+      </div>
+
+      <h3>Ví dụ ứng dụng</h3>
+      <p>Kết hợp danh sách <strong>Sản phẩm</strong> (3 item) × <strong>Màu sắc</strong> (4 màu) = <strong>12 tổ hợp</strong></p>
+
+      <div class="info-box tip">
+        <span class="info-icon">💡</span>
+        <div>
+          <strong>Ứng dụng:</strong> Cross Join hữu ích khi tạo bảng giá (Product × Size × Color), lịch phân ca (Employee × Shift × Day), hoặc ma trận phân tích.
+        </div>
+      </div>
+
+      <h2>6.9 Shared Dimension (Bảng chiều dùng chung)</h2>
+      <p>Khi nhiều fact tables cùng tham chiếu đến 1 dimension nhưng với tên cột khác nhau, cần tạo <strong>Shared Dimension</strong>:</p>
+      <div class="code-block">
+        <div class="code-header"><span>M Language - Shared Dimension</span></div>
+        <pre><code>// Gộp danh sách sản phẩm từ nhiều nguồn
+let
+    SP_BanHang = Table.SelectColumns(BanHang, {"MaSP", "TenSP"}),
+    SP_NhapKho = Table.SelectColumns(NhapKho, {"MaSanPham", "TenSanPham"}),
+    // Chuẩn hóa tên cột
+    SP_NhapKho_Renamed = Table.RenameColumns(SP_NhapKho,
+        {{"MaSanPham","MaSP"}, {"TenSanPham","TenSP"}}),
+    // Gộp + loại trùng = Shared Dimension
+    Combined = Table.Distinct(Table.Combine({SP_BanHang, SP_NhapKho_Renamed}))
+in Combined</code></pre>
+      </div>
+
+      <h2>6.10 Dates Between Merge (Join theo khoảng ngày)</h2>
+      <p>Merge chuẩn chỉ so khớp giá trị bằng nhau. Để join theo <strong>khoảng ngày</strong> (between), phải dùng <em>Cross Join + Filter</em>:</p>
+      <div class="code-block">
+        <div class="code-header"><span>M Language - Merge Between Dates</span></div>
+        <pre><code>// Bảng GiaoDich: NgayGD | SoTien
+// Bảng TyGia:    TuNgay | DenNgay | TyGia
+let
+    // Tạo custom column: lookup tỷ giá theo ngày giao dịch
+    Result = Table.AddColumn(GiaoDich, "TyGia",
+        each let ngay = [NgayGD] in
+            Table.SelectRows(TyGia,
+                each [TuNgay] <= ngay and ngay <= [DenNgay]
+            ){0}[TyGia]
+    )
+in Result</code></pre>
+      </div>
+
+      <h2>6.11 Age Banding (Phân nhóm theo khoảng giá trị)</h2>
+      <p>Phân nhóm tuổi, doanh thu, hay bất kỳ giá trị nào vào các <strong>khoảng (band)</strong>:</p>
+      <div class="code-block">
+        <div class="code-header"><span>M Language - Age Banding</span></div>
+        <pre><code>// Bảng BandTable:
+//   FromAge | ToAge | NhomTuoi
+//   0       | 17    | "Vị thành niên"
+//   18      | 35    | "Thanh niên"
+//   36      | 55    | "Trung niên"
+//   56      | 100   | "Cao tuổi"
+
+= Table.AddColumn(NhanVien, "NhomTuoi",
+    each let tuoi = [Tuoi] in
+        Table.SelectRows(BandTable,
+            each [FromAge] <= tuoi and tuoi <= [ToAge]
+        ){0}[NhomTuoi]
+)</code></pre>
+      </div>
+      <div class="info-box tip">
+        <span class="info-icon">💡</span>
+        <div>
+          <strong>Ứng dụng:</strong> Age Banding dùng cho: phân nhóm tuổi khách hàng, phân hạng doanh thu (A/B/C), xếp hạng tín dụng, phân loại sản phẩm theo giá.
+        </div>
+      </div>
+
+      <h2>6.12 Find Mismatch Rows (Tìm dòng không khớp)</h2>
+      <p>Dùng <strong>Left Anti Join</strong> để tìm dòng có trong bảng A nhưng <em>không có</em> trong bảng B:</p>
+      <div class="code-block">
+        <div class="code-header"><span>M Language - Find Mismatch</span></div>
+        <pre><code>// Tìm nhân viên có trong BảngLương nhưng KHÔNG có trong BảngNhânViên
+= Table.NestedJoin(
+    BangLuong, "MaNV",
+    BangNhanVien, "MaNV",
+    "Match", JoinKind.LeftAnti
+)
+// Kết quả: chỉ trả về dòng KHÔNG khớp → dùng để audit dữ liệu</code></pre>
+      </div>
+      <table class="styled-table">
+        <thead><tr><th>Join Type</th><th>Tìm gì</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Left Anti</strong></td><td>Dòng ở bảng trái KHÔNG khớp bảng phải</td></tr>
+          <tr><td><strong>Right Anti</strong></td><td>Dòng ở bảng phải KHÔNG khớp bảng trái</td></tr>
+          <tr><td><strong>Full Anti</strong></td><td>Tất cả dòng KHÔNG khớp ở cả 2 bảng (= Left Anti UNION Right Anti)</td></tr>
+        </tbody>
+      </table>
+
+      <h2>6.13 Fuzzy Grouping & Fuzzy Clustering</h2>
+      <p>Ngoài Fuzzy Merge (đã học ở 6.7), sách Mastering PQ giới thiệu thêm 2 kỹ thuật:</p>
+
+      <h3>Fuzzy Grouping</h3>
+      <p>Nhóm các giá trị <em>gần giống nhau</em> thành 1 đại diện:</p>
+      <div class="code-block">
+        <div class="code-header"><span>Ví dụ: Chuẩn hóa tên công ty</span></div>
+        <pre><code>// Dữ liệu gốc:
+// "Microsoft Corp", "Microsoft Corporation", "Microsft" → gộp thành "Microsoft Corporation"
+// "Apple Inc", "Apple Inc.", "APPLE" → gộp thành "Apple Inc"
+
+// Cách dùng: Transform → Group By → ☑️ Use fuzzy grouping
+// Hoặc M code:
+= Table.FuzzyGroup(Source, "TenCongTy", {
+    {"Representative", each List.First([TenCongTy])},
+    {"Count", each Table.RowCount(_)}
+}, [Threshold = 0.7])</code></pre>
+      </div>
+
+      <h3>Fuzzy Clustering (tìm giá trị tương tự)</h3>
+      <p>Dùng <span class="inline-code">Table.FuzzyNestedJoin</span> kết hợp self-join để tìm các nhóm giá trị tương tự:</p>
+      <div class="code-block">
+        <div class="code-header"><span>M Language - Fuzzy Clustering</span></div>
+        <pre><code>= Table.FuzzyNestedJoin(
+    Source, "TenKhachHang",
+    Source, "TenKhachHang",
+    "Cluster", JoinKind.LeftOuter,
+    [Threshold = 0.8, IgnoreCase = true, IgnoreSpace = true]
+)</code></pre>
+      </div>
+
+      <h2>6.14 Lưu ý khi Merge trên cột Text</h2>
+      <div class="info-box warning">
+        <span class="info-icon">⚠️</span>
+        <div>
+          <strong>Cẩn thận với Text Merge!</strong> Các vấn đề thường gặp:
+          <ul style="margin-top:6px;">
+            <li><strong>Khoảng trắng thừa:</strong> "  HCM" ≠ "HCM" → Dùng <span class="inline-code">Text.Trim</span> trước khi merge</li>
+            <li><strong>Chữ hoa/thường:</strong> "hcm" ≠ "HCM" → Dùng <span class="inline-code">Text.Upper</span> hoặc <span class="inline-code">Text.Lower</span></li>
+            <li><strong>Ký tự ẩn:</strong> Unicode invisible chars → Dùng <span class="inline-code">Text.Clean</span></li>
+            <li><strong>Encoding khác nhau:</strong> "Hà Nội" (UTF-8) ≠ "Hà Nội" (ANSI) → Chuẩn hóa encoding</li>
+          </ul>
+          <p style="margin-top:6px;">Luôn <strong>Transform → Trim → Clean → Lowercase</strong> cả 2 cột trước khi Merge!</p>
+        </div>
+      </div>
+
+      <h2>6.15 Combining Mismatched Tables (Gộp bảng cấu trúc khác nhau)</h2>
+      <p>Khi <strong>Append</strong> các bảng có cấu trúc cột khác nhau (tên cột khác, số cột khác), Power Query tự tạo <code>null</code> cho cột thiếu:</p>
+
+      <h3>Ví dụ: 2 chi nhánh báo cáo khác nhau</h3>
+      <table class="styled-table">
+        <thead><tr><th colspan="3">Chi nhánh HCM</th><th></th><th colspan="3">Chi nhánh HN</th></tr></thead>
+        <tbody>
+          <tr><td><strong>MaSP</strong></td><td><strong>TenSP</strong></td><td><strong>SoLuong</strong></td><td></td><td><strong>ProductCode</strong></td><td><strong>ProductName</strong></td><td><strong>Qty</strong></td></tr>
+          <tr><td>SP01</td><td>Laptop</td><td>50</td><td></td><td>SP01</td><td>Laptop</td><td>30</td></tr>
+        </tbody>
+      </table>
+
+      <div class="code-block">
+        <div class="code-header"><span>M Language - Chuẩn hóa trước khi Append</span></div>
+        <pre><code>// Bước 1: Chuẩn hóa tên cột
+let
+    HN_Renamed = Table.RenameColumns(HN, {
+        {"ProductCode","MaSP"}, {"ProductName","TenSP"}, {"Qty","SoLuong"}
+    }),
+    // Bước 2: Chọn cùng bộ cột
+    ColsChuan = {"MaSP", "TenSP", "SoLuong"},
+    HCM_Selected = Table.SelectColumns(HCM, ColsChuan),
+    HN_Selected = Table.SelectColumns(HN_Renamed, ColsChuan),
+    // Bước 3: Append
+    Combined = Table.Combine({HCM_Selected, HN_Selected})
+in Combined</code></pre>
+      </div>
+
+      <div class="info-box warning">
+        <span class="info-icon">⚠️</span>
+        <div>
+          <strong>Lưu ý:</strong> Nếu Append trực tiếp mà không chuẩn hóa, Power Query sẽ ghép nhưng tạo nhiều cột null. Luôn <strong>Rename + SelectColumns</strong> trước khi Combine.
+        </div>
+      </div>
+
+      <h2>6.16 Preserving Context (Giữ thông tin nguồn khi Append)</h2>
+      <p>Khi gộp nhiều file/sheet, cần giữ <strong>metadata nguồn</strong> (tên file, tên sheet) để biết dữ liệu đến từ đâu:</p>
+
+      <div class="code-block">
+        <div class="code-header"><span>M Language - Preserving Context</span></div>
+        <pre><code>// Gộp từ Folder + giữ tên file và tên sheet
+let
+    Source = Folder.Files("D:\Data\BaoCao"),
+    FilterXlsx = Table.SelectRows(Source,
+        each Text.EndsWith([Name], ".xlsx")),
+    // Thêm cột Data chứa nội dung mỗi file
+    AddData = Table.AddColumn(FilterXlsx, "SheetData",
+        each let
+            wb = Excel.Workbook([Content]),
+            sheet = wb{0}[Data],
+            headers = Table.PromoteHeaders(sheet)
+        in headers),
+    // Giữ cột Name (tên file) + Expand SheetData
+    SelectCols = Table.SelectColumns(AddData, {"Name", "SheetData"}),
+    Expanded = Table.ExpandTableColumn(SelectCols, "SheetData",
+        Table.ColumnNames(SelectCols{0}[SheetData])),
+    // Rename cột "Name" → "SourceFile"
+    Renamed = Table.RenameColumns(Expanded, {{"Name", "SourceFile"}})
+in Renamed
+
+// Kết quả: mỗi dòng biết đến từ file nào!</code></pre>
+      </div>
+
+      <div class="info-box tip">
+        <span class="info-icon">💡</span>
+        <div>
+          <strong>Preserving Context:</strong> Dùng kỹ thuật này khi gộp báo cáo từ nhiều chi nhánh, file hàng tháng, hoặc sheets khác nhau — để truy vết nguồn gốc dữ liệu khi cần kiểm tra.
+        </div>
+      </div>
+
+      <!-- Practice -->
+      <div class="practice-box">
+        <h3>Bài tập 6.1: Merge Queries — Kết hợp thông tin</h3>
+        <p><strong>Mục tiêu:</strong> Thực hành Merge Queries với các loại Join</p>
+        <ol>
+          <li>Tạo 2 bảng trong Excel:
+            <p><strong>Bảng DonHang:</strong></p>
+            <table class="styled-table" style="margin:8px 0;">
+              <thead><tr><th>MaDH</th><th>MaSP</th><th>SoLuong</th><th>NgayDat</th></tr></thead>
+              <tbody>
+                <tr><td>DH001</td><td>SP01</td><td>10</td><td>01/01/2024</td></tr>
+                <tr><td>DH002</td><td>SP03</td><td>5</td><td>05/01/2024</td></tr>
+                <tr><td>DH003</td><td>SP02</td><td>8</td><td>10/01/2024</td></tr>
+                <tr><td>DH004</td><td>SP05</td><td>3</td><td>15/01/2024</td></tr>
+              </tbody>
+            </table>
+            <p><strong>Bảng SanPham:</strong></p>
+            <table class="styled-table" style="margin:8px 0;">
+              <thead><tr><th>MaSP</th><th>TenSP</th><th>DonGia</th></tr></thead>
+              <tbody>
+                <tr><td>SP01</td><td>Bút bi</td><td>5000</td></tr>
+                <tr><td>SP02</td><td>Vở ô ly</td><td>8000</td></tr>
+                <tr><td>SP03</td><td>Thước kẻ</td><td>12000</td></tr>
+                <tr><td>SP04</td><td>Tẩy</td><td>3000</td></tr>
+              </tbody>
+            </table>
+          </li>
+          <li>Mở cả 2 bảng vào Power Query (From Table/Range)</li>
+          <li>Chọn query DonHang → Home → Merge Queries</li>
+          <li>Chọn bảng SanPham, khóa nối = <span class="inline-code">MaSP</span></li>
+          <li>Thử lần lượt các Join Kind:
+            <ul>
+              <li><strong>Left Outer:</strong> DH004 (SP05) sẽ có TenSP = null (vì SP05 không có trong SanPham)</li>
+              <li><strong>Inner:</strong> DH004 sẽ bị loại ra</li>
+              <li><strong>Left Anti:</strong> Chỉ còn DH004 (sản phẩm không tồn tại)</li>
+            </ul>
+          </li>
+          <li>Với Left Outer: Expand cột SanPham → chọn TenSP, DonGia</li>
+          <li>Thêm Custom Column: <span class="inline-code">ThanhTien = [SoLuong] * [DonGia]</span></li>
+          <li>Close & Load</li>
+        </ol>
+      </div>
+
+      <div class="practice-box">
+        <h3>Bài tập 6.2: Append Queries — Gộp dữ liệu nhiều tháng</h3>
+        <p><strong>Mục tiêu:</strong> Thực hành Append Queries</p>
+        <ol>
+          <li>Tạo 4 bảng trên 4 sheet: <strong>Q1</strong>, <strong>Q2</strong>, <strong>Q3</strong>, <strong>Q4</strong>
+            <ul>
+              <li>Cấu trúc mỗi bảng: MaNV | HoTen | DoanhSo | Quy</li>
+              <li>Mỗi bảng 3-5 dòng</li>
+            </ul>
+          </li>
+          <li>Mở tất cả 4 bảng vào Power Query</li>
+          <li>Chọn query Q1 → Home → <strong>Append Queries</strong></li>
+          <li>Chọn <strong>Three or more tables</strong> → thêm Q2, Q3, Q4 → OK</li>
+          <li>Kiểm tra dữ liệu đã gộp đủ 4 quý</li>
+          <li>Đổi tên query thành "DoanhSo_CaNam"</li>
+          <li>Close & Load</li>
+        </ol>
+      </div>
+
+      <div class="practice-box">
+        <h3>Bài tập 6.3: Merge Columns — Gộp cột địa chỉ</h3>
+        <p><strong>Mục tiêu:</strong> Thực hành Merge Columns</p>
+        <ol>
+          <li>Tạo bảng:
+            <table class="styled-table" style="margin:8px 0;">
+              <thead><tr><th>SoNha</th><th>Duong</th><th>Phuong</th><th>Quan</th><th>ThanhPho</th></tr></thead>
+              <tbody>
+                <tr><td>123</td><td>Nguyễn Huệ</td><td>Bến Nghé</td><td>Quận 1</td><td>TP.HCM</td></tr>
+                <tr><td>45</td><td>Trần Hưng Đạo</td><td>Phạm Ngũ Lão</td><td>Quận 1</td><td>TP.HCM</td></tr>
+              </tbody>
+            </table>
+          </li>
+          <li>Mở Power Query</li>
+          <li>Chọn tất cả cột SoNha, Duong, Phuong, Quan, ThanhPho (giữ Ctrl+Click)</li>
+          <li>Transform → <strong>Merge Columns</strong> → Separator: Comma-Space</li>
+          <li>Đặt tên cột mới: "ĐịaChỉĐầyĐủ"</li>
+          <li>Kết quả: "123, Nguyễn Huệ, Bến Nghé, Quận 1, TP.HCM"</li>
+          <li>Close & Load</li>
+        </ol>
+      </div>
+
+      <!-- Navigation -->
+      <div class="chapter-nav">
+        <a href="chuong5-tach-du-lieu.html" class="nav-prev">
+          <div>
+            <div class="nav-label">← Chương trước</div>
+            <div class="nav-title">V. Tách dữ liệu</div>
+          </div>
+        </a>
+        <a href="chuong7-chuyen-doi.html" class="nav-next">
+          <div>
+            <div class="nav-label">Chương tiếp →</div>
+            <div class="nav-title">VII. Chuyển đổi cấu trúc</div>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <footer class="footer">
+      <p>📘 Giáo trình Power Query Excel — Chuyên đề đào tạo &copy; 2026</p>
+    </footer>
+  </main>
+
+  <script>
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('open');
+      document.getElementById('overlay').classList.toggle('open');
+    }
+  </script>
+</body>
+</html>

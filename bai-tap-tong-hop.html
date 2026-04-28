@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>20 Bài tập tổng hợp - Giáo trình Power Query Excel</title>
+  <meta name="description" content="20 bài tập thực hành tổng hợp Power Query Excel - đề bài, gợi ý, đáp án chi tiết, bao quát 13 chương.">
+  <link rel="stylesheet" href="index.css">
+  <style>
+    .exercise-card{background:var(--card-bg);border-radius:16px;padding:28px 32px;margin-bottom:28px;border:1px solid var(--border);position:relative;overflow:hidden}
+    .exercise-card::before{content:'';position:absolute;top:0;left:0;width:5px;height:100%;background:var(--primary)}
+    .exercise-num{display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:50%;background:var(--primary);color:#fff;font-weight:700;font-size:16px;margin-right:12px;flex-shrink:0}
+    .exercise-header{display:flex;align-items:center;margin-bottom:8px}
+    .exercise-header h3{margin:0;font-size:18px;color:var(--text)}
+    .exercise-chapter{display:inline-block;background:rgba(33,115,70,.12);color:var(--primary);padding:3px 10px;border-radius:6px;font-size:12px;font-weight:600;margin-left:auto}
+    .exercise-body{margin-top:14px}
+    .toggle-btn{cursor:pointer;background:var(--primary);color:#fff;border:none;padding:8px 18px;border-radius:8px;font-size:13px;font-weight:600;margin-top:12px;transition:opacity .2s}
+    .toggle-btn:hover{opacity:.85}
+    .hint-box,.answer-box{display:none;margin-top:14px;padding:16px 20px;border-radius:10px;font-size:14px;line-height:1.7}
+    .hint-box{background:rgba(255,193,7,.08);border-left:4px solid #ffc107}
+    .answer-box{background:rgba(33,115,70,.06);border-left:4px solid var(--primary)}
+    .answer-box .code-block{margin:10px 0}
+    .show{display:block!important}
+    .exercise-data{margin:10px 0}
+    .exercise-data table{font-size:13px}
+  </style>
+</head>
+<body>
+  <script>
+    if (sessionStorage.getItem('pq_logged_in') !== 'true') {
+      window.location.href = 'login.html';
+    }
+  </script>
+
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-icon">⚡</div>
+      <div class="brand-text">Power Query Excel<span>Giáo trình đào tạo</span></div>
+    </div>
+    <div class="sidebar-nav">
+      <div class="nav-section">
+        <div class="nav-section-title">Trang chủ</div>
+        <a href="index.html" class="nav-item"><span class="nav-icon">🏠</span>Tổng quan giáo trình</a>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-title">Nội dung chương</div>
+        <a href="chuong1-tong-quan.html" class="nav-item"><span class="nav-number">I</span>Tổng quan về Power Query</a>
+        <a href="chuong2-ung-dung.html" class="nav-item"><span class="nav-number">II</span>Ứng dụng xử lý dữ liệu</a>
+        <a href="chuong3-cai-dat.html" class="nav-item"><span class="nav-number">III</span>Cài đặt và hiển thị</a>
+        <a href="chuong4-ket-noi.html" class="nav-item"><span class="nav-number">IV</span>Kết nối & cập nhật dữ liệu</a>
+        <a href="chuong5-tach-du-lieu.html" class="nav-item"><span class="nav-number">V</span>Tách dữ liệu</a>
+        <a href="chuong6-gop-du-lieu.html" class="nav-item"><span class="nav-number">VI</span>Gộp dữ liệu</a>
+        <a href="chuong7-chuyen-doi.html" class="nav-item"><span class="nav-number">VII</span>Chuyển đổi cấu trúc</a>
+        <a href="chuong8-column.html" class="nav-item"><span class="nav-number">VIII</span>Xử lý với Column</a>
+        <a href="chuong9-cong-thuc-ham.html" class="nav-item"><span class="nav-number">IX</span>Công thức và hàm</a>
+        <a href="chuong10-lam-sach.html" class="nav-item"><span class="nav-number">X</span>Làm sạch dữ liệu</a>
+        <a href="chuong11-python-r-ai.html" class="nav-item"><span class="nav-number">XI</span>Python, R và AI</a>
+        <a href="chuong12-nang-cao.html" class="nav-item"><span class="nav-number">XII</span>Kỹ thuật nâng cao</a>
+        <a href="chuong13-tu-dong-hoa.html" class="nav-item"><span class="nav-number">XIII</span>Tự động hóa</a>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-title">Bài tập</div>
+        <a href="bai-tap-tong-hop.html" class="nav-item active"><span class="nav-icon">📝</span>20 Bài tập tổng hợp</a>
+      </div>
+    </div>
+  </nav>
+
+  <header class="mobile-header">
+    <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+    <span style="margin-left:12px;font-weight:600;font-size:15px;">Bài tập tổng hợp</span>
+  </header>
+  <div class="sidebar-overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+  <main class="main-content">
+    <div class="chapter-header">
+      <div class="chapter-breadcrumb">
+        <a href="index.html">Trang chủ</a><span class="sep">›</span><span>Bài tập tổng hợp</span>
+      </div>
+      <div class="chapter-number">📝 BÀI TẬP TỔNG HỢP</div>
+      <h1>20 Bài tập thực hành Power Query</h1>
+      <p class="chapter-desc">Đề bài chi tiết, gợi ý từng bước và đáp án mẫu — bao quát tất cả 13 chương giáo trình.</p>
+    </div>
+
+    <div class="chapter-body">
+
+      <div class="figure">
+        <img src="images/exercises_practice.png" alt="Bài tập thực hành Power Query">
+        <div class="caption">20 bài tập tổng hợp giúp củng cố kiến thức Power Query từ cơ bản đến nâng cao</div>
+      </div>
+
+      <!-- BÀI 1 -->
+      <div class="exercise-card" id="bt1">
+        <div class="exercise-header">
+          <span class="exercise-num">1</span>
+          <h3>Import CSV tiếng Việt & Khám phá giao diện</h3>
+          <span class="exercise-chapter">Ch.I–III</span>
+        </div>
+        <div class="exercise-body">
+          <p><strong>Đề bài:</strong> Tạo file <code>DanhSachNhanVien.csv</code> (UTF-8) gồm các cột: MaNV, HoTen, PhongBan, NgaySinh, Luong (10 dòng). Import vào Power Query, khám phá giao diện, đổi tên cột và set đúng kiểu dữ liệu.</p>
+          <div class="exercise-data">
+            <table class="styled-table"><thead><tr><th>MaNV</th><th>HoTen</th><th>PhongBan</th><th>NgaySinh</th><th>Luong</th></tr></thead>
+            <tbody>
+              <tr><td>NV01</td><td>Nguyễn Văn An</td><td>IT</td><td>15/03/1990</td><td>18000000</td></tr>
+              <tr><td>NV02</td><td>Trần Thị Bình</td><td>Kế toán</td><td>22/07/1988</td><td>15000000</td></tr>
+              <tr><td>NV03</td><td>Lê Hoàng Châu</td><td>IT</td><td>01/11/1995</td><td>22000000</td></tr>
+            </tbody></table>
+            <p><em>(Thêm 7 dòng nữa với các phòng ban: "Kinh doanh", "Nhân sự", "Marketing")</em></p>
+          </div>
+          <button class="toggle-btn" onclick="toggle('hint1')">💡 Gợi ý</button>
+          <button class="toggle-btn" onclick="toggle('ans1')" style="background:#0d6efd">📋 Đáp án</button>
+          <div class="hint-box" id="hint1">
+            <strong>Gợi ý:</strong><br>
+            1. Dùng Notepad → Save as → Encoding: UTF-8<br>
+            2. Data → Get Data → From File → From Text/CSV<br>
+            3. Chọn Delimiter = Comma, Character Set = 65001 (UTF-8)<br>
+            4. Trong PQ Editor: khám phá ribbon (Home, Transform, Add Column), Query Settings panel, Formula Bar
+          </div>
+          <div class="answer-box" id="ans1">
+            <strong>Đáp án:</strong>
+            <div class="code-block"><pre><code>let
+    Source = Csv.Document(
+        File.Contents("D:\Data\DanhSachNhanVien.csv"),
+        [Delimiter=",", Encoding=65001]
+    ),
+    Headers = Table.PromoteHeaders(Source),
+    SetTypes = Table.TransformColumnTypes(Headers, {
+        {"MaNV", type text}, {"HoTen", type text},
+        {"PhongBan", type text},
+        {"NgaySinh", type date}, {"Luong", Currency.Type}
+    })
+in SetTypes</code></pre></div>
+            <p>✅ Kết quả: 10 dòng, 5 cột, hiển thị đúng tiếng Việt, NgaySinh là Date, Luong là Currency.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- BÀI 2 -->
+      <div class="exercise-card" id="bt2">
+        <div class="exercise-header">
+          <span class="exercise-num">2</span>
+          <h3>Kết nối nhiều nguồn dữ liệu</h3>
+          <span class="exercise-chapter">Ch.IV</span>
+        </div>
+        <div class="exercise-body">
+          <p><strong>Đề bài:</strong> Kết nối đồng thời 3 nguồn: (1) File Excel <code>SanPham.xlsx</code>, (2) File CSV <code>DonHang.csv</code>, (3) Web API <code>https://jsonplaceholder.typicode.com/users</code>. Tạo 3 queries riêng, đặt tên có ý nghĩa.</p>
+          <button class="toggle-btn" onclick="toggle('hint2')">💡 Gợi ý</button>
+          <button class="toggle-btn" onclick="toggle('ans2')" style="background:#0d6efd">📋 Đáp án</button>
+          <div class="hint-box" id="hint2">
+            1. Tạo file SanPham.xlsx (MaSP, TenSP, DonGia, DanhMuc)<br>
+            2. From File → From Text/CSV cho DonHang.csv<br>
+            3. From Other Sources → From Web → nhập URL API<br>
+            4. Json.Document → Table.FromRecords để parse JSON
+          </div>
+          <div class="answer-box" id="ans2">
+            <div class="code-block"><pre><code>// Query 1: stg_SanPham
+let Source = Excel.Workbook(File.Contents("D:\Data\SanPham.xlsx")),
+    Sheet = Source{[Item="Sheet1"]}[Data],
+    Headers = Table.PromoteHeaders(Sheet)
+in Headers
+
+// Query 2: stg_DonHang
+let Source = Csv.Document(File.Contents("D:\Data\DonHang.csv"),
+    [Delimiter=",", Encoding=65001]),
+    Headers = Table.PromoteHeaders(Source)
+in Headers
+
+// Query 3: stg_Users (Web API)
+let Source = Json.Document(Web.Contents(
+        "https://jsonplaceholder.typicode.com/users")),
+    ToTable = Table.FromList(Source, Record.FieldValues,
+        {"id","name","username","email","phone","website"})
+in ToTable</code></pre></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BÀI 3 -->
+      <div class="exercise-card" id="bt3">
+        <div class="exercise-header">
+          <span class="exercise-num">3</span>
+          <h3>Import Fixed Width File & chọn Encoding</h3>
+          <span class="exercise-chapter">Ch.IV</span>
+        </div>
+        <div class="exercise-body">
+          <p><strong>Đề bài:</strong> File <code>DuLieuCu.txt</code> có format Fixed Width (MaNV 10 ký tự, HoTen 25 ký tự, PhongBan 15 ký tự) và encoding ANSI (1258). Import và parse đúng các cột.</p>
+          <button class="toggle-btn" onclick="toggle('hint3')">💡 Gợi ý</button>
+          <button class="toggle-btn" onclick="toggle('ans3')" style="background:#0d6efd">📋 Đáp án</button>
+          <div class="hint-box" id="hint3">
+            1. From Text/CSV → Delimiter: Fixed Width<br>
+            2. Hoặc dùng M: Splitter.SplitTextByPositions<br>
+            3. Encoding 1258 cho tiếng Việt ANSI
+          </div>
+          <div class="answer-box" id="ans3">
+            <div class="code-block"><pre><code>let
+    Source = Lines.FromBinary(File.Contents("D:\Data\DuLieuCu.txt"),
+        null, null, 1258),
+    ToTable = Table.FromList(Source, Splitter.SplitByNothing()),
+    Split = Table.SplitColumn(ToTable, "Column1",
+        Splitter.SplitTextByPositions({0, 10, 35}),
+        {"MaNV", "HoTen", "PhongBan"}),
+    Trimmed = Table.TransformColumns(Split,
+        {{"MaNV", Text.Trim}, {"HoTen", Text.Trim}, {"PhongBan", Text.Trim}})
+in Trimmed</code></pre></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BÀI 4 -->
+      <div class="exercise-card" id="bt4">
+        <div class="exercise-header">
+          <span class="exercise-num">4</span>
+          <h3>Split Column: Tách địa chỉ & Họ Tên</h3>
+          <span class="exercise-chapter">Ch.V</span>
+        </div>
+        <div class="exercise-body">
+          <p><strong>Đề bài:</strong> Bảng KhachHang có cột "HoTen" (VD: "Nguyễn Văn An") và cột "DiaChi" (VD: "123 Lê Lợi, Quận 1, TP.HCM"). Tách: HoTen → Ho + TenDem + Ten; DiaChi → SoNha + Quan + ThanhPho.</p>
+          <button class="toggle-btn" onclick="toggle('hint4')">💡 Gợi ý</button>
+          <button class="toggle-btn" onclick="toggle('ans4')" style="background:#0d6efd">📋 Đáp án</button>
+          <div class="hint-box" id="hint4">
+            1. Split Column → By Delimiter (Space) cho HoTen<br>
+            2. Split Column → By Delimiter (Comma) cho DiaChi<br>
+            3. Rename lại các cột sau khi tách<br>
+            4. Dùng Text.Trim sau khi split bằng dấu phẩy
+          </div>
+          <div class="answer-box" id="ans4">
+            <div class="code-block"><pre><code>// Tách HoTen bằng khoảng trắng
+= Table.SplitColumn(Source, "HoTen",
+    Splitter.SplitTextByEachDelimiter({" "}, QuoteStyle.None, true),
+    {"Ho", "Ten"})
+// Lưu ý: "true" = split from right → "Nguyễn Văn" + "An"
+
+// Tách DiaChi bằng dấu phẩy
+= Table.SplitColumn(Source, "DiaChi",
+    Splitter.SplitTextByDelimiter(","),
+    {"SoNha", "Quan", "ThanhPho"})
+
+// Trim khoảng trắng thừa
+= Table.TransformColumns(Prev, {
+    {"Quan", Text.Trim}, {"ThanhPho", Text.Trim}
+})</code></pre></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BÀI 5 -->
+      <div class="exercise-card" id="bt5">
+        <div class="exercise-header">
+          <span class="exercise-num">5</span>
+          <h3>Extract & Parse dữ liệu từ cột text</h3>
+          <span class="exercise-chapter">Ch.V</span>
+        </div>
+        <div class="exercise-body">
+          <p><strong>Đề bài:</strong> Cột "Email" có dạng "an.nguyen@company.com.vn". Extract: (1) Username trước @, (2) Domain sau @, (3) TLD cuối cùng (.vn, .com).</p>
+          <button class="toggle-btn" onclick="toggle('hint5')">💡 Gợi ý</button>
+          <button class="toggle-btn" onclick="toggle('ans5')" style="background:#0d6efd">📋 Đáp án</button>
+          <div class="hint-box" id="hint5">
+            1. Extract → Text Before Delimiter ("@")<br>
+            2. Extract → Text After Delimiter ("@")<br>
+            3. Text.AfterDelimiter với tìm từ cuối
+          </div>
+          <div class="answer-box" id="ans5">
+            <div class="code-block"><pre><code>// Username
+= Table.AddColumn(Source, "Username",
+    each Text.BeforeDelimiter([Email], "@"))
+
+// Domain
+= Table.AddColumn(Prev, "Domain",
+    each Text.AfterDelimiter([Email], "@"))
+
+// TLD (phần cuối sau dấu chấm cuối cùng)
+= Table.AddColumn(Prev, "TLD",
+    each "." & Text.AfterDelimiter([Email], ".",
+        {0, RelativePosition.FromEnd}))</code></pre></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BÀI 6 -->
+      <div class="exercise-card" id="bt6">
+        <div class="exercise-header">
+          <span class="exercise-num">6</span>
+          <h3>Merge Queries: Kết hợp đơn hàng + sản phẩm</h3>
+          <span class="exercise-chapter">Ch.VI</span>
+        </div>
+        <div class="exercise-body">
+          <p><strong>Đề bài:</strong> Bảng DonHang (MaDH, MaSP, SoLuong, NgayDat) và bảng SanPham (MaSP, TenSP, DonGia, DanhMuc). Merge để có bảng chi tiết đơn hàng với tên SP, đơn giá, và cột tính ThanhTien = SoLuong × DonGia.</p>
+          <button class="toggle-btn" onclick="toggle('hint6')">💡 Gợi ý</button>
+          <button class="toggle-btn" onclick="toggle('ans6')" style="background:#0d6efd">📋 Đáp án</button>
+          <div class="hint-box" id="hint6">
+            1. Home → Merge Queries<br>
+            2. Join key = MaSP, Join Kind = Left Outer<br>
+            3. Expand → chọn TenSP, DonGia<br>
+            4. Add Column → Custom Column: [SoLuong] * [DonGia]
+          </div>
+          <div class="answer-box" id="ans6">
+            <div class="code-block"><pre><code>let
+    Source = Excel.CurrentWorkbook(){[Name="DonHang"]}[Content],
+    Merged = Table.NestedJoin(Source, "MaSP",
+        SanPham, "MaSP", "SP", JoinKind.LeftOuter),
+    Expanded = Table.ExpandTableColumn(Merged, "SP",
+        {"TenSP", "DonGia"}),
+    AddThanhTien = Table.AddColumn(Expanded, "ThanhTien",
+        each [SoLuong] * [DonGia], Currency.Type)
+in AddThanhTien</code></pre></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BÀI 7 -->
+      <div class="exercise-card" id="bt7">
+        <div class="exercise-header">
+          <span class="exercise-num">7</span>
+          <h3>Anti Join: Tìm sản phẩm chưa bán & Age Banding</h3>
+          <span class="exercise-chapter">Ch.VI</span>
+        </div>
+        <div class="exercise-body">
+          <p><strong>Đề bài:</strong> (A) Tìm sản phẩm có trong kho nhưng chưa có đơn hàng nào (Anti Join). (B) Phân nhóm khách hàng theo tuổi: &lt;25 "Gen Z", 25-40 "Millennials", &gt;40 "Gen X".</p>
+          <button class="toggle-btn" onclick="toggle('hint7')">💡 Gợi ý</button>
+          <button class="toggle-btn" onclick="toggle('ans7')" style="background:#0d6efd">📋 Đáp án</button>
+          <div class="hint-box" id="hint7">
+            (A) Merge → Join Kind = Left Anti<br>
+            (B) Tạo BandTable → dùng Table.SelectRows để lookup
+          </div>
+          <div class="answer-box" id="ans7">
+            <div class="code-block"><pre><code>// (A) Anti Join
+= Table.NestedJoin(SanPham, "MaSP", DonHang, "MaSP",
+    "Match", JoinKind.LeftAnti)
+
+// (B) Age Banding
+let
+    Bands = #table({"Min","Max","Nhom"},
+        {{0,24,"Gen Z"},{25,40,"Millennials"},{41,100,"Gen X"}}),
+    Result = Table.AddColumn(KhachHang, "NhomTuoi",
+        each let t = [Tuoi] in
+            Table.SelectRows(Bands,
+                each [Min] <= t and t <= [Max]){0}[Nhom])
+in Result</code></pre></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BÀI 8 -->
+      <div class="exercise-card" id="bt8">
+        <div class="exercise-header">
+          <span class="exercise-num">8</span>
+          <h3>Append: Gộp dữ liệu bán hàng 12 tháng</h3>
+          <span class="exercise-chapter">Ch.VI</span>
+        </div>
+        <div class="exercise-body">
+          <p><strong>Đề bài:</strong> Có 12 file Excel (Thang01.xlsx → Thang12.xlsx) cùng cấu trúc trong 1 thư mục. Gộp tất cả thành 1 bảng, thêm cột "ThangFile" lấy từ tên file.</p>
+          <button class="toggle-btn" onclick="toggle('hint8')">💡 Gợi ý</button>
+          <button class="toggle-btn" onclick="toggle('ans8')" style="background:#0d6efd">📋 Đáp án</button>
+          <div class="hint-box" id="hint8">
+            1. Data → Get Data → From File → From Folder<br>
+            2. Combine & Transform Data<br>
+            3. Cột "Source.Name" chứa tên file → Extract tháng
+          </div>
+          <div class="answer-box" id="ans8">
+            <div class="code-block"><pre><code>let
+    Source = Folder.Files("D:\Data\BanHang2024"),
+    FilterXlsx = Table.SelectRows(Source,
+        each Text.EndsWith([Name], ".xlsx")),
+    AddContent = Table.AddColumn(FilterXlsx, "Data",
+        each Excel.Workbook([Content]){0}[Data]),
+    AddMonth = Table.AddColumn(AddContent, "ThangFile",
+        each Text.BetweenDelimiters([Name], "Thang", ".")),
+    Expanded = Table.ExpandTableColumn(AddMonth, "Data",
+        Table.ColumnNames(AddMonth{0}[Data])),
+    Cleaned = Table.SelectColumns(Expanded,
+        {"ThangFile"} & Table.ColumnNames(AddMonth{0}[Data]))
+in Cleaned</code></pre></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BÀI 9 -->
+      <div class="exercise-card" id="bt9">
+        <div class="exercise-header">
+          <span class="exercise-num">9</span>
+          <h3>Unpivot bảng chéo doanh thu theo quý</h3>
+          <span class="exercise-chapter">Ch.VII</span>
+        </div>
+        <div class="exercise-body">
+          <p><strong>Đề bài:</strong> Bảng có các cột: ChiNhanh, Q1, Q2, Q3, Q4. Chuyển thành dạng: ChiNhanh | Quy | DoanhThu. Sau đó Pivot lại theo ChiNhanh.</p>
+          <button class="toggle-btn" onclick="toggle('hint9')">💡 Gợi ý</button>
+          <button class="toggle-btn" onclick="toggle('ans9')" style="background:#0d6efd">📋 Đáp án</button>
+          <div class="hint-box" id="hint9">
+            1. Chọn cột "ChiNhanh" → Unpivot Other Columns<br>
+            2. Rename "Attribute" → "Quy", "Value" → "DoanhThu"<br>
+            3. Pivot lại: chọn cột "ChiNhanh", Value = "DoanhThu", Aggregate = Sum
+          </div>
+          <div class="answer-box" id="ans9">
+            <div class="code-block"><pre><code>// Unpivot
+= Table.UnpivotOtherColumns(Source, {"ChiNhanh"}, "Quy", "DoanhThu")
+
+// Pivot ngược lại theo ChiNhanh
+= Table.Pivot(UnpivotedTable,
+    List.Distinct(UnpivotedTable[ChiNhanh]),
+    "ChiNhanh", "DoanhThu", List.Sum)</code></pre></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BÀI 10 -->
+      <div class="exercise-card" id="bt10">
+        <div class="exercise-header">
+          <span class="exercise-num">10</span>
+          <h3>Group By nâng cao: Top 3 mỗi phòng ban</h3>
+          <span class="exercise-chapter">Ch.VII</span>
+        </div>
+        <div class="exercise-body">
+          <p><strong>Đề bài:</strong> Bảng NhanVien (HoTen, PhongBan, DoanhThu). Tìm Top 3 nhân viên có DoanhThu cao nhất trong <em>mỗi phòng ban</em>.</p>
+          <button class="toggle-btn" onclick="toggle('hint10')">💡 Gợi ý</button>
+          <button class="toggle-btn" onclick="toggle('ans10')" style="background:#0d6efd">📋 Đáp án</button>
+          <div class="hint-box" id="hint10">
+            1. Group By PhongBan → All Rows<br>
+            2. Trong mỗi group, Sort + Table.FirstN(3)<br>
+            3. Expand lại
+          </div>
+          <div class="answer-box" id="ans10">
+            <div class="code-block"><pre><code>let
+    Grouped = Table.Group(Source, {"PhongBan"}, {
+        {"Top3", each Table.FirstN(
+            Table.Sort(_, {{"DoanhThu", Order.Descending}}), 3
+        )}
+    }),
+    Expanded = Table.ExpandTableColumn(Grouped, "Top3",
+        {"HoTen", "DoanhThu"})
+in Expanded</code></pre></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BÀI 11 -->
+      <div class="exercise-card" id="bt11">
+        <div class="exercise-header">
+          <span class="exercise-num">11</span>
+          <h3>Custom & Conditional Column</h3>
+          <span class="exercise-chapter">Ch.VIII</span>
+        </div>
+        <div class="exercise-body">
+          <p><strong>Đề bài:</strong> Bảng NhanVien có Luong và SoNamLamViec. Thêm: (1) Cột "LuongNet" = Luong × 0.895. (2) Conditional Column "HangNV": SoNam ≥ 10 → "Senior", ≥ 5 → "Mid", else "Junior". (3) Cột "BonusRate" theo bảng lookup.</p>
+          <button class="toggle-btn" onclick="toggle('hint11')">💡 Gợi ý</button>
+          <button class="toggle-btn" onclick="toggle('ans11')" style="background:#0d6efd">📋 Đáp án</button>
+          <div class="hint-box" id="hint11">
+            1. Add Column → Custom Column → [Luong] * 0.895<br>
+            2. Add Column → Conditional Column<br>
+            3. Dùng if/then/else lồng nhau trong M
+          </div>
+          <div class="answer-box" id="ans11">
+            <div class="code-block"><pre><code>// LuongNet
+= Table.AddColumn(Source, "LuongNet",
+    each [Luong] * 0.895, Currency.Type)
+
+// HangNV
+= Table.AddColumn(Prev, "HangNV", each
+    if [SoNamLamViec] >= 10 then "Senior"
+    else if [SoNamLamViec] >= 5 then "Mid"
+    else "Junior", type text)
+
+// BonusRate (lookup)
+= Table.AddColumn(Prev, "BonusRate", each
+    if [HangNV] = "Senior" then 0.15
+    else if [HangNV] = "Mid" then 0.10
+    else 0.05, type number)</code></pre></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BÀI 12 -->
+      <div class="exercise-card" id="bt12">
+        <div class="exercise-header">
+          <span class="exercise-num">12</span>
+          <h3>Error Handling & Remove Columns by Pattern</h3>
+          <span class="exercise-chapter">Ch.VIII</span>
+        </div>
+        <div class="exercise-body">
+          <p><strong>Đề bài:</strong> Import file có dữ liệu lỗi (text trong cột số). (1) Dùng try...otherwise bắt lỗi. (2) Xóa tất cả cột có tên bắt đầu bằng "Temp_".</p>
+          <button class="toggle-btn" onclick="toggle('hint12')">💡 Gợi ý</button>
+          <button class="toggle-btn" onclick="toggle('ans12')" style="background:#0d6efd">📋 Đáp án</button>
+          <div class="hint-box" id="hint12">
+            1. try Number.From([GiaTri]) otherwise 0<br>
+            2. Table.ColumnNames + List.Select + Text.StartsWith
+          </div>
+          <div class="answer-box" id="ans12">
+            <div class="code-block"><pre><code>// Error handling
+= Table.AddColumn(Source, "GiaTriSafe",
+    each try Number.From([GiaTri]) otherwise 0, type number)
+
+// Remove Columns by Pattern
+let
+    AllCols = Table.ColumnNames(Source),
+    TempCols = List.Select(AllCols,
+        each Text.StartsWith(_, "Temp_")),
+    Result = Table.RemoveColumns(Source, TempCols)
+in Result</code></pre></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BÀI 13 -->
+      <div class="exercise-card" id="bt13">
+        <div class="exercise-header">
+          <span class="exercise-num">13</span>
+          <h3>Custom Function: Hàm tính thuế TNCN</h3>
+          <span class="exercise-chapter">Ch.IX</span>
+        </div>
+        <div class="exercise-body">
+          <p><strong>Đề bài:</strong> Tạo Custom Function <code>fnThueTNCN</code> tính thuế thu nhập cá nhân theo biểu lũy tiến 7 bậc Việt Nam. Áp dụng vào bảng lương.</p>
+          <button class="toggle-btn" onclick="toggle('hint13')">💡 Gợi ý</button>
+          <button class="toggle-btn" onclick="toggle('ans13')" style="background:#0d6efd">📋 Đáp án</button>
+          <div class="hint-box" id="hint13">
+            1. Tạo Blank Query → đặt tên fnThueTNCN<br>
+            2. Dùng if/then/else lồng nhau hoặc List.Accumulate<br>
+            3. Invoke Custom Function trên bảng lương
+          </div>
+          <div class="answer-box" id="ans13">
+            <div class="code-block"><pre><code>// fnThueTNCN (Blank Query)
+(ThuNhapChiuThue as number) as number =>
+let
+    tn = ThuNhapChiuThue,
+    thue =
+        if tn <= 5000000 then tn * 0.05
+        else if tn <= 10000000 then 250000 + (tn - 5000000) * 0.10
+        else if tn <= 18000000 then 750000 + (tn - 10000000) * 0.15
+        else if tn <= 32000000 then 1950000 + (tn - 18000000) * 0.20
+        else if tn <= 52000000 then 4750000 + (tn - 32000000) * 0.25
+        else if tn <= 80000000 then 9750000 + (tn - 52000000) * 0.30
+        else 18150000 + (tn - 80000000) * 0.35
+in thue
+
+// Áp dụng:
+= Table.AddColumn(BangLuong, "ThueTNCN",
+    each fnThueTNCN([ThuNhapChiuThue]), Currency.Type)</code></pre></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BÀI 14 -->
+      <div class="exercise-card" id="bt14">
+        <div class="exercise-header">
+          <span class="exercise-num">14</span>
+          <h3>List.Accumulate: Multi-Replace & Calendar Table</h3>
+          <span class="exercise-chapter">Ch.IX</span>
+        </div>
+        <div class="exercise-body">
+          <p><strong>Đề bài:</strong> (A) Chuẩn hóa tên: thay thế nhiều ký tự đặc biệt ("–" → "-", "  " → " ", "." → "") bằng 1 lệnh. (B) Tạo Calendar Table từ 01/01/2024 đến 31/12/2024 với cột: Ngày, Năm, Tháng, Quý, Thứ, CuốiTuần.</p>
+          <button class="toggle-btn" onclick="toggle('hint14')">💡 Gợi ý</button>
+          <button class="toggle-btn" onclick="toggle('ans14')" style="background:#0d6efd">📋 Đáp án</button>
+          <div class="hint-box" id="hint14">
+            (A) List.Accumulate với danh sách {old, new} pairs<br>
+            (B) List.Dates + Table.FromList + Date functions
+          </div>
+          <div class="answer-box" id="ans14">
+            <div class="code-block"><pre><code>// (A) Multi-Replace
+= Table.AddColumn(Source, "TenClean", each
+    List.Accumulate(
+        {{"–","-"}, {"  "," "}, {".",""}, {"'",""}},
+        [TenSP],
+        (state, pair) => Text.Replace(state, pair{0}, pair{1})
+    ))
+
+// (B) Calendar Table
+let
+    Start = #date(2024,1,1), End = #date(2024,12,31),
+    Days = Duration.Days(End - Start) + 1,
+    Dates = List.Dates(Start, Days, #duration(1,0,0,0)),
+    T = Table.FromList(Dates, Splitter.SplitByNothing(), {"Ngay"}),
+    Typed = Table.TransformColumnTypes(T, {{"Ngay", type date}}),
+    AddNam = Table.AddColumn(Typed, "Nam", each Date.Year([Ngay])),
+    AddThang = Table.AddColumn(AddNam, "Thang", each Date.Month([Ngay])),
+    AddQuy = Table.AddColumn(AddThang, "Quy",
+        each "Q" & Text.From(Date.QuarterOfYear([Ngay]))),
+    AddThu = Table.AddColumn(AddQuy, "Thu",
+        each Date.DayOfWeekName([Ngay], "vi-VN")),
+    AddCT = Table.AddColumn(AddThu, "CuoiTuan",
+        each Date.DayOfWeek([Ngay], Day.Monday) >= 5)
+in AddCT</code></pre></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BÀI 15 -->
+      <div class="exercise-card" id="bt15">
+        <div class="exercise-header">
+          <span class="exercise-num">15</span>
+          <h3>Làm sạch dữ liệu khách hàng</h3>
+          <span class="exercise-chapter">Ch.X</span>
+        </div>
+        <div class="exercise-body">
+          <p><strong>Đề bài:</strong> Bảng KhachHang có dữ liệu bẩn: khoảng trắng thừa, chữ hoa/thường lộn xộn, số điện thoại nhiều format (0901234567, +84901234567, 090-123-4567), dòng trùng, null. Chuẩn hóa tất cả.</p>
+          <button class="toggle-btn" onclick="toggle('hint15')">💡 Gợi ý</button>
+          <button class="toggle-btn" onclick="toggle('ans15')" style="background:#0d6efd">📋 Đáp án</button>
+          <div class="hint-box" id="hint15">
+            1. Text.Trim, Text.Clean cho khoảng trắng<br>
+            2. Text.Proper cho chữ hoa/thường<br>
+            3. Text.Replace để chuẩn hóa SĐT<br>
+            4. Table.Distinct, Table.SelectRows(not null)
+          </div>
+          <div class="answer-box" id="ans15">
+            <div class="code-block"><pre><code>let
+    Source = Excel.CurrentWorkbook(){[Name="KhachHang"]}[Content],
+    // Xóa null & dòng trống
+    NoNull = Table.SelectRows(Source,
+        each [HoTen] <> null and [HoTen] <> ""),
+    // Trim + Clean
+    Cleaned = Table.TransformColumns(NoNull, {
+        {"HoTen", each Text.Proper(Text.Trim(Text.Clean(_)))},
+        {"Email", each Text.Lower(Text.Trim(_))}
+    }),
+    // Chuẩn hóa SĐT
+    FixPhone = Table.TransformColumns(Cleaned, {
+        {"SDT", each Text.Replace(
+            Text.Replace(
+                Text.Replace(_, "-", ""), "+84", "0"
+            ), " ", ""
+        )}
+    }),
+    // Loại trùng theo Email
+    NoDups = Table.Distinct(FixPhone, {"Email"})
+in NoDups</code></pre></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BÀI 16 -->
+      <div class="exercise-card" id="bt16">
+        <div class="exercise-header">
+          <span class="exercise-num">16</span>
+          <h3>Làm sạch: Replace Errors & Column Profile</h3>
+          <span class="exercise-chapter">Ch.X</span>
+        </div>
+        <div class="exercise-body">
+          <p><strong>Đề bài:</strong> Import bảng có cột DoanhThu chứa lỗi ("N/A", "#REF!", text). (1) Thay error bằng 0. (2) Bật Column Quality/Distribution/Profile để kiểm tra. (3) Tạo cột ErrorLog ghi lại lý do lỗi.</p>
+          <button class="toggle-btn" onclick="toggle('hint16')">💡 Gợi ý</button>
+          <button class="toggle-btn" onclick="toggle('ans16')" style="background:#0d6efd">📋 Đáp án</button>
+          <div class="hint-box" id="hint16">
+            1. Table.ReplaceErrorValues<br>
+            2. View → Column Quality / Distribution / Profile<br>
+            3. try...otherwise với Error Record
+          </div>
+          <div class="answer-box" id="ans16">
+            <div class="code-block"><pre><code>// Replace errors bằng 0
+= Table.ReplaceErrorValues(Source, {{"DoanhThu", 0}})
+
+// ErrorLog chi tiết
+= Table.AddColumn(Source, "ErrorLog", each
+    let r = try [DoanhThu]
+    in if r[HasError]
+       then r[Error][Reason] & ": " & r[Error][Message]
+       else null, type text)
+
+// Bật Column Profile:
+// View → ☑ Column Quality → ☑ Column Distribution → ☑ Column Profile
+// → Xem % Valid, Error, Empty cho mỗi cột</code></pre></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BÀI 17 -->
+      <div class="exercise-card" id="bt17">
+        <div class="exercise-header">
+          <span class="exercise-num">17</span>
+          <h3>Python Script trong Power Query</h3>
+          <span class="exercise-chapter">Ch.XI</span>
+        </div>
+        <div class="exercise-body">
+          <p><strong>Đề bài:</strong> Dùng Python pandas trong Power Query để: (1) Thêm cột running average (trung bình cộng dồn), (2) Tạo cột Cluster bằng k-means đơn giản.</p>
+          <button class="toggle-btn" onclick="toggle('hint17')">💡 Gợi ý</button>
+          <button class="toggle-btn" onclick="toggle('ans17')" style="background:#0d6efd">📋 Đáp án</button>
+          <div class="hint-box" id="hint17">
+            1. Cài Python + pandas + sklearn<br>
+            2. Transform → Run Python Script<br>
+            3. Biến "dataset" là DataFrame đầu vào
+          </div>
+          <div class="answer-box" id="ans17">
+            <div class="code-block"><pre><code># Python script trong Power Query
+import pandas as pd
+
+# dataset là biến tự động từ Power Query
+# (1) Running Average
+dataset['RunningAvg'] = dataset['DoanhThu'].expanding().mean()
+
+# (2) Simple clustering (không cần sklearn)
+median = dataset['DoanhThu'].median()
+dataset['Cluster'] = dataset['DoanhThu'].apply(
+    lambda x: 'High' if x > median * 1.5
+    else ('Medium' if x > median * 0.5 else 'Low')
+)</code></pre></div>
+            <p>⚠️ <em>Lưu ý: Cần cài Python và cấu hình trong File → Options → Python scripting.</em></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- BÀI 18 -->
+      <div class="exercise-card" id="bt18">
+        <div class="exercise-header">
+          <span class="exercise-num">18</span>
+          <h3>Parameters & Dynamic Queries</h3>
+          <span class="exercise-chapter">Ch.XII</span>
+        </div>
+        <div class="exercise-body">
+          <p><strong>Đề bài:</strong> Tạo hệ thống báo cáo động: (1) Parameter pNam (2023-2025), (2) Parameter pPhongBan (IT, KD, KT), (3) Query sử dụng 2 params để lọc. Output thay đổi khi đổi parameter.</p>
+          <button class="toggle-btn" onclick="toggle('hint18')">💡 Gợi ý</button>
+          <button class="toggle-btn" onclick="toggle('ans18')" style="background:#0d6efd">📋 Đáp án</button>
+          <div class="hint-box" id="hint18">
+            1. Home → Manage Parameters → New<br>
+            2. Type: Text, Suggested Values: List of values<br>
+            3. Dùng pNam và pPhongBan trong Table.SelectRows
+          </div>
+          <div class="answer-box" id="ans18">
+            <div class="code-block"><pre><code>// Parameter pNam: Type=Text, Values={2023,2024,2025}
+// Parameter pPhongBan: Type=Text, Values={IT,KD,KT,All}
+
+let
+    Source = Excel.Workbook(File.Contents(
+        "D:\Data\BaoCao_" & pNam & ".xlsx")){0}[Data],
+    Headers = Table.PromoteHeaders(Source),
+    Filtered =
+        if pPhongBan = "All" then Headers
+        else Table.SelectRows(Headers,
+            each [PhongBan] = pPhongBan)
+in Filtered</code></pre></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BÀI 19 -->
+      <div class="exercise-card" id="bt19">
+        <div class="exercise-header">
+          <span class="exercise-num">19</span>
+          <h3>ETL 3-Layer & Query Dependencies</h3>
+          <span class="exercise-chapter">Ch.XII</span>
+        </div>
+        <div class="exercise-body">
+          <p><strong>Đề bài:</strong> Thiết kế hệ thống ETL 3-layer cho data bán hàng: (1) Raw: 2 nguồn CSV, (2) Staging: chuẩn hóa, (3) Output: 3 bảng (ChiTiet, ThongKe, TopSP). Tổ chức Groups, Disable Load, View Dependencies.</p>
+          <button class="toggle-btn" onclick="toggle('hint19')">💡 Gợi ý</button>
+          <button class="toggle-btn" onclick="toggle('ans19')" style="background:#0d6efd">📋 Đáp án</button>
+          <div class="hint-box" id="hint19">
+            1. Tạo folder groups: "01_Raw", "02_Staging", "03_Output"<br>
+            2. Raw queries: Disable Load<br>
+            3. Staging: Reference Raw → Disable Load<br>
+            4. Output: Reference Staging → Enable Load<br>
+            5. View → Query Dependencies
+          </div>
+          <div class="answer-box" id="ans19">
+            <div class="code-block"><pre><code>// [01_Raw] raw_DonHang — Disable Load
+let Source = Csv.Document(File.Contents(pFolder & "DonHang.csv"))
+in Source
+
+// [01_Raw] raw_SanPham — Disable Load
+let Source = Csv.Document(File.Contents(pFolder & "SanPham.csv"))
+in Source
+
+// [02_Staging] stg_DonHang — Disable Load
+let Source = raw_DonHang,
+    H = Table.PromoteHeaders(Source),
+    T = Table.TransformColumnTypes(H, {
+        {"NgayDat", type date}, {"SoLuong", Int64.Type}})
+in T
+
+// [03_Output] ChiTietDonHang — Enable Load
+let Source = Table.NestedJoin(stg_DonHang, "MaSP",
+        stg_SanPham, "MaSP", "SP", JoinKind.LeftOuter),
+    Exp = Table.ExpandTableColumn(Source, "SP", {"TenSP","DonGia"}),
+    Add = Table.AddColumn(Exp, "ThanhTien",
+        each [SoLuong]*[DonGia])
+in Add
+
+// [03_Output] ThongKeThang — Enable Load
+let Source = Table.AddColumn(stg_DonHang, "Thang",
+        each Date.Month([NgayDat])),
+    G = Table.Group(Source, {"Thang"},
+        {{"TongDH", each Table.RowCount(_)}})
+in G</code></pre></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BÀI 20 -->
+      <div class="exercise-card" id="bt20">
+        <div class="exercise-header">
+          <span class="exercise-num">20</span>
+          <h3>VBA Auto-Refresh & Best Practices tổng kết</h3>
+          <span class="exercise-chapter">Ch.XIII</span>
+        </div>
+        <div class="exercise-body">
+          <p><strong>Đề bài:</strong> (A) Tạo macro VBA tự động refresh khi mở file + timer 30 phút. (B) Áp dụng Naming Convention & Documentation cho toàn bộ project Bài 19: prefix queries, description, comments, rename steps.</p>
+          <button class="toggle-btn" onclick="toggle('hint20')">💡 Gợi ý</button>
+          <button class="toggle-btn" onclick="toggle('ans20')" style="background:#0d6efd">📋 Đáp án</button>
+          <div class="hint-box" id="hint20">
+            (A) Alt+F11 → ThisWorkbook → Workbook_Open<br>
+            (B) Prefix: raw_, stg_, fn; Description qua Properties
+          </div>
+          <div class="answer-box" id="ans20">
+            <div class="code-block"><pre><code>' (A) VBA - ThisWorkbook module
+Private Sub Workbook_Open()
+    ' Refresh tất cả khi mở file
+    ThisWorkbook.RefreshAll
+    ' Khởi động timer 30 phút
+    Call StartTimer
+End Sub
+
+Sub StartTimer()
+    Application.OnTime Now + TimeValue("00:30:00"), "AutoRefresh"
+End Sub
+
+Sub AutoRefresh()
+    ThisWorkbook.RefreshAll
+    Call StartTimer  ' Lập lại timer
+End Sub
+
+Sub StopTimer()
+    On Error Resume Next
+    Application.OnTime Now + TimeValue("00:30:00"), "AutoRefresh", , False
+End Sub</code></pre></div>
+
+            <p><strong>(B) Naming Convention checklist:</strong></p>
+            <ul>
+              <li>✅ raw_DonHang, raw_SanPham (prefix "raw_")</li>
+              <li>✅ stg_DonHang, stg_SanPham (prefix "stg_")</li>
+              <li>✅ ChiTietDonHang, ThongKeThang (tên rõ ràng)</li>
+              <li>✅ pFolder, pNam (prefix "p" cho parameters)</li>
+              <li>✅ fnThueTNCN (prefix "fn" cho functions)</li>
+              <li>✅ Mỗi query có Description (Properties)</li>
+              <li>✅ Steps đổi tên: "Changed Type" → "SetColumnTypes"</li>
+              <li>✅ Comments: // Mục đích bước này</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- BÀI 21 -->
+      <div class="exercise-card" id="bt21">
+        <div class="exercise-header">
+          <span class="exercise-num">21</span>
+          <h3>🏆 Final Project: ETL Báo cáo Doanh thu End-to-End</h3>
+          <span class="exercise-chapter">Tổng hợp</span>
+        </div>
+        <div class="exercise-body">
+          <p><strong>Đề bài:</strong> Xây dựng hệ thống ETL hoàn chỉnh cho dữ liệu bán hàng:</p>
+          <ul>
+            <li><strong>Nguồn 1:</strong> Folder chứa 12 file CSV doanh số hàng tháng (cấu trúc giống nhau)</li>
+            <li><strong>Nguồn 2:</strong> File Excel danh mục sản phẩm (MaSP, TenSP, DanhMuc, DonGia)</li>
+            <li><strong>Nguồn 3:</strong> File Excel danh sách nhân viên bán hàng (MaNV, HoTen, ChiNhanh)</li>
+          </ul>
+          <p><strong>Yêu cầu:</strong></p>
+          <ol>
+            <li>Import từ Folder + giữ tên file (Preserving Context)</li>
+            <li>Làm sạch: trim, remove errors, chuẩn hóa MaSP</li>
+            <li>Merge với Sản phẩm + Nhân viên (Left Outer Join)</li>
+            <li>Thêm cột: ThanhTien, Thang, Quy, NhomGia (Age Banding)</li>
+            <li>Tạo 3 output: ChiTietDonHang, ThongKeThang, Top10SP</li>
+            <li>Tổ chức: Groups, Naming Convention, Disable Load cho staging</li>
+          </ol>
+          <button class="toggle-btn" onclick="toggle('hint21')">💡 Gợi ý</button>
+          <button class="toggle-btn" onclick="toggle('ans21')" style="background:#0d6efd">📋 Đáp án</button>
+          <div class="hint-box" id="hint21">
+            <strong>Gợi ý theo 3-Layer ETL:</strong><br>
+            <strong>01_Raw:</strong> raw_DonSo (Folder), raw_SanPham, raw_NhanVien → Connection Only<br>
+            <strong>02_Staging:</strong> stg_DonSo (Clean+Context), stg_SanPham, stg_NhanVien → Connection Only<br>
+            <strong>03_Output:</strong> ChiTietDonHang, ThongKeThang, Top10SP → Load to Table
+          </div>
+          <div class="answer-box" id="ans21">
+            <div class="code-block"><pre><code>// [01_Raw] raw_DonSo — Connection Only
+let Source = Folder.Files(pFolder & "DoanhSo"),
+    Filter = Table.SelectRows(Source, each Text.EndsWith([Name],".csv")),
+    Add = Table.AddColumn(Filter, "Data",
+        each Csv.Document([Content],[Delimiter=",",Encoding=65001])),
+    Select = Table.SelectColumns(Add, {"Name","Data"})
+in Select
+
+// [02_Staging] stg_DonSo — Connection Only
+let Source = raw_DonSo,
+    Exp = Table.ExpandTableColumn(Source, "Data",
+        Table.ColumnNames(Source{0}[Data])),
+    Headers = Table.PromoteHeaders(Exp),
+    Clean = Table.TransformColumns(Headers,
+        {{"MaSP", Text.Trim}, {"MaNV", Text.Trim}}),
+    Typed = Table.TransformColumnTypes(Clean,
+        {{"SoLuong",Int64.Type},{"NgayBan",type date}}),
+    NoErr = Table.RemoveRowsWithErrors(Typed),
+    Month = Table.AddColumn(NoErr, "Thang",
+        each Date.Month([NgayBan]))
+in Month
+
+// [03_Output] ChiTietDonHang — Load to Table
+let S = stg_DonSo,
+    M1 = Table.NestedJoin(S,"MaSP",stg_SanPham,"MaSP","SP",JoinKind.LeftOuter),
+    E1 = Table.ExpandTableColumn(M1,"SP",{"TenSP","DanhMuc","DonGia"}),
+    M2 = Table.NestedJoin(E1,"MaNV",stg_NhanVien,"MaNV","NV",JoinKind.LeftOuter),
+    E2 = Table.ExpandTableColumn(M2,"NV",{"HoTen","ChiNhanh"}),
+    TT = Table.AddColumn(E2,"ThanhTien",each [SoLuong]*[DonGia]),
+    Quy = Table.AddColumn(TT,"Quy",
+        each "Q"&Text.From(Date.QuarterOfYear([NgayBan]))),
+    Band = Table.AddColumn(Quy,"NhomGia",each
+        if [DonGia]<500000 then "Thấp"
+        else if [DonGia]<2000000 then "Trung bình"
+        else "Cao")
+in Band
+
+// [03_Output] Top10SP — Load to Table
+let G = Table.Group(ChiTietDonHang,"TenSP",
+        {{"TongDoanhThu",each List.Sum([ThanhTien])}}),
+    S = Table.Sort(G,{{"TongDoanhThu",Order.Descending}})
+in Table.FirstN(S, 10)</code></pre></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation -->
+      <div class="chapter-nav">
+        <a href="chuong13-tu-dong-hoa.html" class="nav-prev">
+          <div>
+            <div class="nav-label">← Chương trước</div>
+            <div class="nav-title">XIII. Tự động hóa</div>
+          </div>
+        </a>
+        <a href="index.html" class="nav-next">
+          <div>
+            <div class="nav-label">Hoàn thành →</div>
+            <div class="nav-title">Về trang chủ</div>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <footer class="footer">
+      <p>📘 Giáo trình Power Query Excel — Chuyên đề đào tạo &copy; 2026</p>
+    </footer>
+  </main>
+
+  <script>
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('open');
+      document.getElementById('overlay').classList.toggle('open');
+    }
+    function toggle(id) {
+      document.getElementById(id).classList.toggle('show');
+    }
+  </script>
+</body>
+</html>

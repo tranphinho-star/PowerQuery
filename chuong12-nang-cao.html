@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chương XII: Kỹ thuật nâng cao - Giáo trình Power Query Excel</title>
+  <meta name="description" content="Parameters, Advanced Web Connections, Supporting Queries, Query Folding, Query Diagnostics trong Power Query.">
+  <link rel="stylesheet" href="index.css">
+</head>
+<body>
+  <script>
+    if (sessionStorage.getItem('pq_logged_in') !== 'true') {
+      window.location.href = 'login.html';
+    }
+  </script>
+
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-icon">⚡</div>
+      <div class="brand-text">Power Query Excel<span>Giáo trình đào tạo</span></div>
+    </div>
+    <div class="sidebar-nav">
+      <div class="nav-section">
+        <div class="nav-section-title">Trang chủ</div>
+        <a href="index.html" class="nav-item"><span class="nav-icon">🏠</span>Tổng quan giáo trình</a>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-title">Nội dung chương</div>
+        <a href="chuong1-tong-quan.html" class="nav-item"><span class="nav-number">I</span>Tổng quan về Power Query</a>
+        <a href="chuong2-ung-dung.html" class="nav-item"><span class="nav-number">II</span>Ứng dụng xử lý dữ liệu</a>
+        <a href="chuong3-cai-dat.html" class="nav-item"><span class="nav-number">III</span>Cài đặt và hiển thị</a>
+        <a href="chuong4-ket-noi.html" class="nav-item"><span class="nav-number">IV</span>Kết nối & cập nhật dữ liệu</a>
+        <a href="chuong5-tach-du-lieu.html" class="nav-item"><span class="nav-number">V</span>Tách dữ liệu</a>
+        <a href="chuong6-gop-du-lieu.html" class="nav-item"><span class="nav-number">VI</span>Gộp dữ liệu</a>
+        <a href="chuong7-chuyen-doi.html" class="nav-item"><span class="nav-number">VII</span>Chuyển đổi cấu trúc</a>
+        <a href="chuong8-column.html" class="nav-item"><span class="nav-number">VIII</span>Xử lý với Column</a>
+        <a href="chuong9-cong-thuc-ham.html" class="nav-item"><span class="nav-number">IX</span>Công thức và hàm</a>
+        <a href="chuong10-lam-sach.html" class="nav-item"><span class="nav-number">X</span>Làm sạch dữ liệu</a>
+        <a href="chuong11-python-r-ai.html" class="nav-item"><span class="nav-number">XI</span>Python, R và AI</a>
+        <a href="chuong12-nang-cao.html" class="nav-item active"><span class="nav-number">XII</span>Kỹ thuật nâng cao</a>
+        <a href="chuong13-tu-dong-hoa.html" class="nav-item"><span class="nav-number">XIII</span>Tự động hóa</a>
+      </div>
+    
+      <div class="nav-section">
+        <div class="nav-section-title">Bài tập</div>
+        <a href="bai-tap-tong-hop.html" class="nav-item"><span class="nav-icon">📝</span>20 Bài tập tổng hợp</a>
+      </div>
+    </div>
+  </nav>
+
+  <header class="mobile-header">
+    <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+    <span style="margin-left:12px;font-weight:600;font-size:15px;">Chương XII</span>
+  </header>
+  <div class="sidebar-overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+  <main class="main-content">
+    <div class="chapter-header">
+      <div class="chapter-breadcrumb">
+        <a href="index.html">Trang chủ</a><span class="sep">›</span><span>Chương XII</span>
+      </div>
+      <div class="chapter-number">📘 CHƯƠNG XII</div>
+      <h1>Kỹ thuật nâng cao trong Power Query</h1>
+      <p class="chapter-desc">Parameters, Advanced Web Connections, Supporting Queries, Query Folding best practices và Query Diagnostics.</p>
+    </div>
+
+    <div class="chapter-body">
+
+      <h2>12.1 Parameters (Tham số)</h2>
+      <p><strong>Parameters</strong> cho phép tạo giá trị động (dynamic) để sử dụng trong queries — rất hữu ích cho việc lọc dữ liệu, thay đổi đường dẫn file, hoặc chuyển đổi giữa các môi trường.</p>
+
+      <div class="figure">
+        <img src="images/parameters_queries.png" alt="Parameters và kỹ thuật nâng cao">
+        <div class="caption">Hình 12.1: Parameters và các kỹ thuật nâng cao trong Power Query</div>
+      </div>
+
+      <h3>Tạo Parameter</h3>
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h4>Mở Manage Parameters</h4>
+          <p>Home → <strong>Manage Parameters</strong> → <strong>New Parameter</strong></p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h4>Cấu hình</h4>
+          <p>Thiết lập: Name, Description, Required, Type (Text/Decimal/Date/True-False/List), Suggested Values, Default Value, Current Value</p>
+        </div>
+      </div>
+
+      <h3>Ví dụ sử dụng Parameter</h3>
+      <div class="code-block">
+        <div class="code-header"><span>M Language - Dynamic file path</span></div>
+        <pre><code>// Parameter: pDuongDan = "D:\Data\2024\"
+// Sử dụng trong Source:
+let
+    Source = Csv.Document(
+        File.Contents(pDuongDan & "SalesData.csv"),
+        [Delimiter=",", Encoding=65001]
+    )
+in
+    Source</code></pre>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span>M Language - Dynamic filter</span></div>
+        <pre><code>// Parameter: pNam = 2024, pPhongBan = "IT"
+= Table.SelectRows(Source,
+    each [Nam] = pNam and [PhongBan] = pPhongBan
+)</code></pre>
+      </div>
+
+      <div class="info-box tip">
+        <span class="info-icon">💡</span>
+        <div>
+          <strong>Ứng dụng:</strong> Dùng Parameter để: (1) Chuyển đổi giữa đường dẫn Dev/Prod, (2) Lọc động theo năm/tháng, (3) Thay đổi server database, (4) Tạo danh sách dropdown cho người dùng.
+        </div>
+      </div>
+
+      <h2>12.2 Advanced Web Connections</h2>
+
+      <h3>Web.Contents — Kết nối Web nâng cao</h3>
+      <p>Hàm <span class="inline-code">Web.Contents</span> cung cấp nhiều tùy chọn hơn so với From Web cơ bản:</p>
+
+      <div class="code-block">
+        <div class="code-header"><span>M Language - Web.Contents nâng cao</span></div>
+        <pre><code>= Web.Contents(
+    "https://api.example.com/data",
+    [
+        Headers = [
+            #"Authorization" = "Bearer " & pToken,
+            #"Content-Type" = "application/json"
+        ],
+        RelativePath = "v2/products",
+        Query = [
+            page = "1",
+            limit = "100",
+            category = pCategory
+        ],
+        Timeout = #duration(0, 0, 30, 0)
+    ]
+)</code></pre>
+      </div>
+
+      <h3>Pagination — Lấy dữ liệu nhiều trang</h3>
+      <p>Nhiều API trả về dữ liệu theo trang. Dùng <span class="inline-code">List.Generate</span> để lấy tất cả:</p>
+
+      <div class="code-block">
+        <div class="code-header"><span>M Language - API Pagination</span></div>
+        <pre><code>let
+    BaseUrl = "https://api.example.com/products",
+    GetPage = (pageNum as number) =>
+    let
+        response = Json.Document(Web.Contents(BaseUrl, [
+            Query = [page = Text.From(pageNum), per_page = "50"]
+        ])),
+        data = response[data],
+        hasMore = response[has_more]
+    in
+        [Data = data, HasMore = hasMore, NextPage = pageNum + 1],
+
+    // Lấy tất cả trang
+    AllPages = List.Generate(
+        () => GetPage(1),
+        each [HasMore] = true,
+        each GetPage([NextPage]),
+        each [Data]
+    ),
+
+    // Gộp thành 1 bảng
+    Combined = Table.FromList(
+        List.Combine(AllPages),
+        Record.FieldValues
+    )
+in
+    Combined</code></pre>
+      </div>
+
+      <h2>12.3 Supporting Queries (Quản lý Query)</h2>
+      <p>Khi workbook có nhiều queries, cần quản lý chúng hiệu quả:</p>
+
+      <h3>Reference vs Duplicate</h3>
+      <table class="styled-table">
+        <thead><tr><th>Thao tác</th><th>Mô tả</th><th>Khi nào dùng</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>Reference</strong></td>
+            <td>Tạo query mới <em>tham chiếu</em> đến query gốc. Thay đổi ở gốc → tự động ảnh hưởng</td>
+            <td>Khi muốn tạo nhiều output từ cùng 1 nguồn (ví dụ: lọc theo phòng ban khác nhau)</td>
+          </tr>
+          <tr>
+            <td><strong>Duplicate</strong></td>
+            <td>Tạo <em>bản sao độc lập</em> hoàn toàn. Thay đổi ở gốc → KHÔNG ảnh hưởng</td>
+            <td>Khi muốn thử nghiệm mà không ảnh hưởng query gốc</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Disable Load</h3>
+      <p>Tắt "Load" cho các query trung gian (staging queries) để không tải vào Excel/Model:</p>
+      <ol>
+        <li>Right-click query trong Queries Panel</li>
+        <li>Bỏ tick <strong>Enable load</strong></li>
+        <li>Query vẫn hoạt động nhưng <em>không tạo bảng output</em></li>
+      </ol>
+
+      <div class="info-box tip">
+        <span class="info-icon">💡</span>
+        <div>
+          <strong>Best Practice:</strong> Tổ chức queries theo nhóm:
+          <ul style="margin-top:6px;">
+            <li><strong>Staging:</strong> Queries kết nối nguồn (Disable Load)</li>
+            <li><strong>Transform:</strong> Queries xử lý trung gian (Disable Load)</li>
+            <li><strong>Output:</strong> Queries kết quả cuối cùng (Enable Load)</li>
+          </ul>
+          Dùng folder để nhóm: Right-click → <strong>Move to Group</strong> → New Group
+        </div>
+      </div>
+
+      <h3>Query Dependencies</h3>
+      <p>Xem biểu đồ phụ thuộc giữa các queries:</p>
+      <ul>
+        <li>View → <strong>Query Dependencies</strong></li>
+        <li>Hiển thị sơ đồ kết nối giữa tất cả queries</li>
+        <li>Giúp hiểu luồng dữ liệu và xác định query nào ảnh hưởng query nào</li>
+      </ul>
+
+      <h2>12.4 Indexing nâng cao</h2>
+      <p>Ngoài Index Column cơ bản (Chương VIII), có thể tạo index phức tạp hơn:</p>
+
+      <div class="code-block">
+        <div class="code-header"><span>M Language - Smart Indexing</span></div>
+        <pre><code>// Index reset theo nhóm (Row Number within Group)
+= Table.AddColumn(
+    Table.AddIndexColumn(
+        Table.Sort(Source, {{"PhongBan", Order.Ascending}, {"HoTen", Order.Ascending}}),
+        "GlobalIndex", 1, 1
+    ),
+    "GroupIndex",
+    each Table.RowCount(
+        Table.SelectRows(Source,
+            (r) => r[PhongBan] = [PhongBan]
+                and r[HoTen] < [HoTen]
+        )
+    ) + 1
+)
+
+// Ranking — xếp hạng theo giá trị
+= Table.AddColumn(Source, "Rank",
+    each Table.RowCount(
+        Table.SelectRows(Source, (r) => r[DoanhThu] > [DoanhThu])
+    ) + 1
+)</code></pre>
+      </div>
+
+      <h2>12.5 Query Folding Best Practices</h2>
+      <p>Tối ưu hiệu suất bằng cách giữ Query Folding càng lâu càng tốt:</p>
+
+      <h3>Các bước ĐƯỢC fold (thường)</h3>
+      <ul class="feature-list">
+        <li><span class="check">✓</span> Filter Rows (Table.SelectRows)</li>
+        <li><span class="check">✓</span> Remove Columns (Table.RemoveColumns)</li>
+        <li><span class="check">✓</span> Sort (Table.Sort)</li>
+        <li><span class="check">✓</span> Rename Columns (Table.RenameColumns)</li>
+        <li><span class="check">✓</span> Group By (Table.Group)</li>
+        <li><span class="check">✓</span> Merge Queries khi Join cùng database</li>
+        <li><span class="check">✓</span> Top N rows (Table.FirstN)</li>
+        <li><span class="check">✓</span> Change Data Type (Table.TransformColumnTypes)</li>
+      </ul>
+
+      <h3>Các bước KHÔNG được fold</h3>
+      <ul>
+        <li>❌ Custom Column (Table.AddColumn with complex M)</li>
+        <li>❌ Merge Columns</li>
+        <li>❌ Pivot / Unpivot (thường)</li>
+        <li>❌ Replace Values (phức tạp)</li>
+        <li>❌ Column from Examples</li>
+        <li>❌ Python / R scripts</li>
+      </ul>
+
+      <div class="info-box important">
+        <span class="info-icon">⚡</span>
+        <div>
+          <strong>Nguyên tắc vàng:</strong> Đặt các bước <em>có thể fold</em> (Filter, Select Columns, Sort) <strong>TRƯỚC</strong> các bước <em>không fold</em> (Custom Column, Merge Columns). Điều này giảm lượng dữ liệu tải về trước khi xử lý cục bộ.
+        </div>
+      </div>
+
+      <h2>12.6 ETL Layering Pattern: Raw → Staging → End Table</h2>
+      <p>Sách "Master Your Data" đề xuất chuẩn hóa ETL thành <strong>3 lớp</strong>:</p>
+
+      <table class="styled-table">
+        <thead><tr><th>Lớp</th><th>Vai trò</th><th>Quy tắc</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>📥 Raw Data</strong></td>
+            <td>Kết nối nguồn gốc, không biến đổi</td>
+            <td>Chỉ có bước Source + Navigation. <strong>Disable Load</strong>. Một query cho mỗi nguồn.</td>
+          </tr>
+          <tr>
+            <td><strong>🔧 Staging</strong></td>
+            <td>Biến đổi cơ bản: rename, type, filter</td>
+            <td>Reference từ Raw. Chuẩn hóa tên cột, kiểu dữ liệu. <strong>Disable Load</strong>.</td>
+          </tr>
+          <tr>
+            <td><strong>📊 End Table</strong></td>
+            <td>Kết quả cuối cùng cho báo cáo</td>
+            <td>Reference từ Staging. Merge, Group, Custom Column. <strong>Enable Load</strong>.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="code-block">
+        <div class="code-header"><span>Ví dụ: 3-Layer ETL</span></div>
+        <pre><code>// [Raw] SalesRaw — Disable Load
+let Source = Csv.Document(File.Contents("D:\Sales.csv"))
+in Source
+
+// [Staging] SalesStaging — Disable Load, Reference from SalesRaw
+let
+    Source = SalesRaw,
+    Renamed = Table.RenameColumns(Source, {{"Col1","MaSP"}, {"Col2","NgayBan"}}),
+    Typed = Table.TransformColumnTypes(Renamed, {{"MaSP", type text}, {"NgayBan", type date}})
+in Typed
+
+// [End Table] SalesByMonth — Enable Load, Reference from SalesStaging
+let
+    Source = SalesStaging,
+    Grouped = Table.Group(Source, {"NamThang"}, {{"TongDoanhThu", each List.Sum([DoanhThu])}})
+in Grouped</code></pre>
+      </div>
+
+      <h2>12.7 Table.Buffer & List.Buffer</h2>
+      <p>Khi query chạy chậm do đánh giá lặp (lazy evaluation), dùng Buffer để cache dữ liệu trong RAM:</p>
+
+      <table class="styled-table">
+        <thead><tr><th>Hàm</th><th>Công dụng</th><th>Khi nào dùng</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><span class="inline-code">Table.Buffer(table)</span></td>
+            <td>Cache toàn bộ bảng vào RAM</td>
+            <td>Khi bảng được tham chiếu nhiều lần (Merge self-join, nhiều Reference)</td>
+          </tr>
+          <tr>
+            <td><span class="inline-code">List.Buffer(list)</span></td>
+            <td>Cache danh sách vào RAM</td>
+            <td>Khi danh sách dùng trong List.Contains, List.Generate lặp nhiều</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="code-block">
+        <div class="code-header"><span>M Language - Sử dụng Buffer</span></div>
+        <pre><code>// Buffer bảng trước khi self-join
+let
+    Buffered = Table.Buffer(StagingQuery),
+    Merged = Table.NestedJoin(Buffered, "MaNV", Buffered, "QLNhanVien", "Manager")
+in Merged
+
+// Buffer list để tăng tốc lookup
+let
+    ValidCodes = List.Buffer(Table.Column(LookupTable, "MaSP")),
+    Filtered = Table.SelectRows(Source, each List.Contains(ValidCodes, [MaSP]))
+in Filtered</code></pre>
+      </div>
+
+      <div class="info-box warning">
+        <span class="info-icon">⚠️</span>
+        <div>
+          <strong>Cẩn thận:</strong> Buffer giữ toàn bộ dữ liệu trong RAM. Chỉ dùng Buffer cho bảng nhỏ/trung bình. Với bảng hàng triệu dòng, Buffer có thể gây hết bộ nhớ.
+        </div>
+      </div>
+
+      <h2>12.8 Moving Queries giữa Excel ↔ Power BI</h2>
+      <p>Queries có thể di chuyển giữa Excel và Power BI Desktop:</p>
+
+      <h3>Excel → Power BI</h3>
+      <ol>
+        <li>Power BI Desktop → Home → <strong>Get Data</strong> → Excel Workbook</li>
+        <li>Chọn file .xlsx → tick <strong>chọn các queries</strong> (không phải tables)</li>
+        <li>Queries được import cùng toàn bộ các bước Transform</li>
+      </ol>
+
+      <h3>Power BI → Excel (Copy M code)</h3>
+      <ol>
+        <li>Trong Power BI → Power Query Editor → Advanced Editor → <strong>Copy code M</strong></li>
+        <li>Trong Excel → Power Query → New Blank Query → Advanced Editor → <strong>Paste code M</strong></li>
+        <li>Điều chỉnh đường dẫn file nếu cần</li>
+      </ol>
+
+      <div class="info-box tip">
+        <span class="info-icon">💡</span>
+        <div>
+          <strong>Mẹo:</strong> Dùng <strong>Parameters</strong> cho đường dẫn file và server name. Khi di chuyển giữa Excel ↔ Power BI, chỉ cần thay đổi giá trị Parameter mà không sửa code.
+        </div>
+      </div>
+
+      <h2>12.7 Power Pivot & Data Model</h2>
+      <p>Power Query chuẩn bị dữ liệu, <strong>Power Pivot</strong> phân tích dữ liệu. Kết hợp cả 2 tạo nên hệ thống BI mạnh mẽ trong Excel.</p>
+
+      <h3>Load to Data Model</h3>
+      <p>Thay vì tải vào worksheet, tải query vào <strong>Data Model</strong> (bộ nhớ trong):</p>
+      <ol>
+        <li>Power Query → <strong>Close & Load To...</strong></li>
+        <li>Chọn <strong>"Only Create Connection"</strong></li>
+        <li>Tick ☑️ <strong>"Add this data to the Data Model"</strong></li>
+      </ol>
+      <div class="info-box tip">
+        <span class="info-icon">💡</span>
+        <div>
+          <strong>Lợi ích Data Model:</strong> Lưu trữ hàng triệu dòng (Excel chỉ 1 triệu), nén dữ liệu hiệu quả, hỗ trợ Relationships giữa các bảng, sử dụng DAX formulas.
+        </div>
+      </div>
+
+      <h3>Managing Relationships (Quản lý mối quan hệ)</h3>
+      <p>Sau khi load nhiều bảng vào Data Model, tạo <strong>Relationships</strong>:</p>
+      <ol>
+        <li>Tab <strong>Data → Relationships → New</strong></li>
+        <li>Hoặc mở <strong>Power Pivot → Diagram View</strong></li>
+        <li>Kéo thả cột từ bảng này sang bảng kia</li>
+      </ol>
+      <table class="styled-table">
+        <thead><tr><th>Loại</th><th>Ví dụ</th><th>Lưu ý</th></tr></thead>
+        <tbody>
+          <tr><td><strong>One-to-Many (1:N)</strong></td><td>SanPham(1) → DonHang(N)</td><td>Phổ biến nhất, luôn ưu tiên</td></tr>
+          <tr><td><strong>Many-to-Many (M:N)</strong></td><td>SanPham(N) ↔ NhaCungCap(N)</td><td>Cần bảng trung gian (bridge table)</td></tr>
+        </tbody>
+      </table>
+
+      <h3>DAX cơ bản trong Power Pivot</h3>
+      <p>DAX (Data Analysis Expressions) là ngôn ngữ công thức cho Power Pivot:</p>
+      <div class="code-block">
+        <div class="code-header"><span>DAX Formulas</span></div>
+        <pre><code>// Calculated Column: Thành tiền
+= DonHang[SoLuong] * RELATED(SanPham[DonGia])
+// RELATED() lấy giá trị từ bảng liên kết (1:N)
+
+// Measure: Tổng doanh thu
+TongDoanhThu := SUMX(DonHang, DonHang[SoLuong] * RELATED(SanPham[DonGia]))
+
+// Measure với filter context
+DoanhThuIT := CALCULATE(
+    [TongDoanhThu],
+    PhongBan[TenPB] = "IT"
+)
+
+// Year-to-Date
+DoanhThuYTD := TOTALYTD([TongDoanhThu], Calendar[Date])</code></pre>
+      </div>
+
+      <h3>PivotTable từ Data Model</h3>
+      <p>Khi đã có Data Model với relationships, tạo PivotTable đa bảng:</p>
+      <ol>
+        <li><strong>Insert → PivotTable → From Data Model</strong></li>
+        <li>Kéo fields từ <strong>nhiều bảng khác nhau</strong> vào PivotTable</li>
+        <li>Excel tự join qua Relationships — không cần VLOOKUP!</li>
+      </ol>
+
+      <h2>12.8 Pitfalls & Robust Queries (Bẫy & Query bền vững)</h2>
+      <p>Từ sách "Collect, Combine, and Transform Data" — những lỗi phổ biến nhất và cách phòng tránh:</p>
+
+      <h3>Top 8 Pitfalls thường gặp</h3>
+      <table class="styled-table">
+        <thead><tr><th>#</th><th>Pitfall</th><th>Hậu quả</th><th>Giải pháp</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td><strong>Hardcode tên cột</strong></td><td>Query lỗi khi cột đổi tên</td><td>Dùng Unpivot Other Columns, Column Index</td></tr>
+          <tr><td>2</td><td><strong>Phụ thuộc thứ tự cột</strong></td><td>Cột mới làm lệch dữ liệu</td><td>Tham chiếu bằng tên cột, không bằng index</td></tr>
+          <tr><td>3</td><td><strong>Không xử lý null</strong></td><td>Tính toán sai, lỗi ẩn</td><td><code>if [Col] = null then 0 else [Col]</code></td></tr>
+          <tr><td>4</td><td><strong>Changed Type tự động</strong></td><td>Sai kiểu dữ liệu</td><td>Xóa bước auto-detect, set type thủ công</td></tr>
+          <tr><td>5</td><td><strong>Không dùng try/otherwise</strong></td><td>1 lỗi → cả query fail</td><td><code>try ... otherwise null</code></td></tr>
+          <tr><td>6</td><td><strong>Merge không match</strong></td><td>Null toàn bộ, không biết lý do</td><td>Kiểm tra cột key: spaces, case, type</td></tr>
+          <tr><td>7</td><td><strong>Folder import hardcode path</strong></td><td>Lỗi khi chuyển máy</td><td>Dùng Parameter cho đường dẫn</td></tr>
+          <tr><td>8</td><td><strong>Quá nhiều steps</strong></td><td>Chậm, khó debug</td><td>Gộp steps tương tự, dùng staging queries</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Tạo Query bền vững (Robust)</h3>
+      <div class="code-block">
+        <div class="code-header"><span>M Language - Error-Proof Pattern</span></div>
+        <pre><code>// Pattern 1: Safe Column Access
+= Table.AddColumn(Source, "GiaTri", each
+    try [CotCoTh eKhongTonTai] otherwise "N/A")
+
+// Pattern 2: Dynamic Column Check
+= if Table.HasColumns(Source, "CotMoi")
+  then Table.SelectColumns(Source, {"CotMoi"})
+  else Table.AddColumn(Source, "CotMoi", each null)
+
+// Pattern 3: Safe Type Conversion
+= Table.TransformColumns(Source, {
+    {"Gia", each try Number.From(_) otherwise null}
+})</code></pre>
+      </div>
+
+      <h2>12.9 PivotChart & Slicer Dashboard</h2>
+      <p>Tạo <strong>dashboard tương tác</strong> từ output Power Query — không cần VBA hay Power BI:</p>
+
+      <h3>Tạo PivotChart từ PQ Table</h3>
+      <ol>
+        <li>Load PQ → Table hoặc → Data Model</li>
+        <li><strong>Insert → PivotTable</strong> (từ Table hoặc Data Model)</li>
+        <li>Thiết kế PivotTable: Rows, Columns, Values</li>
+        <li><strong>PivotTable Analyze → PivotChart</strong> → chọn Chart Type</li>
+      </ol>
+
+      <h3>Thêm Slicer & Timeline</h3>
+      <table class="styled-table">
+        <thead><tr><th>Control</th><th>Dùng cho</th><th>Cách thêm</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Slicer</strong></td><td>Lọc theo category (PhongBan, ChiNhanh, DanhMuc)</td><td>PivotTable Analyze → Insert Slicer</td></tr>
+          <tr><td><strong>Timeline</strong></td><td>Lọc theo thời gian (ngày, tháng, quý, năm)</td><td>PivotTable Analyze → Insert Timeline</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Kết nối nhiều PivotTable/Chart với cùng Slicer</h3>
+      <ol>
+        <li>Click vào Slicer → <strong>Slicer → Report Connections</strong></li>
+        <li>Tick tất cả PivotTable muốn kết nối</li>
+        <li>→ 1 Slicer điều khiển nhiều chart cùng lúc!</li>
+      </ol>
+
+      <div class="info-box tip">
+        <span class="info-icon">💡</span>
+        <div>
+          <strong>Dashboard Recipe:</strong> 3-4 PivotCharts + 2 Slicers + 1 Timeline = dashboard tương tác chuyên nghiệp. Đặt trên sheet riêng, ẩn gridlines, thêm title → trông như Power BI!
+        </div>
+      </div>
+
+      <h2>12.10 Query Folding Deep-dive</h2>
+      <p><strong>Query Folding</strong> = Power Query dịch các steps thành truy vấn gốc (SQL, OData...) và thực thi trên server thay vì trên máy bạn:</p>
+
+      <h3>Tại sao Query Folding quan trọng?</h3>
+      <table class="styled-table">
+        <thead><tr><th>Không Folding</th><th>Có Folding</th></tr></thead>
+        <tbody>
+          <tr><td>Tải 10 triệu dòng → lọc trên máy bạn</td><td>Server lọc → chỉ trả 1000 dòng phù hợp</td></tr>
+          <tr><td>Chậm, tốn RAM</td><td>Nhanh, nhẹ</td></tr>
+          <tr><td>Chỉ xảy ra với file (CSV, Excel)</td><td>Xảy ra với DB, OData, Dataflows</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Kiểm tra Query Folding</h3>
+      <ol>
+        <li>Right-click vào step trong Applied Steps</li>
+        <li>Nếu thấy <strong>"View Native Query"</strong> → step này được fold ✅</li>
+        <li>Nếu "View Native Query" bị mờ → step KHÔNG fold ❌</li>
+      </ol>
+
+      <h3>Steps phá vỡ Folding (Folding Breakers)</h3>
+      <div class="code-block">
+        <div class="code-header"><span>Các thao tác thường phá vỡ Folding</span></div>
+        <pre><code>❌ Table.AddColumn (Custom Column) — hầu như luôn phá fold
+❌ Table.Buffer — luôn ngắt folding
+❌ Table.Pivot / Table.Unpivot — không fold được
+❌ Hàm M phức tạp (each, let, try)
+❌ Merge với nguồn khác loại (Excel + SQL)
+
+✅ Table.SelectRows (Filter) — thường fold được
+✅ Table.SelectColumns (Choose Columns) — fold
+✅ Table.Sort — fold
+✅ Table.TransformColumnTypes — fold
+✅ Table.Group (GroupBy) — thường fold</code></pre>
+      </div>
+
+      <div class="info-box tip">
+        <span class="info-icon">💡</span>
+        <div>
+          <strong>Tối ưu:</strong> Đặt các bước <strong>fold-able</strong> (Filter, SelectColumns, Sort) ở <strong>đầu query</strong>, trước các bước không fold-able. Điều này tối đa dữ liệu xử lý trên server.
+        </div>
+      </div>
+
+      <!-- Practice -->
+      <div class="practice-box">
+        <h3>Bài tập 12.1: Tạo và sử dụng Parameters</h3>
+        <p><strong>Mục tiêu:</strong> Tạo query động với Parameters</p>
+        <ol>
+          <li>Tạo 3 file Excel: <span class="inline-code">Data_2022.xlsx</span>, <span class="inline-code">Data_2023.xlsx</span>, <span class="inline-code">Data_2024.xlsx</span> (cùng cấu trúc)</li>
+          <li>Trong Power Query, tạo Parameter:
+            <ul>
+              <li>Name: <span class="inline-code">pNam</span></li>
+              <li>Type: Text</li>
+              <li>Suggested Values: List of values → 2022, 2023, 2024</li>
+              <li>Current Value: 2024</li>
+            </ul>
+          </li>
+          <li>Tạo query kết nối file:
+            <div class="code-block"><pre><code>let
+    FilePath = "D:\Data\Data_" & pNam & ".xlsx",
+    Source = Excel.Workbook(File.Contents(FilePath))
+in
+    Source</code></pre></div>
+          </li>
+          <li>Thay đổi giá trị pNam → quan sát dữ liệu thay đổi</li>
+          <li>Close & Load</li>
+        </ol>
+      </div>
+
+      <div class="practice-box">
+        <h3>Bài tập 12.2: Quản lý Supporting Queries</h3>
+        <p><strong>Mục tiêu:</strong> Tổ chức queries theo nhóm với Reference và Disable Load</p>
+        <ol>
+          <li>Tạo bảng NhanVien (10 dòng) với HoTen, PhongBan, Luong</li>
+          <li>Mở Power Query → đây là query <strong>Staging</strong> → Disable Load</li>
+          <li>Right-click → <strong>Reference</strong> → tạo query "NV_IT": lọc PhongBan = "IT"</li>
+          <li>Right-click query gốc → <strong>Reference</strong> → tạo query "NV_KD": lọc PhongBan = "KD"</li>
+          <li>Right-click query gốc → <strong>Reference</strong> → tạo query "ThongKe": Group By PhongBan → Count, Sum Luong</li>
+          <li>Tổ chức: Move to Group → tạo nhóm "Staging", "Output"</li>
+          <li>View → Query Dependencies → xem biểu đồ</li>
+          <li>Close & Load → chỉ 3 query "Output" tạo bảng trong Excel</li>
+        </ol>
+      </div>
+
+      <div class="practice-box">
+        <h3>Bài tập 12.3: Web API với Pagination</h3>
+        <p><strong>Mục tiêu:</strong> Kết nối API và xử lý phân trang (dùng API miễn phí)</p>
+        <ol>
+          <li>Tạo Blank Query</li>
+          <li>Advanced Editor → nhập code lấy dữ liệu từ API miễn phí:
+            <div class="code-block"><pre><code>let
+    Source = Json.Document(
+        Web.Contents("https://jsonplaceholder.typicode.com/posts")
+    ),
+    ToTable = Table.FromList(Source, Record.FieldValues,
+        {"userId", "id", "title", "body"}
+    ),
+    SetTypes = Table.TransformColumnTypes(ToTable, {
+        {"userId", Int64.Type}, {"id", Int64.Type},
+        {"title", type text}, {"body", type text}
+    }),
+    Filtered = Table.SelectRows(SetTypes, each [userId] <= 3)
+in
+    Filtered</code></pre></div>
+          </li>
+          <li>Done → kiểm tra kết quả (100 posts, lọc còn 30)</li>
+          <li>Tạo Parameter <span class="inline-code">pMaxUser</span> = 3 → thay số 3 bằng pMaxUser</li>
+          <li>Close & Load</li>
+        </ol>
+      </div>
+
+      <div class="practice-box">
+        <h3>Bài tập 12.4: Tối ưu Query Folding</h3>
+        <p><strong>Mục tiêu:</strong> Kiểm tra và tối ưu Query Folding</p>
+        <ol>
+          <li>Kết nối đến database SQL Server (hoặc Access)</li>
+          <li>Import 1 bảng lớn → Transform Data</li>
+          <li>Thực hiện theo thứ tự <strong>SAI</strong>: Add Custom Column → Filter → Remove Columns</li>
+          <li>Right-click từng bước → kiểm tra "View Native Query"</li>
+          <li>Sắp xếp lại theo thứ tự <strong>ĐÚNG</strong>: Remove Columns → Filter → Add Custom Column</li>
+          <li>Kiểm tra lại: bước Filter vẫn fold ✅</li>
+          <li>So sánh thời gian refresh giữa 2 cách</li>
+        </ol>
+      </div>
+
+      <!-- Navigation -->
+      <div class="chapter-nav">
+        <a href="chuong11-python-r-ai.html" class="nav-prev">
+          <div>
+            <div class="nav-label">← Chương trước</div>
+            <div class="nav-title">XI. Python, R và AI</div>
+          </div>
+        </a>
+        <a href="chuong13-tu-dong-hoa.html" class="nav-next">
+          <div>
+            <div class="nav-label">Chương tiếp →</div>
+            <div class="nav-title">XIII. Tự động hóa</div>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <footer class="footer">
+      <p>📘 Giáo trình Power Query Excel — Chuyên đề đào tạo &copy; 2026</p>
+    </footer>
+  </main>
+
+  <script>
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('open');
+      document.getElementById('overlay').classList.toggle('open');
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chương III: Cài đặt và hiển thị Power Query - Giáo trình Power Query Excel</title>
+  <meta name="description" content="Hướng dẫn cài đặt Power Query trên Excel 2010-365, mở Power Query Editor và tùy chỉnh giao diện.">
+  <link rel="stylesheet" href="index.css">
+</head>
+<body>
+  <script>
+    if (sessionStorage.getItem('pq_logged_in') !== 'true') {
+      window.location.href = 'login.html';
+    }
+  </script>
+
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-icon">⚡</div>
+      <div class="brand-text">Power Query Excel<span>Giáo trình đào tạo</span></div>
+    </div>
+    <div class="sidebar-nav">
+      <div class="nav-section">
+        <div class="nav-section-title">Trang chủ</div>
+        <a href="index.html" class="nav-item"><span class="nav-icon">🏠</span>Tổng quan giáo trình</a>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-title">Nội dung chương</div>
+        <a href="chuong1-tong-quan.html" class="nav-item"><span class="nav-number">I</span>Tổng quan về Power Query</a>
+        <a href="chuong2-ung-dung.html" class="nav-item"><span class="nav-number">II</span>Ứng dụng xử lý dữ liệu</a>
+        <a href="chuong3-cai-dat.html" class="nav-item active"><span class="nav-number">III</span>Cài đặt và hiển thị</a>
+        <a href="chuong4-ket-noi.html" class="nav-item"><span class="nav-number">IV</span>Kết nối & cập nhật dữ liệu</a>
+        <a href="chuong5-tach-du-lieu.html" class="nav-item"><span class="nav-number">V</span>Tách dữ liệu</a>
+        <a href="chuong6-gop-du-lieu.html" class="nav-item"><span class="nav-number">VI</span>Gộp dữ liệu</a>
+        <a href="chuong7-chuyen-doi.html" class="nav-item"><span class="nav-number">VII</span>Chuyển đổi cấu trúc</a>
+        <a href="chuong8-column.html" class="nav-item"><span class="nav-number">VIII</span>Xử lý với Column</a>
+        <a href="chuong9-cong-thuc-ham.html" class="nav-item"><span class="nav-number">IX</span>Công thức và hàm</a>
+        <a href="chuong10-lam-sach.html" class="nav-item"><span class="nav-number">X</span>Làm sạch dữ liệu</a>
+        <a href="chuong11-python-r-ai.html" class="nav-item"><span class="nav-number">XI</span>Python, R và AI</a>
+        <a href="chuong12-nang-cao.html" class="nav-item"><span class="nav-number">XII</span>Kỹ thuật nâng cao</a>
+        <a href="chuong13-tu-dong-hoa.html" class="nav-item"><span class="nav-number">XIII</span>Tự động hóa</a>
+      </div>
+    
+      <div class="nav-section">
+        <div class="nav-section-title">Bài tập</div>
+        <a href="bai-tap-tong-hop.html" class="nav-item"><span class="nav-icon">📝</span>20 Bài tập tổng hợp</a>
+      </div>
+    </div>
+  </nav>
+
+  <header class="mobile-header">
+    <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+    <span style="margin-left:12px;font-weight:600;font-size:15px;">Chương III</span>
+  </header>
+  <div class="sidebar-overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+  <main class="main-content">
+    <div class="chapter-header">
+      <div class="chapter-breadcrumb">
+        <a href="index.html">Trang chủ</a><span class="sep">›</span><span>Chương III</span>
+      </div>
+      <div class="chapter-number">📘 CHƯƠNG III</div>
+      <h1>Cài đặt và hiển thị Power Query trên Excel</h1>
+      <p class="chapter-desc">Hướng dẫn chi tiết cách cài đặt Power Query cho các phiên bản Excel khác nhau, cách mở Power Query Editor và tùy chỉnh giao diện làm việc.</p>
+    </div>
+
+    <div class="chapter-body">
+
+      <h2>3.1 Kiểm tra phiên bản Excel</h2>
+      <p>Trước khi bắt đầu, cần xác định phiên bản Excel đang sử dụng vì cách truy cập Power Query khác nhau tùy phiên bản:</p>
+
+      <table class="styled-table">
+        <thead>
+          <tr>
+            <th>Phiên bản Excel</th>
+            <th>Tình trạng Power Query</th>
+            <th>Cách truy cập</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Excel 2010</strong></td>
+            <td>Cần cài add-in</td>
+            <td>Tab "Power Query" riêng</td>
+          </tr>
+          <tr>
+            <td><strong>Excel 2013</strong></td>
+            <td>Cần cài add-in</td>
+            <td>Tab "Power Query" riêng</td>
+          </tr>
+          <tr>
+            <td><strong>Excel 2016</strong></td>
+            <td>✅ Tích hợp sẵn</td>
+            <td>Tab Data → Get & Transform</td>
+          </tr>
+          <tr>
+            <td><strong>Excel 2019</strong></td>
+            <td>✅ Tích hợp sẵn</td>
+            <td>Tab Data → Get & Transform</td>
+          </tr>
+          <tr>
+            <td><strong>Excel 2021</strong></td>
+            <td>✅ Tích hợp sẵn</td>
+            <td>Tab Data → Get & Transform</td>
+          </tr>
+          <tr>
+            <td><strong>Microsoft 365</strong></td>
+            <td>✅ Tích hợp sẵn (mới nhất)</td>
+            <td>Tab Data → Get & Transform</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="info-box tip">
+        <span class="info-icon">💡</span>
+        <div>
+          <strong>Kiểm tra phiên bản:</strong> Mở Excel → File → Account → Xem phần "About Excel" hoặc "Product Information" để biết phiên bản và kiến trúc (32-bit hay 64-bit).
+        </div>
+      </div>
+
+      <h2>3.2 Cài đặt Power Query cho Excel 2010/2013</h2>
+      <p>Đối với Excel 2010 và 2013, bạn cần tải và cài đặt add-in Power Query từ Microsoft:</p>
+
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h4>Xác định kiến trúc Excel</h4>
+          <p>Mở Excel → File → Account → About Excel. Ghi nhận <strong>32-bit</strong> hay <strong>64-bit</strong> để tải đúng phiên bản.</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h4>Tải Power Query Add-in</h4>
+          <p>Truy cập <a href="https://www.microsoft.com/en-us/download/details.aspx?id=39379" style="color:var(--primary);font-weight:600;">Microsoft Download Center</a> → chọn phiên bản 32-bit hoặc 64-bit.</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h4>Cài đặt</h4>
+          <p>Chạy file <span class="inline-code">.msi</span> đã tải, nhấn Next → chấp nhận điều khoản → Install → Finish.</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <h4>Kích hoạt Add-in</h4>
+          <p>Mở Excel → File → Options → Add-ins → phía dưới chọn "COM Add-ins" → Go → đánh dấu <strong>Microsoft Power Query for Excel</strong> → OK.</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">5</div>
+        <div class="step-content">
+          <h4>Xác nhận</h4>
+          <p>Tab <strong>Power Query</strong> sẽ xuất hiện trên Ribbon. Nếu không thấy, khởi động lại Excel.</p>
+        </div>
+      </div>
+
+      <div class="info-box warning">
+        <span class="info-icon">⚠️</span>
+        <div>
+          <strong>Lưu ý quan trọng:</strong> Microsoft đã ngừng hỗ trợ add-in Power Query cho Excel 2010 từ năm 2019. Khuyến nghị nâng cấp lên Excel 2016 trở lên hoặc Microsoft 365 để có trải nghiệm tốt nhất.
+        </div>
+      </div>
+
+      <h2>3.3 Truy cập Power Query trong Excel 2016+ / 365</h2>
+      <p>Từ Excel 2016, Power Query đã được tích hợp sẵn với tên gọi <strong>"Get & Transform Data"</strong> trong tab <strong>Data</strong>:</p>
+
+      <h3>Vị trí trên Ribbon</h3>
+      <p>Mở Excel → nhấp tab <strong>Data</strong> → nhìn phần <strong>Get & Transform Data</strong> ở bên trái ribbon:</p>
+
+      <table class="styled-table">
+        <thead>
+          <tr>
+            <th>Nút</th>
+            <th>Chức năng</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Get Data</strong></td>
+            <td>Menu chính để kết nối tất cả nguồn dữ liệu (File, Database, Web, Azure...)</td>
+          </tr>
+          <tr>
+            <td><strong>From Text/CSV</strong></td>
+            <td>Import nhanh từ file text hoặc CSV</td>
+          </tr>
+          <tr>
+            <td><strong>From Web</strong></td>
+            <td>Import nhanh từ URL trang web</td>
+          </tr>
+          <tr>
+            <td><strong>From Table/Range</strong></td>
+            <td>Mở Power Query Editor từ bảng dữ liệu đang chọn trong Excel</td>
+          </tr>
+          <tr>
+            <td><strong>Recent Sources</strong></td>
+            <td>Danh sách các nguồn dữ liệu đã kết nối gần đây</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>3.4 Mở Power Query Editor</h2>
+      <p>Có nhiều cách để mở Power Query Editor:</p>
+
+      <h3>Cách 1: Từ bảng dữ liệu có sẵn</h3>
+      <ol>
+        <li>Chọn bất kỳ ô nào trong bảng dữ liệu hoặc Table</li>
+        <li>Tab Data → <strong>From Table/Range</strong></li>
+        <li>Power Query Editor sẽ mở với dữ liệu đã chọn</li>
+      </ol>
+
+      <h3>Cách 2: Từ Get Data menu</h3>
+      <ol>
+        <li>Tab Data → <strong>Get Data</strong> → chọn nguồn dữ liệu</li>
+        <li>Chọn file/bảng cần import</li>
+        <li>Nhấn <strong>Transform Data</strong> (thay vì Load) để mở Editor</li>
+      </ol>
+
+      <h3>Cách 3: Chỉnh sửa query đã có</h3>
+      <ol>
+        <li>Tab Data → phần <strong>Queries & Connections</strong></li>
+        <li>Panel bên phải hiển thị danh sách các queries</li>
+        <li>Double-click vào query cần chỉnh sửa → Editor mở ra</li>
+      </ol>
+
+      <h2>3.5 Giao diện Power Query Editor chi tiết</h2>
+
+      <div class="figure">
+        <img src="images/power_query_editor.png" alt="Giao diện Power Query Editor chi tiết">
+        <div class="caption">Hình 3.1: Các thành phần chính của Power Query Editor</div>
+      </div>
+
+      <h3>① Ribbon (Thanh công cụ)</h3>
+      <p>Gồm 4 tab chính:</p>
+      <ul>
+        <li><strong>Home:</strong> Close & Load, Refresh Preview, Manage Columns, Reduce Rows, Sort, Split Column, Combine (Merge/Append)</li>
+        <li><strong>Transform:</strong> Data Type, Replace Values, Transpose, Pivot/Unpivot, Group By, Fill, Move Column, Rename, Format Text</li>
+        <li><strong>Add Column:</strong> Custom Column, Conditional Column, Index Column, Duplicate Column, Column from Examples, Invoke Custom Function</li>
+        <li><strong>View:</strong> Formula Bar, Monospace Font, Column Profile, Column Quality, Column Distribution, Advanced Editor</li>
+      </ul>
+
+      <h3>② Formula Bar</h3>
+      <p>Hiển thị công thức <strong>M language</strong> tương ứng với mỗi bước. Bạn có thể chỉnh sửa trực tiếp hoặc bật/tắt qua tab View.</p>
+
+      <div class="code-block">
+        <div class="code-header"><span>M Language - Formula Bar</span></div>
+        <pre><code>= Table.SelectRows(#"Changed Type", each [Tuổi] > 25)</code></pre>
+      </div>
+
+      <h3>③ Queries Panel</h3>
+      <p>Nằm bên trái, hiển thị tất cả queries trong workbook. Có thể tạo Group để tổ chức các query theo nhóm.</p>
+
+      <h3>④ Data Preview</h3>
+      <p>Khu vực chính hiển thị dữ liệu dạng bảng. Bạn có thể:</p>
+      <ul>
+        <li>Nhấp vào header cột để sắp xếp</li>
+        <li>Nhấp dropdown trên header để lọc</li>
+        <li>Chuột phải vào cột để xem menu ngữ cảnh</li>
+        <li>Kéo cột để thay đổi vị trí</li>
+      </ul>
+
+      <h3>⑤ Applied Steps (Query Settings)</h3>
+      <p>Nằm bên phải, ghi lại <strong>mọi thao tác</strong> bạn thực hiện theo thứ tự. Mỗi bước là một phép biến đổi:</p>
+      <ul>
+        <li>Nhấp vào bước để xem kết quả tại bước đó</li>
+        <li>Nhấp chuột phải → Delete để xóa bước</li>
+        <li>Nhấp chuột phải → Rename để đổi tên bước</li>
+        <li>Nhấp chuột phải → Insert Step After để thêm bước mới</li>
+        <li>Kéo bước để thay đổi thứ tự (cẩn thận khi làm điều này)</li>
+      </ul>
+
+      <h2>3.6 Tùy chỉnh hiển thị</h2>
+
+      <h3>Bật/tắt các panel</h3>
+      <p>Trong tab <strong>View</strong>, bạn có thể bật/tắt:</p>
+      <ul>
+        <li>☑️ <strong>Formula Bar:</strong> Hiển thị thanh công thức M</li>
+        <li>☑️ <strong>Column Quality:</strong> Hiển thị % dữ liệu Valid, Error, Empty trên mỗi cột</li>
+        <li>☑️ <strong>Column Distribution:</strong> Phân bố giá trị dưới dạng biểu đồ nhỏ</li>
+        <li>☑️ <strong>Column Profile:</strong> Thống kê chi tiết về dữ liệu trong cột đang chọn</li>
+      </ul>
+
+      <div class="info-box tip">
+        <span class="info-icon">💡</span>
+        <div>
+          <strong>Mẹo hữu ích:</strong> Luôn bật <strong>Column Quality</strong> để nhanh chóng phát hiện lỗi và giá trị trống trong dữ liệu. Thanh màu xanh = Valid, đỏ = Error, xám = Empty.
+        </div>
+      </div>
+
+      <h3>Advanced Editor</h3>
+      <p>Để xem toàn bộ mã M của query: tab View → <strong>Advanced Editor</strong>. Cửa sổ hiển thị toàn bộ code M:</p>
+
+      <div class="code-block">
+        <div class="code-header"><span>M Language - Advanced Editor</span></div>
+        <pre><code>let
+    Source = Excel.CurrentWorkbook(){[Name="Table1"]}[Content],
+    #"Changed Type" = Table.TransformColumnTypes(Source, {
+        {"Họ tên", type text},
+        {"Tuổi", Int64.Type},
+        {"Thành phố", type text},
+        {"Lương", type number}
+    }),
+    #"Filtered Rows" = Table.SelectRows(#"Changed Type",
+        each [Tuổi] > 25
+    ),
+    #"Sorted Rows" = Table.Sort(#"Filtered Rows",
+        {{"Lương", Order.Descending}}
+    )
+in
+    #"Sorted Rows"</code></pre>
+      </div>
+
+      <h2>3.7 Quản lý Applied Steps</h2>
+      <p>Panel <strong>Applied Steps</strong> (bên phải) ghi lại mọi thao tác — đây là "lịch sử" query của bạn:</p>
+
+      <table class="styled-table">
+        <thead><tr><th>Thao tác</th><th>Cách thực hiện</th><th>Ghi chú</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Rename step</strong></td><td>Double-click vào tên step → đặt tên mới</td><td>Đặt tên rõ ràng: "RemoveTempColumns", "FilterAfter2020"</td></tr>
+          <tr><td><strong>Delete step</strong></td><td>Click ❌ bên trái step</td><td>Cẩn thận: xóa step giữa có thể gây lỗi cascade</td></tr>
+          <tr><td><strong>Reorder step</strong></td><td>Kéo thả step lên/xuống</td><td>Đổi thứ tự cải thiện hiệu suất (VD: filter sớm hơn)</td></tr>
+          <tr><td><strong>Insert step</strong></td><td>Click vào step trước → thực hiện thao tác mới</td><td>Step mới được chèn ngay sau step đang chọn</td></tr>
+          <tr><td><strong>View formula</strong></td><td>Click vào step → xem Formula Bar</td><td>Mỗi step = 1 dòng M code</td></tr>
+        </tbody>
+      </table>
+
+      <div class="info-box warning">
+        <span class="info-icon">⚠️</span>
+        <div>
+          <strong>Lưu ý quan trọng:</strong> Khi xóa hoặc đổi thứ tự step, các step phía sau có thể bị lỗi nếu chúng phụ thuộc vào step đã xóa/di chuyển. Luôn kiểm tra từng step sau khi thay đổi.
+        </div>
+      </div>
+
+      <!-- Practice -->
+      <div class="practice-box">
+        <h3>Bài tập 3.1: Cài đặt và kiểm tra Power Query</h3>
+        <p><strong>Mục tiêu:</strong> Xác nhận Power Query hoạt động trên máy tính của bạn</p>
+        <ol>
+          <li>Mở Excel → File → Account → ghi nhận phiên bản Excel (2016/2019/2021/365)</li>
+          <li>Nhấp vào tab <strong>Data</strong> → tìm phần <strong>Get & Transform Data</strong></li>
+          <li>Nếu không thấy (Excel 2010/2013): File → Options → Add-ins → COM Add-ins → kiểm tra Power Query</li>
+          <li>Nhấp vào <strong>Get Data</strong> → xem danh sách các nguồn dữ liệu hỗ trợ</li>
+          <li>Ghi nhận các loại nguồn: From File, From Database, From Azure, From Power Platform, From Other Sources</li>
+        </ol>
+      </div>
+
+      <div class="practice-box">
+        <h3>Bài tập 3.2: Khám phá tùy chỉnh giao diện Editor</h3>
+        <p><strong>Mục tiêu:</strong> Thực hành tùy chỉnh hiển thị Power Query Editor</p>
+        <ol>
+          <li>Tạo bảng dữ liệu mẫu (10 dòng, 4-5 cột) → Data → From Table/Range</li>
+          <li>Trong Power Query Editor, chuyển sang tab <strong>View</strong></li>
+          <li>Bật <strong>Column Quality</strong> → quan sát thanh màu ở đầu mỗi cột</li>
+          <li>Bật <strong>Column Distribution</strong> → quan sát biểu đồ phân bố</li>
+          <li>Bật <strong>Column Profile</strong> → nhấp vào một cột → xem thống kê chi tiết phía dưới</li>
+          <li>Mở <strong>Advanced Editor</strong> (tab View) → quan sát code M → Close</li>
+          <li>Nhấp chuột phải lên tên query ở Queries Panel → chọn <strong>Rename</strong> → đặt tên mới</li>
+          <li>Close & Load</li>
+        </ol>
+      </div>
+
+      <div class="practice-box">
+        <h3>Bài tập 3.3: Quản lý Queries</h3>
+        <p><strong>Mục tiêu:</strong> Học cách quản lý nhiều queries</p>
+        <ol>
+          <li>Tạo 3 bảng dữ liệu khác nhau trên 3 sheet trong Excel:
+            <ul>
+              <li>Sheet1: Bảng <strong>NhanVien</strong> (Mã NV, Họ tên, Phòng ban)</li>
+              <li>Sheet2: Bảng <strong>PhongBan</strong> (Mã PB, Tên PB, Trưởng phòng)</li>
+              <li>Sheet3: Bảng <strong>Luong</strong> (Mã NV, Tháng, Lương)</li>
+            </ul>
+          </li>
+          <li>Mở mỗi bảng vào Power Query (Data → From Table/Range) rồi Close & Load</li>
+          <li>Vào tab Data → <strong>Queries & Connections</strong> → xem panel bên phải liệt kê 3 queries</li>
+          <li>Di chuột qua mỗi query để xem thông tin: số dòng, thời gian load, nguồn dữ liệu</li>
+          <li>Nhấp chuột phải vào query → thử các tùy chọn: Edit, Load To, Refresh, Delete</li>
+        </ol>
+      </div>
+
+      <!-- Navigation -->
+      <div class="chapter-nav">
+        <a href="chuong2-ung-dung.html" class="nav-prev">
+          <div>
+            <div class="nav-label">← Chương trước</div>
+            <div class="nav-title">II. Ứng dụng xử lý dữ liệu</div>
+          </div>
+        </a>
+        <a href="chuong4-ket-noi.html" class="nav-next">
+          <div>
+            <div class="nav-label">Chương tiếp →</div>
+            <div class="nav-title">IV. Kết nối & cập nhật dữ liệu</div>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <footer class="footer">
+      <p>📘 Giáo trình Power Query Excel — Chuyên đề đào tạo &copy; 2026</p>
+    </footer>
+  </main>
+
+  <script>
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('open');
+      document.getElementById('overlay').classList.toggle('open');
+    }
+  </script>
+</body>
+</html>

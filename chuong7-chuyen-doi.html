@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chương VII: Chuyển đổi cấu trúc dữ liệu - Giáo trình Power Query Excel</title>
+  <meta name="description" content="Transpose, Unpivot, Pivot Column, Group By, Fill Down/Up trong Power Query Excel.">
+  <link rel="stylesheet" href="index.css">
+</head>
+<body>
+  <script>
+    if (sessionStorage.getItem('pq_logged_in') !== 'true') {
+      window.location.href = 'login.html';
+    }
+  </script>
+
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-icon">⚡</div>
+      <div class="brand-text">Power Query Excel<span>Giáo trình đào tạo</span></div>
+    </div>
+    <div class="sidebar-nav">
+      <div class="nav-section">
+        <div class="nav-section-title">Trang chủ</div>
+        <a href="index.html" class="nav-item"><span class="nav-icon">🏠</span>Tổng quan giáo trình</a>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-title">Nội dung chương</div>
+        <a href="chuong1-tong-quan.html" class="nav-item"><span class="nav-number">I</span>Tổng quan về Power Query</a>
+        <a href="chuong2-ung-dung.html" class="nav-item"><span class="nav-number">II</span>Ứng dụng xử lý dữ liệu</a>
+        <a href="chuong3-cai-dat.html" class="nav-item"><span class="nav-number">III</span>Cài đặt và hiển thị</a>
+        <a href="chuong4-ket-noi.html" class="nav-item"><span class="nav-number">IV</span>Kết nối & cập nhật dữ liệu</a>
+        <a href="chuong5-tach-du-lieu.html" class="nav-item"><span class="nav-number">V</span>Tách dữ liệu</a>
+        <a href="chuong6-gop-du-lieu.html" class="nav-item"><span class="nav-number">VI</span>Gộp dữ liệu</a>
+        <a href="chuong7-chuyen-doi.html" class="nav-item active"><span class="nav-number">VII</span>Chuyển đổi cấu trúc</a>
+        <a href="chuong8-column.html" class="nav-item"><span class="nav-number">VIII</span>Xử lý với Column</a>
+        <a href="chuong9-cong-thuc-ham.html" class="nav-item"><span class="nav-number">IX</span>Công thức và hàm</a>
+        <a href="chuong10-lam-sach.html" class="nav-item"><span class="nav-number">X</span>Làm sạch dữ liệu</a>
+        <a href="chuong11-python-r-ai.html" class="nav-item"><span class="nav-number">XI</span>Python, R và AI</a>
+        <a href="chuong12-nang-cao.html" class="nav-item"><span class="nav-number">XII</span>Kỹ thuật nâng cao</a>
+        <a href="chuong13-tu-dong-hoa.html" class="nav-item"><span class="nav-number">XIII</span>Tự động hóa</a>
+      </div>
+    
+      <div class="nav-section">
+        <div class="nav-section-title">Bài tập</div>
+        <a href="bai-tap-tong-hop.html" class="nav-item"><span class="nav-icon">📝</span>20 Bài tập tổng hợp</a>
+      </div>
+    </div>
+  </nav>
+
+  <header class="mobile-header">
+    <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+    <span style="margin-left:12px;font-weight:600;font-size:15px;">Chương VII</span>
+  </header>
+  <div class="sidebar-overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+  <main class="main-content">
+    <div class="chapter-header">
+      <div class="chapter-breadcrumb">
+        <a href="index.html">Trang chủ</a><span class="sep">›</span><span>Chương VII</span>
+      </div>
+      <div class="chapter-number">📘 CHƯƠNG VII</div>
+      <h1>Chuyển đổi cấu trúc dữ liệu trong Power Query</h1>
+      <p class="chapter-desc">Thành thạo các kỹ thuật thay đổi hình dạng dữ liệu: Transpose, Pivot, Unpivot, Group By và Fill Down/Up.</p>
+    </div>
+
+    <div class="chapter-body">
+
+      <h2>7.1 Transpose (Chuyển đổi hàng ↔ cột)</h2>
+      <p><strong>Transpose</strong> biến các hàng thành cột và ngược lại — hàng đầu tiên trở thành tiêu đề cột, cột đầu tiên trở thành tiêu đề hàng.</p>
+
+      <h3>Cách thực hiện</h3>
+      <ol>
+        <li>Trong Power Query Editor, tab <strong>Transform</strong> → <strong>Transpose</strong></li>
+        <li>Dữ liệu sẽ được xoay 90°</li>
+        <li>Thường cần thêm bước: Transform → <strong>Use First Row as Headers</strong></li>
+      </ol>
+
+      <h3>Ví dụ</h3>
+      <p><strong>Trước Transpose:</strong></p>
+      <table class="styled-table">
+        <thead><tr><th></th><th>Quý 1</th><th>Quý 2</th><th>Quý 3</th><th>Quý 4</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Doanh thu</strong></td><td>100</td><td>150</td><td>200</td><td>180</td></tr>
+          <tr><td><strong>Chi phí</strong></td><td>80</td><td>90</td><td>120</td><td>100</td></tr>
+        </tbody>
+      </table>
+
+      <p><strong>Sau Transpose:</strong></p>
+      <table class="styled-table">
+        <thead><tr><th>Kỳ</th><th>Doanh thu</th><th>Chi phí</th></tr></thead>
+        <tbody>
+          <tr><td>Quý 1</td><td>100</td><td>80</td></tr>
+          <tr><td>Quý 2</td><td>150</td><td>90</td></tr>
+          <tr><td>Quý 3</td><td>200</td><td>120</td></tr>
+          <tr><td>Quý 4</td><td>180</td><td>100</td></tr>
+        </tbody>
+      </table>
+
+      <h2>7.2 Unpivot Columns (Chuyển cột thành hàng)</h2>
+      <p><strong>Unpivot</strong> là một trong những tính năng mạnh nhất của Power Query — chuyển đổi bảng chéo (crosstab) thành dạng danh sách phẳng, phù hợp cho phân tích Pivot Table.</p>
+
+      <div class="figure">
+        <img src="images/pivot_unpivot.png" alt="Pivot và Unpivot trong Power Query">
+        <div class="caption">Hình 7.1: Minh họa Pivot và Unpivot trong Power Query</div>
+      </div>
+
+      <h3>3 loại Unpivot</h3>
+      <table class="styled-table">
+        <thead>
+          <tr><th>Loại</th><th>Mô tả</th><th>Khi nào dùng</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Unpivot Columns</strong></td>
+            <td>Unpivot các cột đã chọn</td>
+            <td>Khi biết chính xác cột nào cần unpivot</td>
+          </tr>
+          <tr>
+            <td><strong>Unpivot Other Columns</strong></td>
+            <td>Giữ các cột đã chọn, unpivot phần còn lại</td>
+            <td>Khi số cột không cố định (khuyến nghị!)</td>
+          </tr>
+          <tr>
+            <td><strong>Unpivot Only Selected Columns</strong></td>
+            <td>Chỉ unpivot các cột đã chọn, cố định</td>
+            <td>Khi cần kiểm soát chính xác</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Ví dụ Unpivot</h3>
+      <p><strong>Trước Unpivot</strong> (bảng chéo theo tháng):</p>
+      <table class="styled-table">
+        <thead><tr><th>Sản phẩm</th><th>Tháng 1</th><th>Tháng 2</th><th>Tháng 3</th></tr></thead>
+        <tbody>
+          <tr><td>Laptop</td><td>50</td><td>60</td><td>45</td></tr>
+          <tr><td>Chuột</td><td>200</td><td>180</td><td>220</td></tr>
+        </tbody>
+      </table>
+
+      <p><strong>Sau Unpivot Other Columns</strong> (giữ cột "Sản phẩm"):</p>
+      <table class="styled-table">
+        <thead><tr><th>Sản phẩm</th><th>Attribute</th><th>Value</th></tr></thead>
+        <tbody>
+          <tr><td>Laptop</td><td>Tháng 1</td><td>50</td></tr>
+          <tr><td>Laptop</td><td>Tháng 2</td><td>60</td></tr>
+          <tr><td>Laptop</td><td>Tháng 3</td><td>45</td></tr>
+          <tr><td>Chuột</td><td>Tháng 1</td><td>200</td></tr>
+          <tr><td>Chuột</td><td>Tháng 2</td><td>180</td></tr>
+          <tr><td>Chuột</td><td>Tháng 3</td><td>220</td></tr>
+        </tbody>
+      </table>
+
+      <div class="info-box tip">
+        <span class="info-icon">💡</span>
+        <div>
+          <strong>Khuyến nghị:</strong> Luôn sử dụng <strong>Unpivot Other Columns</strong> thay vì Unpivot Columns. Lý do: nếu sau này dữ liệu có thêm cột mới (ví dụ: Tháng 4), Unpivot Other Columns sẽ tự động bao gồm cột mới, trong khi Unpivot Columns chỉ xử lý các cột đã chọn ban đầu.
+        </div>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span>M Language - Unpivot Other Columns</span></div>
+        <pre><code>// Giữ cột "Sản phẩm", unpivot tất cả cột còn lại
+= Table.UnpivotOtherColumns(
+    PreviousStep,
+    {"Sản phẩm"},    // Cột giữ lại
+    "Tháng",         // Tên cột Attribute
+    "Số lượng"       // Tên cột Value
+)</code></pre>
+      </div>
+
+      <h2>7.3 Pivot Column (Chuyển hàng thành cột)</h2>
+      <p><strong>Pivot</strong> là ngược lại của Unpivot — chuyển các giá trị duy nhất trong một cột thành nhiều cột riêng biệt:</p>
+
+      <ol>
+        <li>Chọn cột chứa giá trị sẽ trở thành tiêu đề cột mới</li>
+        <li>Tab Transform → <strong>Pivot Column</strong></li>
+        <li>Chọn <strong>Values Column:</strong> cột chứa giá trị cho các ô</li>
+        <li>Chọn <strong>Aggregate Function:</strong> Sum, Count, Min, Max, Don't Aggregate</li>
+      </ol>
+
+      <h3>Ví dụ</h3>
+      <p><strong>Trước Pivot</strong> (dạng danh sách):</p>
+      <table class="styled-table">
+        <thead><tr><th>Nhân viên</th><th>Quý</th><th>Doanh số</th></tr></thead>
+        <tbody>
+          <tr><td>An</td><td>Q1</td><td>100</td></tr>
+          <tr><td>An</td><td>Q2</td><td>150</td></tr>
+          <tr><td>Bình</td><td>Q1</td><td>90</td></tr>
+          <tr><td>Bình</td><td>Q2</td><td>120</td></tr>
+        </tbody>
+      </table>
+
+      <p><strong>Sau Pivot</strong> (cột "Quý", giá trị "Doanh số", Sum):</p>
+      <table class="styled-table">
+        <thead><tr><th>Nhân viên</th><th>Q1</th><th>Q2</th></tr></thead>
+        <tbody>
+          <tr><td>An</td><td>100</td><td>150</td></tr>
+          <tr><td>Bình</td><td>90</td><td>120</td></tr>
+        </tbody>
+      </table>
+
+      <h2>7.4 Group By (Nhóm dữ liệu)</h2>
+      <p><strong>Group By</strong> nhóm các dòng theo giá trị của một hoặc nhiều cột và tính toán tổng hợp:</p>
+
+      <h3>Cách thực hiện</h3>
+      <ol>
+        <li>Tab Transform → <strong>Group By</strong></li>
+        <li>Chế độ <strong>Basic:</strong> Nhóm theo 1 cột, 1 phép tính</li>
+        <li>Chế độ <strong>Advanced:</strong> Nhóm theo nhiều cột, nhiều phép tính</li>
+      </ol>
+
+      <h3>Các hàm aggregate</h3>
+      <table class="styled-table">
+        <thead><tr><th>Hàm</th><th>Mô tả</th><th>Ví dụ</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Sum</strong></td><td>Tổng giá trị</td><td>Tổng doanh thu theo chi nhánh</td></tr>
+          <tr><td><strong>Average</strong></td><td>Trung bình</td><td>Lương trung bình theo phòng ban</td></tr>
+          <tr><td><strong>Min / Max</strong></td><td>Giá trị nhỏ nhất / lớn nhất</td><td>Đơn hàng nhỏ nhất / lớn nhất</td></tr>
+          <tr><td><strong>Count Rows</strong></td><td>Đếm số dòng</td><td>Số nhân viên mỗi phòng ban</td></tr>
+          <tr><td><strong>Count Distinct Values</strong></td><td>Đếm giá trị duy nhất</td><td>Số sản phẩm khác nhau</td></tr>
+          <tr><td><strong>All Rows</strong></td><td>Giữ tất cả dòng dạng Table</td><td>Tạo sub-table cho mỗi nhóm</td></tr>
+        </tbody>
+      </table>
+
+      <div class="code-block">
+        <div class="code-header"><span>M Language - Group By</span></div>
+        <pre><code>// Nhóm theo PhongBan, tính tổng lương và đếm nhân viên
+= Table.Group(PreviousStep, {"PhongBan"}, {
+    {"TongLuong", each List.Sum([Luong]), type number},
+    {"SoNhanVien", each Table.RowCount(_), Int64.Type}
+})</code></pre>
+      </div>
+
+      <h2>7.5 Fill Down / Fill Up</h2>
+      <p>Điền giá trị từ ô có dữ liệu xuống (hoặc lên) các ô trống bên dưới (hoặc bên trên) — rất hữu ích khi dữ liệu có các ô merged/merged cell:</p>
+
+      <h3>Ví dụ Fill Down</h3>
+      <table class="styled-table">
+        <thead><tr><th>Trước</th><th>Sau Fill Down</th></tr></thead>
+        <tbody>
+          <tr><td>Phòng IT</td><td>Phòng IT</td></tr>
+          <tr><td>(trống)</td><td>Phòng IT</td></tr>
+          <tr><td>(trống)</td><td>Phòng IT</td></tr>
+          <tr><td>Phòng KD</td><td>Phòng KD</td></tr>
+          <tr><td>(trống)</td><td>Phòng KD</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Cách thực hiện</h3>
+      <ol>
+        <li>Chọn cột cần fill</li>
+        <li>Tab Transform → <strong>Fill</strong> → <strong>Down</strong> (hoặc <strong>Up</strong>)</li>
+      </ol>
+
+      <h2>7.8 Group By nâng cao: Lấy Last Item trong nhóm</h2>
+      <p>Khi Group By với <strong>All Rows</strong>, bạn có thể lấy dòng cuối cùng (hoặc bất kỳ dòng nào) trong mỗi nhóm:</p>
+      <div class="code-block">
+        <div class="code-header"><span>M Language - Last Item per Group</span></div>
+        <pre><code>// Lấy giao dịch cuối cùng của mỗi khách hàng
+= Table.Group(Source, {"MaKH"}, {
+    {"LastTransaction", each Table.Last(
+        Table.Sort(_, {{"NgayGD", Order.Ascending}})
+    ), type record}
+})
+
+// Lấy dòng có giá trị Max trong nhóm
+= Table.Group(Source, {"PhongBan"}, {
+    {"TopEmployee", each Table.Max(_, "DoanhThu"), type record}
+})</code></pre>
+      </div>
+
+      <h2>7.9 DistinctCount qua Group By</h2>
+      <p>Đếm số giá trị <strong>duy nhất</strong> (DistinctCount) — tương đương COUNTIFS(UNIQUE) trong Excel:</p>
+      <div class="code-block">
+        <div class="code-header"><span>M Language - DistinctCount</span></div>
+        <pre><code>// Đếm số khách hàng duy nhất mỗi tháng
+= Table.Group(Source, {"Thang"}, {
+    {"SoKhachHang", each List.Count(List.Distinct([MaKH])), Int64.Type},
+    {"SoGiaoDich", each Table.RowCount(_), Int64.Type}
+})</code></pre>
+      </div>
+
+      <h2>7.10 Row Number per Group (Đánh số dòng theo nhóm)</h2>
+      <p>Thêm số thứ tự <strong>reset về 1</strong> cho mỗi nhóm — rất hữu ích cho ranking trong nhóm:</p>
+      <div class="code-block">
+        <div class="code-header"><span>M Language - Row Number per Group</span></div>
+        <pre><code>// Cách 1: Group By + AddIndexColumn + ExpandAll
+let
+    Grouped = Table.Group(Source, {"PhongBan"}, {
+        {"AllData", each Table.AddIndexColumn(_, "STT", 1, 1)}
+    }),
+    Expanded = Table.ExpandTableColumn(Grouped, "AllData",
+        {"HoTen", "Luong", "STT"})
+in Expanded
+
+// Cách 2: Dùng Table.AddColumn trực tiếp
+= Table.AddColumn(Source, "STT_TrongNhom",
+    each Table.RowCount(
+        Table.SelectRows(Source,
+            (r) => r[PhongBan] = [PhongBan] and r[HoTen] < [HoTen]
+        )
+    ) + 1
+)</code></pre>
+      </div>
+
+      <div class="info-box tip">
+        <span class="info-icon">💡</span>
+        <div>
+          <strong>Ứng dụng:</strong> Row Number per Group dùng để: xếp hạng nhân viên trong phòng ban, đánh số đơn hàng theo khách hàng, lấy Top N cho mỗi nhóm (filter STT ≤ N).
+        </div>
+      </div>
+
+      <h2>7.11 Advanced Unpivot & Pivot</h2>
+      <p>Ngoài Unpivot cơ bản, có nhiều tình huống phức tạp hơn:</p>
+
+      <h3>Unpivot Columns vs Unpivot Other Columns</h3>
+      <table class="styled-table">
+        <thead><tr><th>Phương pháp</th><th>Khi nào dùng</th><th>Ưu điểm</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Unpivot Columns</strong></td><td>Chọn đúng các cột cần unpivot</td><td>Kiểm soát chính xác</td></tr>
+          <tr><td><strong>Unpivot Other Columns</strong></td><td>Chọn cột KHÔNG unpivot (giữ lại)</td><td>Bền vững khi thêm cột mới</td></tr>
+        </tbody>
+      </table>
+      <div class="info-box tip">
+        <span class="info-icon">💡</span>
+        <div>
+          <strong>Best Practice:</strong> Luôn dùng <strong>Unpivot Other Columns</strong> — khi data có thêm cột mới (VD: thêm tháng 13), query tự xử lý mà không cần chỉnh sửa.
+        </div>
+      </div>
+
+      <h3>Multi-Level Headers (Header nhiều tầng)</h3>
+      <p>Bảng Excel thường có header 2-3 tầng (VD: "Doanh thu" → "Q1", "Q2"). Cách xử lý:</p>
+      <div class="code-block">
+        <div class="code-header"><span>M Language - Multi-Level Headers</span></div>
+        <pre><code>// Bước 1: Transpose để lật ngang → dọc
+= Table.Transpose(Source)
+
+// Bước 2: Fill Down để lấp header tầng 1 xuống
+= Table.FillDown(Transposed, {"Column1"})
+
+// Bước 3: Merge 2 cột header thành 1
+= Table.CombineColumns(Filled,
+    {"Column1", "Column2"},
+    Combiner.CombineTextByDelimiter(" | "),
+    "CombinedHeader")
+
+// Bước 4: Transpose lại
+= Table.Transpose(Combined)
+
+// Bước 5: Promote Headers → Unpivot
+= Table.PromoteHeaders(TransposedBack)</code></pre>
+      </div>
+
+      <h3>Cross-Tab → Flat Table</h3>
+      <p>Bảng chéo (Cross-Tab) là bảng tóm tắt cần chuyển về dạng chi tiết:</p>
+      <div class="code-block">
+        <div class="code-header"><span>Ví dụ: Cross-Tab → Flat</span></div>
+        <pre><code>// Bảng gốc:
+//          Q1    Q2    Q3    Q4
+// HCM     100   200   150   180
+// HN       80   120   100   140
+
+// Unpivot Other Columns (giữ cột đầu tiên)
+= Table.UnpivotOtherColumns(Source,
+    {"ChiNhanh"}, "Quy", "DoanhThu")
+
+// Kết quả:
+// ChiNhanh | Quy | DoanhThu
+// HCM      | Q1  | 100
+// HCM      | Q2  | 200
+// HN       | Q1  | 80
+// ...</code></pre>
+      </div>
+
+      <!-- Practice -->
+      <div class="practice-box">
+        <h3>Bài tập 7.1: Unpivot bảng doanh thu theo tháng</h3>
+        <p><strong>Mục tiêu:</strong> Chuyển bảng chéo thành dạng danh sách</p>
+        <ol>
+          <li>Tạo bảng Excel:
+            <table class="styled-table" style="margin:8px 0;">
+              <thead><tr><th>Sản phẩm</th><th>T1</th><th>T2</th><th>T3</th><th>T4</th><th>T5</th><th>T6</th></tr></thead>
+              <tbody>
+                <tr><td>Laptop</td><td>50</td><td>60</td><td>45</td><td>70</td><td>55</td><td>65</td></tr>
+                <tr><td>Chuột</td><td>200</td><td>180</td><td>220</td><td>190</td><td>210</td><td>240</td></tr>
+                <tr><td>Bàn phím</td><td>100</td><td>90</td><td>110</td><td>105</td><td>95</td><td>120</td></tr>
+              </tbody>
+            </table>
+          </li>
+          <li>Mở Power Query</li>
+          <li>Chọn cột "Sản phẩm" → Transform → <strong>Unpivot Other Columns</strong></li>
+          <li>Đổi tên cột "Attribute" → "Tháng", cột "Value" → "Số lượng"</li>
+          <li>Kết quả: 18 dòng (3 sản phẩm × 6 tháng)</li>
+          <li>Close & Load</li>
+        </ol>
+      </div>
+
+      <div class="practice-box">
+        <h3>Bài tập 7.2: Group By tính tổng hợp</h3>
+        <p><strong>Mục tiêu:</strong> Sử dụng Group By để tổng hợp dữ liệu</p>
+        <ol>
+          <li>Tạo bảng đơn hàng:
+            <table class="styled-table" style="margin:8px 0;">
+              <thead><tr><th>ChiNhanh</th><th>SanPham</th><th>SoLuong</th><th>DoanhThu</th></tr></thead>
+              <tbody>
+                <tr><td>HCM</td><td>Laptop</td><td>10</td><td>150000000</td></tr>
+                <tr><td>HCM</td><td>Chuột</td><td>50</td><td>17500000</td></tr>
+                <tr><td>HN</td><td>Laptop</td><td>8</td><td>120000000</td></tr>
+                <tr><td>HN</td><td>Bàn phím</td><td>30</td><td>36000000</td></tr>
+                <tr><td>DN</td><td>Chuột</td><td>40</td><td>14000000</td></tr>
+                <tr><td>HCM</td><td>Bàn phím</td><td>25</td><td>30000000</td></tr>
+              </tbody>
+            </table>
+          </li>
+          <li>Mở Power Query → Transform → <strong>Group By</strong></li>
+          <li>Chọn <strong>Advanced</strong></li>
+          <li>Group by: <strong>ChiNhanh</strong></li>
+          <li>Thêm các cột:
+            <ul>
+              <li>"TongDoanhThu" — Operation: Sum — Column: DoanhThu</li>
+              <li>"TongSoLuong" — Operation: Sum — Column: SoLuong</li>
+              <li>"SoSanPham" — Operation: Count Distinct Values — Column: SanPham</li>
+            </ul>
+          </li>
+          <li>Close & Load → kiểm tra kết quả (3 dòng cho 3 chi nhánh)</li>
+        </ol>
+      </div>
+
+      <div class="practice-box">
+        <h3>Bài tập 7.3: Fill Down và Pivot</h3>
+        <p><strong>Mục tiêu:</strong> Kết hợp Fill Down với Pivot Column</p>
+        <ol>
+          <li>Tạo bảng có ô trống (giả lập dữ liệu merged cell):
+            <table class="styled-table" style="margin:8px 0;">
+              <thead><tr><th>Phòng ban</th><th>Nhân viên</th><th>KPI</th></tr></thead>
+              <tbody>
+                <tr><td>Phòng IT</td><td>An</td><td>95</td></tr>
+                <tr><td></td><td>Bình</td><td>88</td></tr>
+                <tr><td></td><td>Châu</td><td>92</td></tr>
+                <tr><td>Phòng KD</td><td>Dung</td><td>78</td></tr>
+                <tr><td></td><td>Em</td><td>85</td></tr>
+              </tbody>
+            </table>
+          </li>
+          <li>Mở Power Query</li>
+          <li><strong>Bước 1:</strong> Chọn cột "Phòng ban" → Transform → Fill → <strong>Down</strong></li>
+          <li><strong>Bước 2:</strong> Kiểm tra tất cả ô trống đã được điền đúng phòng ban</li>
+          <li><strong>Bước 3:</strong> Thử Pivot Column: chọn cột "Nhân viên", Values = "KPI", Aggregate = Don't Aggregate</li>
+          <li>Close & Load</li>
+        </ol>
+      </div>
+
+      <!-- Navigation -->
+      <div class="chapter-nav">
+        <a href="chuong6-gop-du-lieu.html" class="nav-prev">
+          <div>
+            <div class="nav-label">← Chương trước</div>
+            <div class="nav-title">VI. Gộp dữ liệu</div>
+          </div>
+        </a>
+        <a href="chuong8-column.html" class="nav-next">
+          <div>
+            <div class="nav-label">Chương tiếp →</div>
+            <div class="nav-title">VIII. Xử lý với Column</div>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <footer class="footer">
+      <p>📘 Giáo trình Power Query Excel — Chuyên đề đào tạo &copy; 2026</p>
+    </footer>
+  </main>
+
+  <script>
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('open');
+      document.getElementById('overlay').classList.toggle('open');
+    }
+  </script>
+</body>
+</html>

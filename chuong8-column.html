@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chương VIII: Xử lý với Column - Giáo trình Power Query Excel</title>
+  <meta name="description" content="Add Column, Custom/Conditional Column, Data Type, Replace Values, Extract trong Power Query Excel.">
+  <link rel="stylesheet" href="index.css">
+</head>
+<body>
+  <script>
+    if (sessionStorage.getItem('pq_logged_in') !== 'true') {
+      window.location.href = 'login.html';
+    }
+  </script>
+
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-icon">⚡</div>
+      <div class="brand-text">Power Query Excel<span>Giáo trình đào tạo</span></div>
+    </div>
+    <div class="sidebar-nav">
+      <div class="nav-section">
+        <div class="nav-section-title">Trang chủ</div>
+        <a href="index.html" class="nav-item"><span class="nav-icon">🏠</span>Tổng quan giáo trình</a>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-title">Nội dung chương</div>
+        <a href="chuong1-tong-quan.html" class="nav-item"><span class="nav-number">I</span>Tổng quan về Power Query</a>
+        <a href="chuong2-ung-dung.html" class="nav-item"><span class="nav-number">II</span>Ứng dụng xử lý dữ liệu</a>
+        <a href="chuong3-cai-dat.html" class="nav-item"><span class="nav-number">III</span>Cài đặt và hiển thị</a>
+        <a href="chuong4-ket-noi.html" class="nav-item"><span class="nav-number">IV</span>Kết nối & cập nhật dữ liệu</a>
+        <a href="chuong5-tach-du-lieu.html" class="nav-item"><span class="nav-number">V</span>Tách dữ liệu</a>
+        <a href="chuong6-gop-du-lieu.html" class="nav-item"><span class="nav-number">VI</span>Gộp dữ liệu</a>
+        <a href="chuong7-chuyen-doi.html" class="nav-item"><span class="nav-number">VII</span>Chuyển đổi cấu trúc</a>
+        <a href="chuong8-column.html" class="nav-item active"><span class="nav-number">VIII</span>Xử lý với Column</a>
+        <a href="chuong9-cong-thuc-ham.html" class="nav-item"><span class="nav-number">IX</span>Công thức và hàm</a>
+        <a href="chuong10-lam-sach.html" class="nav-item"><span class="nav-number">X</span>Làm sạch dữ liệu</a>
+        <a href="chuong11-python-r-ai.html" class="nav-item"><span class="nav-number">XI</span>Python, R và AI</a>
+        <a href="chuong12-nang-cao.html" class="nav-item"><span class="nav-number">XII</span>Kỹ thuật nâng cao</a>
+        <a href="chuong13-tu-dong-hoa.html" class="nav-item"><span class="nav-number">XIII</span>Tự động hóa</a>
+      </div>
+    
+      <div class="nav-section">
+        <div class="nav-section-title">Bài tập</div>
+        <a href="bai-tap-tong-hop.html" class="nav-item"><span class="nav-icon">📝</span>20 Bài tập tổng hợp</a>
+      </div>
+    </div>
+  </nav>
+
+  <header class="mobile-header">
+    <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+    <span style="margin-left:12px;font-weight:600;font-size:15px;">Chương VIII</span>
+  </header>
+  <div class="sidebar-overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+  <main class="main-content">
+    <div class="chapter-header">
+      <div class="chapter-breadcrumb">
+        <a href="index.html">Trang chủ</a><span class="sep">›</span><span>Chương VIII</span>
+      </div>
+      <div class="chapter-number">📘 CHƯƠNG VIII</div>
+      <h1>Xử lý với Column trong Power Query</h1>
+      <p class="chapter-desc">Thêm cột mới (Custom, Conditional, Index), thay đổi kiểu dữ liệu, Replace Values, Extract, và các thao tác quản lý cột.</p>
+    </div>
+
+    <div class="chapter-body">
+
+      <h2>8.1 Quản lý cột cơ bản</h2>
+      <p>Power Query cung cấp nhiều thao tác quản lý cột trong tab <strong>Home</strong> và menu chuột phải:</p>
+
+      <table class="styled-table">
+        <thead>
+          <tr><th>Thao tác</th><th>Cách thực hiện</th><th>Phím tắt</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Remove Column</strong></td><td>Chọn cột → Home → Remove Columns</td><td><kbd>Delete</kbd></td></tr>
+          <tr><td><strong>Remove Other Columns</strong></td><td>Chọn cột giữ lại → Home → Remove Other Columns</td><td>—</td></tr>
+          <tr><td><strong>Rename Column</strong></td><td>Double-click header cột</td><td><kbd>F2</kbd></td></tr>
+          <tr><td><strong>Duplicate Column</strong></td><td>Chuột phải → Duplicate Column</td><td>—</td></tr>
+          <tr><td><strong>Move Column</strong></td><td>Chuột phải → Move → Left/Right/Begin/End</td><td>—</td></tr>
+          <tr><td><strong>Reorder Columns</strong></td><td>Kéo-thả header cột</td><td>—</td></tr>
+        </tbody>
+      </table>
+
+      <div class="info-box tip">
+        <span class="info-icon">💡</span>
+        <div>
+          <strong>Mẹo:</strong> Sử dụng <strong>Remove Other Columns</strong> thay vì Remove Columns khi bạn chỉ cần giữ lại vài cột. Điều này đảm bảo query vẫn hoạt động đúng khi nguồn dữ liệu có thêm cột mới.
+        </div>
+      </div>
+
+      <h2>8.2 Thay đổi Data Type (Kiểu dữ liệu)</h2>
+      <p>Việc đặt đúng kiểu dữ liệu rất quan trọng để đảm bảo phép tính chính xác:</p>
+
+      <h3>Cách thay đổi</h3>
+      <ul>
+        <li><strong>Cách 1:</strong> Nhấp vào icon kiểu dữ liệu trên header cột (ABC, 123, 📅...)</li>
+        <li><strong>Cách 2:</strong> Chọn cột → Transform → <strong>Data Type</strong> → chọn kiểu</li>
+        <li><strong>Cách 3:</strong> Chuột phải → <strong>Change Type</strong></li>
+      </ul>
+
+      <h3>Các kiểu dữ liệu phổ biến</h3>
+      <table class="styled-table">
+        <thead><tr><th>Icon</th><th>Kiểu</th><th>Mô tả</th><th>Ví dụ</th></tr></thead>
+        <tbody>
+          <tr><td>ABC</td><td><strong>Text</strong></td><td>Văn bản, chuỗi ký tự</td><td>"Nguyễn Văn A"</td></tr>
+          <tr><td>123</td><td><strong>Whole Number</strong></td><td>Số nguyên</td><td>42, -15, 0</td></tr>
+          <tr><td>1.2</td><td><strong>Decimal Number</strong></td><td>Số thập phân</td><td>3.14, 99.9</td></tr>
+          <tr><td>💲</td><td><strong>Currency</strong></td><td>Số tiền tệ</td><td>$1,234.56</td></tr>
+          <tr><td>📅</td><td><strong>Date</strong></td><td>Ngày</td><td>15/03/2024</td></tr>
+          <tr><td>🕐</td><td><strong>Time</strong></td><td>Giờ</td><td>14:30:00</td></tr>
+          <tr><td>📅🕐</td><td><strong>Date/Time</strong></td><td>Ngày + giờ</td><td>15/03/2024 14:30</td></tr>
+          <tr><td>✅❌</td><td><strong>True/False</strong></td><td>Logic Boolean</td><td>true, false</td></tr>
+        </tbody>
+      </table>
+
+      <div class="info-box warning">
+        <span class="info-icon">⚠️</span>
+        <div>
+          <strong>Lưu ý:</strong> Khi thay đổi kiểu dữ liệu, nếu có giá trị không thể chuyển đổi (ví dụ: "abc" → Number), ô đó sẽ hiển thị <span class="inline-code">Error</span>. Kiểm tra Column Quality để phát hiện lỗi.
+        </div>
+      </div>
+
+      <h2>8.3 Custom Column (Cột tùy chỉnh)</h2>
+      <p>Tạo cột mới với công thức M tùy chỉnh — tương tự như thêm công thức trong Excel:</p>
+
+      <h3>Cách tạo</h3>
+      <ol>
+        <li>Tab <strong>Add Column</strong> → <strong>Custom Column</strong></li>
+        <li>Đặt tên cột mới</li>
+        <li>Viết công thức M trong ô "Custom column formula"</li>
+        <li>Tham chiếu cột bằng cú pháp: <span class="inline-code">[TênCột]</span></li>
+      </ol>
+
+      <h3>Các ví dụ công thức</h3>
+      <div class="code-block">
+        <div class="code-header"><span>M Language - Custom Column</span></div>
+        <pre><code>// Tính thành tiền
+= [SoLuong] * [DonGia]
+
+// Tính phần trăm
+= [DoanhThu] / [TongDoanhThu] * 100
+
+// Gộp chuỗi
+= [Ho] & " " & [Ten]
+
+// Tính toán với ngày
+= Date.Year([NgayDat])
+
+// Chuỗi ký tự
+= Text.Upper([HoTen])
+
+// Kiểm tra điều kiện
+= if [Tuoi] >= 18 then "Trưởng thành" else "Vị thành niên"</code></pre>
+      </div>
+
+      <h2>8.4 Conditional Column (Cột điều kiện)</h2>
+      <p>Tạo cột mới dựa trên điều kiện if-then-else với giao diện trực quan (không cần viết code):</p>
+
+      <h3>Cách tạo</h3>
+      <ol>
+        <li>Tab <strong>Add Column</strong> → <strong>Conditional Column</strong></li>
+        <li>Đặt tên cột mới</li>
+        <li>Thiết lập các điều kiện:
+          <ul>
+            <li>Column name: cột để kiểm tra</li>
+            <li>Operator: equals, contains, begins with, is greater than...</li>
+            <li>Value: giá trị so sánh</li>
+            <li>Output: giá trị kết quả khi điều kiện đúng</li>
+          </ul>
+        </li>
+        <li>Nhấn <strong>Add Clause</strong> để thêm điều kiện (else if)</li>
+        <li>Thiết lập giá trị <strong>Otherwise</strong> (else)</li>
+      </ol>
+
+      <h3>Ví dụ: Phân loại khách hàng</h3>
+      <table class="styled-table">
+        <thead><tr><th>Điều kiện</th><th>Output</th></tr></thead>
+        <tbody>
+          <tr><td>Nếu [DoanhThu] ≥ 100.000.000</td><td>"VIP"</td></tr>
+          <tr><td>Nếu [DoanhThu] ≥ 50.000.000</td><td>"Gold"</td></tr>
+          <tr><td>Nếu [DoanhThu] ≥ 10.000.000</td><td>"Silver"</td></tr>
+          <tr><td>Otherwise</td><td>"Standard"</td></tr>
+        </tbody>
+      </table>
+
+      <h2>8.5 Index Column (Cột chỉ mục)</h2>
+      <p>Thêm cột đánh số thứ tự tự động:</p>
+      <ul>
+        <li>Tab Add Column → <strong>Index Column</strong></li>
+        <li>Tùy chọn:
+          <ul>
+            <li><strong>From 0:</strong> Bắt đầu từ 0 (0, 1, 2...)</li>
+            <li><strong>From 1:</strong> Bắt đầu từ 1 (1, 2, 3...)</li>
+            <li><strong>Custom:</strong> Chọn giá trị bắt đầu và bước nhảy</li>
+          </ul>
+        </li>
+      </ul>
+
+      <h2>8.6 Column from Examples</h2>
+      <p>Tính năng thông minh — Power Query sẽ <strong>tự đoán công thức</strong> dựa trên ví dụ bạn nhập:</p>
+
+      <ol>
+        <li>Tab Add Column → <strong>Column from Examples</strong></li>
+        <li>Chọn <strong>From All Columns</strong> hoặc <strong>From Selection</strong></li>
+        <li>Nhập giá trị mẫu vào cột mới cho 2-3 dòng đầu</li>
+        <li>Power Query sẽ tự xác định pattern và điền giá trị cho các dòng còn lại</li>
+        <li>Nếu đúng → nhấn OK. Nếu sai → nhập thêm ví dụ để tinh chỉnh</li>
+      </ol>
+
+      <div class="info-box tip">
+        <span class="info-icon">💡</span>
+        <div>
+          <strong>Ứng dụng tuyệt vời:</strong> Trích xuất năm từ ngày, phần đầu của email, tạo mã tự động, format số điện thoại... mà không cần nhớ cú pháp M language!
+        </div>
+      </div>
+
+      <h2>8.7 Replace Values (Thay thế giá trị)</h2>
+      <p>Tìm và thay thế giá trị trong cột:</p>
+      <ol>
+        <li>Chọn cột → Transform → <strong>Replace Values</strong></li>
+        <li>Nhập giá trị cần tìm (Value to Find) và giá trị thay thế (Replace With)</li>
+      </ol>
+
+      <h3>Mẹo hữu ích</h3>
+      <ul>
+        <li>Thay thế <span class="inline-code">null</span> bằng giá trị mặc định: Value to Find = <strong>null</strong></li>
+        <li>Thay thế chuỗi rỗng: Value to Find = "" (chuỗi rỗng)</li>
+        <li>Xóa nội dung: Replace With = "" (chuỗi rỗng)</li>
+      </ul>
+
+      <h2>8.8 Extract (Trích xuất)</h2>
+      <p>Trích xuất phần dữ liệu cụ thể từ cột text:</p>
+
+      <table class="styled-table">
+        <thead><tr><th>Chức năng Extract</th><th>Mô tả</th><th>Ví dụ</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Length</strong></td><td>Độ dài chuỗi</td><td>"Hello" → 5</td></tr>
+          <tr><td><strong>First Characters</strong></td><td>N ký tự đầu</td><td>"Hello" (3) → "Hel"</td></tr>
+          <tr><td><strong>Last Characters</strong></td><td>N ký tự cuối</td><td>"Hello" (2) → "lo"</td></tr>
+          <tr><td><strong>Range</strong></td><td>Ký tự từ vị trí X, N ký tự</td><td>"Hello" (1,3) → "ell"</td></tr>
+          <tr><td><strong>Text Before Delimiter</strong></td><td>Text trước ký tự phân cách</td><td>"user@email.com" (@) → "user"</td></tr>
+          <tr><td><strong>Text After Delimiter</strong></td><td>Text sau ký tự phân cách</td><td>"user@email.com" (@) → "email.com"</td></tr>
+          <tr><td><strong>Text Between Delimiters</strong></td><td>Text giữa 2 ký tự phân cách</td><td>"(HCM)" → "HCM"</td></tr>
+        </tbody>
+      </table>
+
+      <p>Truy cập: Tab <strong>Transform</strong> → <strong>Extract</strong> hoặc Tab <strong>Add Column</strong> → <strong>Extract</strong></p>
+
+      <div class="info-box note">
+        <span class="info-icon">📋</span>
+        <div>
+          <strong>Khác biệt:</strong> Extract từ tab <strong>Transform</strong> sẽ <em>thay thế</em> cột gốc. Extract từ tab <strong>Add Column</strong> sẽ <em>tạo cột mới</em> và giữ nguyên cột gốc.
+        </div>
+      </div>
+
+      <h2>8.9 Using Locale (Định dạng theo vùng)</h2>
+      <p>Khi dữ liệu đến từ các quốc gia khác nhau, định dạng ngày và số có thể khác nhau. <strong>Using Locale</strong> giúp chuyển đổi chính xác:</p>
+
+      <h3>Cách sử dụng</h3>
+      <ol>
+        <li>Chọn cột → Right-click → <strong>Change Type</strong> → <strong>Using Locale...</strong></li>
+        <li>Chọn Data Type và <strong>Locale</strong> (ngôn ngữ vùng)</li>
+      </ol>
+
+      <h3>Ví dụ định dạng theo Locale</h3>
+      <table class="styled-table">
+        <thead><tr><th>Giá trị gốc (text)</th><th>Locale</th><th>Kết quả</th></tr></thead>
+        <tbody>
+          <tr><td>"03/15/2024"</td><td>English (US)</td><td>15/03/2024 ✅</td></tr>
+          <tr><td>"15.03.2024"</td><td>German</td><td>15/03/2024 ✅</td></tr>
+          <tr><td>"1.234,56"</td><td>Vietnamese</td><td>1234.56 ✅</td></tr>
+          <tr><td>"1,234.56"</td><td>English (US)</td><td>1234.56 ✅</td></tr>
+        </tbody>
+      </table>
+
+      <div class="code-block">
+        <div class="code-header"><span>M Language - Using Locale</span></div>
+        <pre><code>// Chuyển text thành Date với locale Mỹ (MM/DD/YYYY)
+= Table.TransformColumnTypes(
+    PreviousStep,
+    {{"NgayDat", type date}},
+    "en-US"  // Locale
+)
+
+// Chuyển text thành Number với locale Việt Nam (dấu phẩy thập phân)
+= Table.TransformColumnTypes(
+    PreviousStep,
+    {{"GiaTri", type number}},
+    "vi-VN"  // Locale
+)</code></pre>
+      </div>
+
+      <h2>8.10 Column Quality, Distribution & Profile</h2>
+      <p>Ba công cụ phân tích chất lượng dữ liệu cực kỳ hữu ích trong tab <strong>View</strong>:</p>
+
+      <h3>Column Quality</h3>
+      <p>Hiển thị thanh phần trăm ở đầu mỗi cột với 3 trạng thái:</p>
+      <ul>
+        <li><strong style="color:#28a745;">Valid (Xanh):</strong> Giá trị hợp lệ</li>
+        <li><strong style="color:#dc3545;">Error (Đỏ):</strong> Giá trị bị lỗi</li>
+        <li><strong style="color:#6c757d;">Empty (Xám):</strong> Giá trị trống/null</li>
+      </ul>
+
+      <h3>Column Distribution</h3>
+      <p>Hiển thị biểu đồ phân bố giá trị cho mỗi cột:</p>
+      <ul>
+        <li><strong>Distinct:</strong> Số giá trị khác nhau</li>
+        <li><strong>Unique:</strong> Số giá trị xuất hiện đúng 1 lần</li>
+        <li>Bar chart trực quan cho thấy sự phân bố</li>
+      </ul>
+
+      <h3>Column Profile</h3>
+      <p>Thông tin thống kê chi tiết cho cột đang chọn:</p>
+      <ul>
+        <li><strong>Cột Text:</strong> Count, Empty, Distinct, Unique, Max/Min Length, giá trị phổ biến nhất</li>
+        <li><strong>Cột Number:</strong> Count, Error, Min, Max, Average, Standard Deviation, Count of Zero, Even, Odd</li>
+        <li><strong>Cột Date:</strong> Count, Earliest, Latest</li>
+      </ul>
+
+      <div class="info-box warning">
+        <span class="info-icon">⚠️</span>
+        <div>
+          <strong>Lưu ý quan trọng:</strong> Mặc định, Column Profile chỉ phân tích <strong>1,000 dòng đầu tiên</strong>. Để phân tích toàn bộ dữ liệu, nhấp vào link trên Status Bar: <em>"Column profiling based on top 1000 rows"</em> → chọn <strong>"Based on entire dataset"</strong>.
+        </div>
+      </div>
+
+      <p>Bật tính năng: Tab <strong>View</strong> → ☑️ Column Quality, ☑️ Column Distribution, ☑️ Column Profile</p>
+
+      <h2>8.11 Error Types chi tiết</h2>
+      <p>Power Query phân loại lỗi theo nguồn gốc. Hiểu Error Types giúp xử lý chính xác:</p>
+
+      <table class="styled-table">
+        <thead><tr><th>Error Type</th><th>Nguyên nhân</th><th>Ví dụ</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>Expression.Error</strong></td>
+            <td>Lỗi trong biểu thức hoặc tính toán</td>
+            <td>Chia cho 0, truy cập cột không tồn tại</td>
+          </tr>
+          <tr>
+            <td><strong>DataSource.Error</strong></td>
+            <td>Không thể kết nối hoặc đọc nguồn</td>
+            <td>File bị xóa, server ngắt, quyền truy cập</td>
+          </tr>
+          <tr>
+            <td><strong>DataFormat.Error</strong></td>
+            <td>Dữ liệu không đúng định dạng mong đợi</td>
+            <td>Text "abc" chuyển thành Number</td>
+          </tr>
+          <tr>
+            <td><strong>Formula.Firewall</strong></td>
+            <td>Conflict Privacy Levels giữa các nguồn</td>
+            <td>Kết hợp Public + Private data source</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>8.12 Error Handler Pattern nâng cao</h2>
+      <p>Dùng <span class="inline-code">try</span> để bắt lỗi và lấy thông tin chi tiết:</p>
+
+      <div class="code-block">
+        <div class="code-header"><span>M Language - Error Handler nâng cao</span></div>
+        <pre><code>// try trả về Record với 2 trường: HasError và Value
+let
+    result = try Number.From([GiaTri])
+in
+    if result[HasError] then
+        "Lỗi: " & result[Error][Message]
+    else
+        result[Value]
+
+// Pattern: Kiểm tra lỗi từng cột
+= Table.AddColumn(Source, "Status",
+    each if try [SoLuong] * [DonGia] then "OK"
+         else "Error: " & (try [SoLuong] * [DonGia])[Error][Message]
+)
+
+// Pattern: Log lỗi ra file
+= Table.AddColumn(Source, "ErrorLog",
+    each let r = try [CotTinhToan]
+         in if r[HasError]
+            then [Reason = r[Error][Reason], Message = r[Error][Message]]
+            else null
+)</code></pre>
+      </div>
+
+      <div class="info-box tip">
+        <span class="info-icon">💡</span>
+        <div>
+          <strong>Best Practice:</strong> Khi xử lý dữ liệu từ nguồn bên ngoài, luôn bọc các phép tính quan trọng bằng <span class="inline-code">try...otherwise</span> để tránh toàn bộ query bị fail vì 1 dòng lỗi.
+        </div>
+      </div>
+
+      <h2>8.13 Remove Columns by Pattern (Xóa cột theo tên mẫu)</h2>
+      <p>Khi import dữ liệu có nhiều cột thừa với tên theo pattern (vd: "Column1", "Column2"...), xóa hàng loạt bằng M:</p>
+      <div class="code-block">
+        <div class="code-header"><span>M Language - Remove Columns by Pattern</span></div>
+        <pre><code>// Xóa tất cả cột có tên bắt đầu bằng "Column"
+let
+    AllCols = Table.ColumnNames(Source),
+    ColsToRemove = List.Select(AllCols,
+        each Text.StartsWith(_, "Column")),
+    Result = Table.RemoveColumns(Source, ColsToRemove)
+in Result
+
+// Xóa cột chứa từ "temp" hoặc "test"
+let
+    AllCols = Table.ColumnNames(Source),
+    ColsToRemove = List.Select(AllCols,
+        each Text.Contains(Text.Lower(_), "temp")
+          or Text.Contains(Text.Lower(_), "test")),
+    Result = Table.RemoveColumns(Source, ColsToRemove)
+in Result
+
+// CHỈ GIỮ cột có tên nằm trong danh sách
+let
+    ColsToKeep = {"MaNV", "HoTen", "PhongBan", "Luong"},
+    Result = Table.SelectColumns(Source, ColsToKeep)
+in Result</code></pre>
+      </div>
+
+      <div class="info-box tip">
+        <span class="info-icon">💡</span>
+        <div>
+          <strong>Pro tip:</strong> Kết hợp với <span class="inline-code">Table.ColumnNames</span> + <span class="inline-code">List.Select</span> để xử lý cột <em>động</em> — rất hữu ích khi số cột thay đổi giữa các lần refresh.
+        </div>
+      </div>
+
+      <h2>8.14 Data Type Best Practices</h2>
+      <p>Kiểu dữ liệu là nguồn lỗi phổ biến nhất trong Power Query. Các best practices:</p>
+
+      <h3>Auto-Detect Pitfalls (bẫy tự nhận dạng)</h3>
+      <div class="info-box warning">
+        <span class="info-icon">⚠️</span>
+        <div>
+          <strong>Cẩn thận với "Changed Type" tự động!</strong> Power Query thường tự thêm bước "Changed Type" dựa trên 200 dòng đầu tiên. Điều này có thể sai nếu:
+          <ul style="margin-top:6px;">
+            <li>200 dòng đầu toàn số, nhưng dòng 201+ có text → lỗi chuyển đổi</li>
+            <li>Ngày format "01/02/2024": là 1/2 hay 2/1? (phụ thuộc Locale)</li>
+            <li>Số "1.000" là 1 hay 1000? (phụ thuộc dấu phân cách)</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3>Using Locale (chỉ định vùng miền)</h3>
+      <p>Khi data có format khác Locale mặc định, dùng <strong>Using Locale</strong> để parse đúng:</p>
+      <div class="code-block">
+        <div class="code-header"><span>M Language - Using Locale</span></div>
+        <pre><code>// Ngày Mỹ (MM/DD/YYYY) trên máy VN
+= Table.TransformColumnTypes(Source,
+    {{"Ngay", type date}}, "en-US")
+
+// Ngày Anh (DD/MM/YYYY)
+= Table.TransformColumnTypes(Source,
+    {{"Ngay", type date}}, "en-GB")
+
+// Số Đức (1.000,50 = một nghìn phẩy năm mươi)
+= Table.TransformColumnTypes(Source,
+    {{"Gia", type number}}, "de-DE")</code></pre>
+      </div>
+
+      <h3>Checklist kiểu dữ liệu</h3>
+      <table class="styled-table">
+        <thead><tr><th>Loại</th><th>Kiểm tra</th><th>Best Practice</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Date</strong></td><td>Format DD/MM hay MM/DD?</td><td>Luôn chỉ định Locale</td></tr>
+          <tr><td><strong>Number</strong></td><td>Dấu phẩy hay chấm?</td><td>Dùng Using Locale cho data quốc tế</td></tr>
+          <tr><td><strong>Text</strong></td><td>Encoding đúng? UTF-8/ANSI?</td><td>Xác nhận encoding khi import</td></tr>
+          <tr><td><strong>Boolean</strong></td><td>0/1, True/False, Yes/No?</td><td>Chuẩn hóa trước khi chuyển type</td></tr>
+        </tbody>
+      </table>
+
+      <h2>8.15 Named Ranges & Dynamic Arrays từ Power Query</h2>
+      <p>Kết hợp Power Query output với <strong>Dynamic Arrays</strong> (Excel 365) để tạo dữ liệu linh hoạt:</p>
+
+      <h3>Tạo Named Range từ PQ Table</h3>
+      <ol>
+        <li>Load PQ → Excel Table (VD: tên Table = <code>tbl_SanPham</code>)</li>
+        <li><strong>Formulas → Name Manager → New</strong></li>
+        <li>Name: <code>rng_DanhMuc</code>, Refers to: <code>=UNIQUE(tbl_SanPham[DanhMuc])</code></li>
+      </ol>
+      <p>→ Named Range tự cập nhật khi Refresh Power Query!</p>
+
+      <h3>Dynamic Arrays kết hợp PQ</h3>
+      <div class="code-block">
+        <div class="code-header"><span>Excel Formulas (365)</span></div>
+        <pre><code>// Danh sách unique từ PQ table
+= UNIQUE(tbl_DonHang[TenSP])
+
+// Lọc + Sắp xếp từ PQ output
+= SORT(FILTER(tbl_DonHang,
+    tbl_DonHang[Thang]=MONTH(TODAY())),
+    6, -1)  // Sort theo cột 6 giảm dần
+
+// Top 5 sản phẩm bán chạy
+= TAKE(SORT(UNIQUE(
+    CHOOSECOLS(tbl_DonHang, 3, 6)),  // TenSP, ThanhTien
+    2, -1), 5)  // Sort col 2 desc, lấy 5
+
+// Dropdown Data Validation
+// Data → Validation → List → =rng_DanhMuc</code></pre>
+      </div>
+      <div class="info-box tip">
+        <span class="info-icon">💡</span>
+        <div>
+          Power Query xử lý ETL (nặng), Dynamic Arrays xử lý trình bày (nhẹ). Kết hợp cả 2 = <strong>giải pháp hoàn hảo</strong>.
+        </div>
+      </div>
+
+      <h2>8.16 Column from Examples (Tạo cột từ ví dụ)</h2>
+      <p>Power Query có thể <strong>tự đoán công thức</strong> khi bạn chỉ cần nhập vài ví dụ:</p>
+
+      <h3>Cách dùng</h3>
+      <ol>
+        <li><strong>Add Column → Column from Examples → From All Columns</strong></li>
+        <li>Nhập <strong>1-3 giá trị mẫu</strong> ở cột mới</li>
+        <li>Power Query <strong>tự nhận dạng pattern</strong> và điền toàn bộ</li>
+        <li>Kiểm tra kết quả → OK</li>
+      </ol>
+
+      <h3>Ví dụ thực tế</h3>
+      <table class="styled-table">
+        <thead><tr><th>Dữ liệu gốc</th><th>Bạn nhập ví dụ</th><th>PQ tự tạo</th></tr></thead>
+        <tbody>
+          <tr><td>"Nguyễn Văn An"</td><td>nhập: "NV An"</td><td>Tự tạo: rút gọn Họ + Tên</td></tr>
+          <tr><td>"2024-03-15"</td><td>nhập: "Tháng 03/2024"</td><td>Tự tạo: format lại ngày</td></tr>
+          <tr><td>"an.nguyen@abc.com"</td><td>nhập: "abc.com"</td><td>Tự tạo: extract domain</td></tr>
+          <tr><td>"SP-001-VN"</td><td>nhập: "001"</td><td>Tự tạo: extract mã giữa</td></tr>
+        </tbody>
+      </table>
+
+      <div class="info-box tip">
+        <span class="info-icon">💡</span>
+        <div>
+          <strong>Khi nào dùng Column from Examples?</strong> Khi bạn biết kết quả mong muốn nhưng chưa biết hàm M nào cần dùng. PQ sẽ viết công thức cho bạn — bạn có thể xem và học từ đó!
+        </div>
+      </div>
+
+      <!-- Practice -->
+      <div class="practice-box">
+        <h3>Bài tập 8.1: Custom Column — Tính toán</h3>
+        <p><strong>Mục tiêu:</strong> Tạo cột tính toán với công thức M</p>
+        <ol>
+          <li>Tạo bảng:
+            <table class="styled-table" style="margin:8px 0;">
+              <thead><tr><th>TenSP</th><th>GiaNhap</th><th>GiaBan</th><th>SoLuong</th></tr></thead>
+              <tbody>
+                <tr><td>Laptop Dell</td><td>12000000</td><td>15000000</td><td>10</td></tr>
+                <tr><td>Chuột Logitech</td><td>250000</td><td>350000</td><td>50</td></tr>
+                <tr><td>Bàn phím Corsair</td><td>800000</td><td>1200000</td><td>30</td></tr>
+              </tbody>
+            </table>
+          </li>
+          <li>Mở Power Query</li>
+          <li>Add Column → Custom Column → tạo cột <strong>"DoanhThu"</strong>: <span class="inline-code">[GiaBan] * [SoLuong]</span></li>
+          <li>Add Column → Custom Column → tạo cột <strong>"LoiNhuan"</strong>: <span class="inline-code">([GiaBan] - [GiaNhap]) * [SoLuong]</span></li>
+          <li>Add Column → Custom Column → tạo cột <strong>"TyLeLoi"</strong>: <span class="inline-code">([GiaBan] - [GiaNhap]) / [GiaNhap] * 100</span></li>
+          <li>Đổi kiểu dữ liệu cột TyLeLoi → Decimal Number</li>
+          <li>Close & Load</li>
+        </ol>
+      </div>
+
+      <div class="practice-box">
+        <h3>Bài tập 8.2: Conditional Column — Phân loại</h3>
+        <p><strong>Mục tiêu:</strong> Sử dụng Conditional Column để phân nhóm</p>
+        <ol>
+          <li>Tạo bảng nhân viên:
+            <table class="styled-table" style="margin:8px 0;">
+              <thead><tr><th>HoTen</th><th>PhongBan</th><th>Luong</th><th>NamKinhNghiem</th></tr></thead>
+              <tbody>
+                <tr><td>Nguyễn Văn A</td><td>IT</td><td>25000000</td><td>8</td></tr>
+                <tr><td>Trần Thị B</td><td>KD</td><td>15000000</td><td>3</td></tr>
+                <tr><td>Lê Văn C</td><td>IT</td><td>35000000</td><td>12</td></tr>
+                <tr><td>Phạm Thị D</td><td>HR</td><td>12000000</td><td>1</td></tr>
+                <tr><td>Hoàng Văn E</td><td>KD</td><td>20000000</td><td>5</td></tr>
+              </tbody>
+            </table>
+          </li>
+          <li>Mở Power Query</li>
+          <li>Add Column → <strong>Conditional Column</strong> → tạo cột "CapBac":
+            <ul>
+              <li>Nếu NamKinhNghiem ≥ 10 → "Senior"</li>
+              <li>Nếu NamKinhNghiem ≥ 5 → "Mid-level"</li>
+              <li>Nếu NamKinhNghiem ≥ 2 → "Junior"</li>
+              <li>Otherwise → "Fresher"</li>
+            </ul>
+          </li>
+          <li>Add Column → Conditional Column → tạo cột "MucLuong":
+            <ul>
+              <li>Nếu Luong ≥ 30.000.000 → "Cao"</li>
+              <li>Nếu Luong ≥ 15.000.000 → "Trung bình"</li>
+              <li>Otherwise → "Thấp"</li>
+            </ul>
+          </li>
+          <li>Close & Load</li>
+        </ol>
+      </div>
+
+      <div class="practice-box">
+        <h3>Bài tập 8.3: Extract & Replace — Xử lý email</h3>
+        <p><strong>Mục tiêu:</strong> Thực hành Extract, Replace Values, Column from Examples</p>
+        <ol>
+          <li>Tạo bảng:
+            <table class="styled-table" style="margin:8px 0;">
+              <thead><tr><th>HoTen</th><th>Email</th><th>SoDienThoai</th></tr></thead>
+              <tbody>
+                <tr><td>Nguyễn Văn An</td><td>an.nguyen@company.com</td><td>+84-912-345-678</td></tr>
+                <tr><td>Trần Thị Bình</td><td>binh.tran@gmail.com</td><td>+84-987-654-321</td></tr>
+                <tr><td>Lê Hoàng Châu</td><td>chau.le@company.com</td><td>+84-376-123-456</td></tr>
+              </tbody>
+            </table>
+          </li>
+          <li>Mở Power Query</li>
+          <li><strong>Extract username từ email:</strong> Add Column → Extract → Text Before Delimiter → "@"</li>
+          <li><strong>Extract domain từ email:</strong> Add Column → Extract → Text After Delimiter → "@"</li>
+          <li><strong>Replace +84 thành 0:</strong> Chọn cột SoDienThoai → Transform → Replace Values → "+84" thành "0"</li>
+          <li><strong>Column from Examples:</strong> Thử tạo cột "TenVietTat" bằng cách nhập ví dụ "NVA" cho dòng đầu</li>
+          <li>Close & Load</li>
+        </ol>
+      </div>
+
+      <!-- Navigation -->
+      <div class="chapter-nav">
+        <a href="chuong7-chuyen-doi.html" class="nav-prev">
+          <div>
+            <div class="nav-label">← Chương trước</div>
+            <div class="nav-title">VII. Chuyển đổi cấu trúc</div>
+          </div>
+        </a>
+        <a href="chuong9-cong-thuc-ham.html" class="nav-next">
+          <div>
+            <div class="nav-label">Chương tiếp →</div>
+            <div class="nav-title">IX. Công thức và hàm</div>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <footer class="footer">
+      <p>📘 Giáo trình Power Query Excel — Chuyên đề đào tạo &copy; 2026</p>
+    </footer>
+  </main>
+
+  <script>
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('open');
+      document.getElementById('overlay').classList.toggle('open');
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chương IV: Kết nối và cập nhật dữ liệu - Giáo trình Power Query Excel</title>
+  <meta name="description" content="Kết nối đa nguồn dữ liệu trong Power Query: File, Database, Web, SharePoint. Thiết lập Refresh tự động.">
+  <link rel="stylesheet" href="index.css">
+</head>
+<body>
+  <script>
+    if (sessionStorage.getItem('pq_logged_in') !== 'true') {
+      window.location.href = 'login.html';
+    }
+  </script>
+
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-icon">⚡</div>
+      <div class="brand-text">Power Query Excel<span>Giáo trình đào tạo</span></div>
+    </div>
+    <div class="sidebar-nav">
+      <div class="nav-section">
+        <div class="nav-section-title">Trang chủ</div>
+        <a href="index.html" class="nav-item"><span class="nav-icon">🏠</span>Tổng quan giáo trình</a>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-title">Nội dung chương</div>
+        <a href="chuong1-tong-quan.html" class="nav-item"><span class="nav-number">I</span>Tổng quan về Power Query</a>
+        <a href="chuong2-ung-dung.html" class="nav-item"><span class="nav-number">II</span>Ứng dụng xử lý dữ liệu</a>
+        <a href="chuong3-cai-dat.html" class="nav-item"><span class="nav-number">III</span>Cài đặt và hiển thị</a>
+        <a href="chuong4-ket-noi.html" class="nav-item active"><span class="nav-number">IV</span>Kết nối & cập nhật dữ liệu</a>
+        <a href="chuong5-tach-du-lieu.html" class="nav-item"><span class="nav-number">V</span>Tách dữ liệu</a>
+        <a href="chuong6-gop-du-lieu.html" class="nav-item"><span class="nav-number">VI</span>Gộp dữ liệu</a>
+        <a href="chuong7-chuyen-doi.html" class="nav-item"><span class="nav-number">VII</span>Chuyển đổi cấu trúc</a>
+        <a href="chuong8-column.html" class="nav-item"><span class="nav-number">VIII</span>Xử lý với Column</a>
+        <a href="chuong9-cong-thuc-ham.html" class="nav-item"><span class="nav-number">IX</span>Công thức và hàm</a>
+        <a href="chuong10-lam-sach.html" class="nav-item"><span class="nav-number">X</span>Làm sạch dữ liệu</a>
+        <a href="chuong11-python-r-ai.html" class="nav-item"><span class="nav-number">XI</span>Python, R và AI</a>
+        <a href="chuong12-nang-cao.html" class="nav-item"><span class="nav-number">XII</span>Kỹ thuật nâng cao</a>
+        <a href="chuong13-tu-dong-hoa.html" class="nav-item"><span class="nav-number">XIII</span>Tự động hóa</a>
+      </div>
+    
+      <div class="nav-section">
+        <div class="nav-section-title">Bài tập</div>
+        <a href="bai-tap-tong-hop.html" class="nav-item"><span class="nav-icon">📝</span>20 Bài tập tổng hợp</a>
+      </div>
+    </div>
+  </nav>
+
+  <header class="mobile-header">
+    <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+    <span style="margin-left:12px;font-weight:600;font-size:15px;">Chương IV</span>
+  </header>
+  <div class="sidebar-overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+  <main class="main-content">
+    <div class="chapter-header">
+      <div class="chapter-breadcrumb">
+        <a href="index.html">Trang chủ</a><span class="sep">›</span><span>Chương IV</span>
+      </div>
+      <div class="chapter-number">📘 CHƯƠNG IV</div>
+      <h1>Kết nối và cập nhật dữ liệu trong Power Query</h1>
+      <p class="chapter-desc">Học cách kết nối Power Query với đa dạng nguồn dữ liệu: File, Database, Web, và thiết lập cơ chế cập nhật (Refresh) tự động.</p>
+    </div>
+
+    <div class="chapter-body">
+
+      <h2>4.1 Tổng quan các nguồn dữ liệu</h2>
+      <p>Power Query hỗ trợ kết nối với hàng chục nguồn dữ liệu khác nhau, được phân thành các nhóm chính:</p>
+
+      <div class="figure">
+        <img src="images/data_connections.png" alt="Các nguồn dữ liệu Power Query">
+        <div class="caption">Hình 4.1: Các nguồn dữ liệu được Power Query hỗ trợ</div>
+      </div>
+
+      <div class="comparison-grid">
+        <div class="comparison-card">
+          <div class="comp-icon">📁</div>
+          <h4>From File</h4>
+          <p>Excel, CSV, Text, XML, JSON, PDF, Folder</p>
+        </div>
+        <div class="comparison-card">
+          <div class="comp-icon">🗄️</div>
+          <h4>From Database</h4>
+          <p>SQL Server, Access, Oracle, MySQL, PostgreSQL</p>
+        </div>
+        <div class="comparison-card">
+          <div class="comp-icon">🌐</div>
+          <h4>From Web & Online</h4>
+          <p>Web URL, SharePoint, OData, Dynamics 365</p>
+        </div>
+        <div class="comparison-card">
+          <div class="comp-icon">☁️</div>
+          <h4>From Azure & Cloud</h4>
+          <p>Azure SQL, Azure Blob, Azure HDInsight</p>
+        </div>
+      </div>
+
+      <h2>4.2 Kết nối từ File</h2>
+
+      <h3>4.2.1 Từ File Excel (.xlsx, .xls)</h3>
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h4>Truy cập</h4>
+          <p>Tab Data → Get Data → From File → <strong>From Excel Workbook</strong></p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h4>Chọn file và sheet</h4>
+          <p>Duyệt và chọn file Excel → Navigator hiển thị danh sách Sheet và Table. Nhấp để xem trước (Preview). Chọn <strong>Transform Data</strong> hoặc <strong>Load</strong>.</p>
+        </div>
+      </div>
+
+      <div class="info-box tip">
+        <span class="info-icon">💡</span>
+        <div>
+          <strong>Mẹo:</strong> Nên chọn <strong>Transform Data</strong> thay vì Load trực tiếp, để kiểm tra và xử lý dữ liệu trước khi đưa vào Excel.
+        </div>
+      </div>
+
+      <h3>4.2.2 Từ File CSV / Text</h3>
+      <ol>
+        <li>Tab Data → Get Data → From File → <strong>From Text/CSV</strong></li>
+        <li>Chọn file CSV → Power Query tự động nhận diện:
+          <ul>
+            <li><strong>Delimiter:</strong> Dấu phân cách (phẩy, tab, semicolon...)</li>
+            <li><strong>Encoding:</strong> Mã hóa ký tự (UTF-8, Unicode, ANSI...)</li>
+            <li><strong>Data Type Detection:</strong> Tự động nhận diện kiểu dữ liệu</li>
+          </ul>
+        </li>
+        <li>Xem trước dữ liệu → chọn Transform Data hoặc Load</li>
+      </ol>
+
+      <div class="info-box warning">
+        <span class="info-icon">⚠️</span>
+        <div>
+          <strong>Lưu ý về Encoding:</strong> Với file CSV tiếng Việt, đôi khi bị lỗi font. Hãy thử chọn <strong>UTF-8 (65001)</strong> trong phần File Origin/Encoding để hiển thị đúng dấu tiếng Việt.
+        </div>
+      </div>
+
+      <h3>4.2.3 Từ Folder (Nhiều file cùng loại)</h3>
+      <p>Đây là tính năng mạnh mẽ để gộp nhiều file trong một thư mục:</p>
+      <ol>
+        <li>Tab Data → Get Data → From File → <strong>From Folder</strong></li>
+        <li>Chọn đường dẫn thư mục chứa các file</li>
+        <li>Power Query liệt kê tất cả file → chọn <strong>Combine & Transform Data</strong></li>
+        <li>Chọn file mẫu (sample file) để xác định cấu trúc</li>
+        <li>Tất cả file sẽ được gộp tự động với cột <span class="inline-code">Source.Name</span> cho biết dữ liệu từ file nào</li>
+      </ol>
+
+      <h3>4.2.4 Từ File JSON</h3>
+      <ol>
+        <li>Tab Data → Get Data → From File → <strong>From JSON</strong></li>
+        <li>Chọn file .json → Power Query phân tích cấu trúc</li>
+        <li>Sử dụng các nút <strong>Expand</strong> (↔️) để mở rộng các cấp (nested objects/arrays)</li>
+        <li>Nhấp vào <span class="inline-code">List</span> hoặc <span class="inline-code">Record</span> để drill-down vào dữ liệu lồng nhau</li>
+      </ol>
+
+      <h2>4.3 Kết nối từ Database</h2>
+
+      <h3>4.3.1 SQL Server</h3>
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h4>Kết nối</h4>
+          <p>Tab Data → Get Data → From Database → <strong>From SQL Server Database</strong></p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h4>Nhập thông tin</h4>
+          <p>Server name: <span class="inline-code">tên_server</span> hoặc <span class="inline-code">server\instance</span>. Database name (tùy chọn): tên database cụ thể. Có thể nhập SQL statement trực tiếp trong Advanced options.</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h4>Xác thực</h4>
+          <p>Chọn phương thức xác thực: <strong>Windows</strong> (tài khoản Windows hiện tại) hoặc <strong>Database</strong> (nhập username/password SQL).</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <h4>Chọn bảng</h4>
+          <p>Navigator hiển thị danh sách tables và views → chọn bảng cần import → Transform Data.</p>
+        </div>
+      </div>
+
+      <h3>4.3.2 Microsoft Access</h3>
+      <ol>
+        <li>Tab Data → Get Data → From Database → <strong>From Microsoft Access Database</strong></li>
+        <li>Chọn file <span class="inline-code">.accdb</span> hoặc <span class="inline-code">.mdb</span></li>
+        <li>Navigator hiển thị Tables và Queries từ Access</li>
+        <li>Chọn bảng cần import → Transform Data</li>
+      </ol>
+
+      <h2>4.4 Kết nối từ Web</h2>
+      <p>Power Query có thể lấy dữ liệu bảng (table) từ trang web HTML:</p>
+
+      <ol>
+        <li>Tab Data → Get Data → From Other Sources → <strong>From Web</strong></li>
+        <li>Nhập URL đầy đủ của trang web</li>
+        <li>Chọn chế độ xác thực: <strong>Anonymous</strong> (không cần đăng nhập) hoặc <strong>Basic/OAuth</strong> (cần thông tin đăng nhập)</li>
+        <li>Power Query phân tích trang và liệt kê các bảng tìm được (Table 0, Table 1...)</li>
+        <li>Xem trước và chọn bảng phù hợp → Transform Data</li>
+      </ol>
+
+      <h2>4.5 Cập nhật dữ liệu (Refresh)</h2>
+      <p>Sau khi thiết lập query, bạn có thể cập nhật dữ liệu mới bất cứ lúc nào:</p>
+
+      <h3>Refresh thủ công</h3>
+      <table class="styled-table">
+        <thead>
+          <tr>
+            <th>Phương pháp</th>
+            <th>Cách thực hiện</th>
+            <th>Phạm vi</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Refresh All</strong></td>
+            <td>Tab Data → Refresh All hoặc <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>F5</kbd></td>
+            <td>Tất cả queries trong workbook</td>
+          </tr>
+          <tr>
+            <td><strong>Refresh từng query</strong></td>
+            <td>Right-click vào bảng kết quả → Refresh</td>
+            <td>Chỉ query được chọn</td>
+          </tr>
+          <tr>
+            <td><strong>Refresh từ panel</strong></td>
+            <td>Queries & Connections panel → hover query → nhấn 🔄</td>
+            <td>Chỉ query được chọn</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Refresh tự động</h3>
+      <ol>
+        <li>Right-click vào bảng kết quả → <strong>Table</strong> → <strong>External Data Properties</strong> (hoặc Connection Properties)</li>
+        <li>Cấu hình:
+          <ul>
+            <li>☑️ <strong>Refresh every X minutes:</strong> Tự động refresh theo chu kỳ (ví dụ: 30 phút)</li>
+            <li>☑️ <strong>Refresh data when opening the file:</strong> Tự động refresh khi mở file Excel</li>
+            <li>☑️ <strong>Enable background refresh:</strong> Refresh nền, không chặn thao tác người dùng</li>
+          </ul>
+        </li>
+      </ol>
+
+      <h2>4.6 Quản lý Data Source Settings</h2>
+      <p>Khi đường dẫn file thay đổi hoặc cần cập nhật thông tin kết nối:</p>
+      <ol>
+        <li>Tab Data → Get Data → <strong>Data Source Settings</strong></li>
+        <li>Danh sách tất cả nguồn dữ liệu đã kết nối sẽ hiển thị</li>
+        <li>Chọn nguồn cần chỉnh sửa → <strong>Change Source</strong> (đổi đường dẫn) hoặc <strong>Edit Permissions</strong> (đổi quyền truy cập)</li>
+        <li>Nhấn <strong>Clear Permissions</strong> nếu muốn xóa thông tin xác thực đã lưu</li>
+      </ol>
+
+      <div class="info-box tip">
+        <span class="info-icon">💡</span>
+        <div>
+          <strong>Mẹo:</strong> Khi chia sẻ file Excel có Power Query cho đồng nghiệp, đảm bảo rằng họ cũng có quyền truy cập vào các nguồn dữ liệu (file đường dẫn, database, SharePoint...).
+        </div>
+      </div>
+
+      <h2>4.7 Kết nối từ PDF</h2>
+      <p>Power Query có thể trích xuất bảng dữ liệu từ file PDF:</p>
+      <ol>
+        <li>Tab Data → Get Data → From File → <strong>From PDF</strong></li>
+        <li>Chọn file PDF</li>
+        <li>Navigator hiển thị danh sách Tables và Pages tìm được</li>
+        <li>Chọn bảng phù hợp → Transform Data</li>
+      </ol>
+
+      <div class="info-box warning">
+        <span class="info-icon">⚠️</span>
+        <div>
+          <strong>Lưu ý:</strong> Chất lượng import từ PDF phụ thuộc vào cấu trúc file PDF. File PDF tạo từ scan ảnh sẽ <strong>không thể</strong> trích xuất — chỉ PDF có text thực mới hoạt động. Cần kiểm tra và làm sạch dữ liệu kỹ sau khi import.
+        </div>
+      </div>
+
+      <h2>4.8 Kết nối từ XML</h2>
+      <ol>
+        <li>Tab Data → Get Data → From File → <strong>From XML</strong></li>
+        <li>Chọn file <span class="inline-code">.xml</span></li>
+        <li>Power Query phân tích cấu trúc phân cấp (hierarchical)</li>
+        <li>Sử dụng các nút <strong>Expand</strong> (↔️) để mở rộng nested elements</li>
+        <li>Nhấp vào <span class="inline-code">Table</span> để drill-down vào child elements</li>
+      </ol>
+
+      <h2>4.9 Kết nối từ SharePoint</h2>
+      <h3>SharePoint List</h3>
+      <ol>
+        <li>Tab Data → Get Data → From Online Services → <strong>From SharePoint List</strong></li>
+        <li>Nhập URL site SharePoint (ví dụ: <span class="inline-code">https://company.sharepoint.com/sites/mysite</span>)</li>
+        <li>Xác thực bằng tài khoản Microsoft 365</li>
+        <li>Navigator hiển thị tất cả lists → chọn list cần import</li>
+      </ol>
+
+      <h3>SharePoint Folder</h3>
+      <ol>
+        <li>Tab Data → Get Data → From File → <strong>From SharePoint Folder</strong></li>
+        <li>Nhập URL site SharePoint</li>
+        <li>Power Query liệt kê tất cả file trong document library</li>
+        <li>Lọc và Combine files tương tự From Folder</li>
+      </ol>
+
+      <h3>OData Feed</h3>
+      <ol>
+        <li>Tab Data → Get Data → From Other Sources → <strong>From OData Feed</strong></li>
+        <li>Nhập URL endpoint OData</li>
+        <li>Xác thực nếu cần</li>
+        <li>Navigator hiển thị các entities → chọn và Transform Data</li>
+      </ol>
+
+      <h2>4.10 Native SQL Query</h2>
+      <p>Khi kết nối từ database, bạn có thể viết SQL trực tiếp thay vì chọn toàn bộ bảng:</p>
+
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h4>Mở Advanced Options</h4>
+          <p>Trong dialog kết nối SQL Server, mở rộng <strong>Advanced options</strong></p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h4>Nhập SQL Statement</h4>
+          <p>Viết câu SQL trong ô <strong>SQL statement</strong>:</p>
+        </div>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span>SQL</span></div>
+        <pre><code>SELECT MaSP, TenSP, DonGia, SoLuong
+FROM SanPham
+WHERE DanhMuc = N'Máy tính'
+ORDER BY DonGia DESC</code></pre>
+      </div>
+
+      <div class="info-box tip">
+        <span class="info-icon">💡</span>
+        <div>
+          <strong>Ưu điểm:</strong> Native SQL Query tận dụng Query Folding — server thực thi SQL và chỉ trả về kết quả, giúp tăng hiệu suất đáng kể với database lớn.
+        </div>
+      </div>
+
+      <h2>4.11 Query Folding Indicator</h2>
+      <p>Trong Power Query Editor, bạn có thể kiểm tra xem bước nào được <strong>fold</strong> (đẩy về server xử lý):</p>
+
+      <table class="styled-table">
+        <thead>
+          <tr><th>Icon Applied Steps</th><th>Ý nghĩa</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>✅ <strong>Folded</strong> (có icon xanh)</td>
+            <td>Bước được thực thi trên server — hiệu suất cao</td>
+          </tr>
+          <tr>
+            <td>⚠️ <strong>Not Folded</strong> (icon vàng)</td>
+            <td>Bước xử lý cục bộ — có thể chậm với dữ liệu lớn</td>
+          </tr>
+          <tr>
+            <td>❓ <strong>Unknown</strong></td>
+            <td>Không xác định — phụ thuộc nguồn dữ liệu</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p>Bật indicator: View → <strong>Query Folding Indicators</strong> (có trong Excel 365/Power BI mới nhất).</p>
+
+      <h2>4.12 Fixed Width Files (File cố định cột)</h2>
+      <p>Một số file text không có delimiter mà sử dụng <strong>độ rộng cố định</strong> cho mỗi cột:</p>
+      <ol>
+        <li>Data → Get Data → From File → <strong>From Text/CSV</strong></li>
+        <li>Trong dialog Preview, chọn Delimiter = <strong>Fixed Width</strong></li>
+        <li>Power Query tự detect vị trí cột, hoặc bạn chỉnh bằng cách kéo đường phân cách</li>
+        <li>Transform Data để tinh chỉnh</li>
+      </ol>
+      <div class="code-block">
+        <div class="code-header"><span>M Language - Fixed Width</span></div>
+        <pre><code>// Import file fixed width thủ công
+= Table.SplitColumn(
+    Source, "Column1",
+    Splitter.SplitTextByPositions({0, 10, 30, 45}),
+    {"MaNV", "HoTen", "PhongBan", "Luong"}
+)</code></pre>
+      </div>
+
+      <h2>4.13 Encoding khi import Text/CSV</h2>
+      <p>Khi file CSV chứa ký tự đặc biệt (tiếng Việt, tiếng Nhật...), chọn đúng <strong>Encoding</strong> rất quan trọng:</p>
+      <table class="styled-table">
+        <thead><tr><th>Encoding</th><th>Code Page</th><th>Khi nào dùng</th></tr></thead>
+        <tbody>
+          <tr><td><strong>UTF-8</strong></td><td>65001</td><td>Chuẩn quốc tế, hỗ trợ tiếng Việt ✅</td></tr>
+          <tr><td><strong>Windows-1252</strong></td><td>1252</td><td>File từ Windows cũ, không dấu</td></tr>
+          <tr><td><strong>UTF-16 LE</strong></td><td>1200</td><td>File Unicode từ Notepad Windows</td></tr>
+          <tr><td><strong>ANSI</strong></td><td>1258</td><td>File tiếng Việt cũ (VNI, TCVN)</td></tr>
+        </tbody>
+      </table>
+      <div class="code-block">
+        <div class="code-header"><span>M Language - Chỉ định Encoding</span></div>
+        <pre><code>= Csv.Document(
+    File.Contents("D:\Data\DuLieu.csv"),
+    [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]
+)</code></pre>
+      </div>
+
+      <h2>4.14 Dynamic Named Range trong Excel</h2>
+      <p>Khi nguồn dữ liệu trong Excel <em>không phải Table</em>, bạn có thể dùng <strong>Named Range</strong> hoặc truy cập sheet trực tiếp:</p>
+      <div class="code-block">
+        <div class="code-header"><span>M Language - Truy cập Sheet/Named Range</span></div>
+        <pre><code>// Lấy dữ liệu từ Sheet cụ thể
+= Excel.Workbook(File.Contents("D:\Data.xlsx")){[Item="Sheet1", Kind="Sheet"]}[Data]
+
+// Lấy dữ liệu từ Named Range
+= Excel.Workbook(File.Contents("D:\Data.xlsx")){[Item="DuLieuBanHang", Kind="DefinedName"]}[Data]
+
+// Lấy dữ liệu từ Table
+= Excel.CurrentWorkbook(){[Name="BangNhanVien"]}[Content]</code></pre>
+      </div>
+      <div class="info-box tip">
+        <span class="info-icon">💡</span>
+        <div>
+          <strong>Best Practice:</strong> Luôn đặt dữ liệu Excel vào <strong>Table</strong> (Ctrl+T) trước khi import. Table tự mở rộng khi thêm dòng, đảm bảo refresh luôn lấy đủ dữ liệu.
+        </div>
+      </div>
+
+      <h2>4.15 Web Scraping nâng cao</h2>
+      <p>Power Query hỗ trợ nhiều cách lấy dữ liệu từ web:</p>
+
+      <h3>Web.Page vs Web.BrowserContents</h3>
+      <table class="styled-table">
+        <thead><tr><th>Hàm</th><th>Khác biệt</th><th>Khi nào dùng</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><span class="inline-code">Web.Page</span></td>
+            <td>Lấy HTML tĩnh, parse thành bảng tự động</td>
+            <td>Trang web đơn giản có bảng HTML</td>
+          </tr>
+          <tr>
+            <td><span class="inline-code">Web.BrowserContents</span></td>
+            <td>Render JavaScript trước khi lấy HTML</td>
+            <td>Trang web động (React, Angular, SPA)</td>
+          </tr>
+          <tr>
+            <td><span class="inline-code">Web.Contents</span></td>
+            <td>Lấy raw data (JSON, XML, text)</td>
+            <td>REST API, file download</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="code-block">
+        <div class="code-header"><span>M Language - Web Scraping</span></div>
+        <pre><code>// Lấy bảng HTML từ trang web
+let
+    Source = Web.Page(Web.Contents("https://example.com/data")),
+    // Chọn bảng thứ 2 trên trang
+    Data = Source{1}[Data]
+in
+    Data
+
+// Lấy HTML render JavaScript
+let
+    Html = Web.BrowserContents("https://example.com/spa-page"),
+    Source = Web.Page(Html),
+    Data = Source{0}[Data]
+in
+    Data</code></pre>
+      </div>
+
+      <h2>4.16 ODBC & OLEDB Connections</h2>
+      <p>Kết nối với hệ thống cũ hoặc database đặc biệt qua ODBC/OLEDB:</p>
+      <ol>
+        <li>Data → Get Data → From Other Sources → <strong>From ODBC</strong> (hoặc OLEDB)</li>
+        <li>Chọn DSN (Data Source Name) đã cấu hình, hoặc nhập Connection String</li>
+        <li>Xác thực → Navigator → chọn bảng</li>
+      </ol>
+      <div class="code-block">
+        <div class="code-header"><span>M Language - ODBC Connection</span></div>
+        <pre><code>// Kết nối ODBC với Connection String
+= Odbc.DataSource(
+    "Driver={MySQL ODBC 8.0};Server=localhost;Database=mydb;",
+    [HierarchicalNavigation=true]
+)
+
+// Kết nối OLEDB (Access, Oracle...)
+= OleDb.DataSource(
+    "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=D:\Data.accdb;"
+)</code></pre>
+      </div>
+
+      <h2>4.11 Load Options (Tùy chọn tải dữ liệu)</h2>
+      <p>Khi Close & Load, bạn có <strong>4 lựa chọn</strong> về cách tải dữ liệu:</p>
+      <table class="styled-table">
+        <thead><tr><th>Option</th><th>Mô tả</th><th>Khi nào dùng</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Table</strong></td><td>Tải vào worksheet dạng Table</td><td>Xem/chỉnh sửa dữ liệu trực tiếp</td></tr>
+          <tr><td><strong>PivotTable</strong></td><td>Tải trực tiếp vào PivotTable</td><td>Phân tích tổng hợp ngay</td></tr>
+          <tr><td><strong>PivotChart</strong></td><td>Tải vào PivotChart</td><td>Trực quan hóa dữ liệu</td></tr>
+          <tr><td><strong>Connection Only</strong></td><td>Chỉ tạo kết nối, KHÔNG tải vào sheet</td><td>Staging queries, query trung gian</td></tr>
+        </tbody>
+      </table>
+      <p>Cách chọn: <strong>Home → Close & Load → Close & Load To...</strong></p>
+
+      <h2>4.12 Staging Queries (Query trung gian)</h2>
+      <p>Trong thiết kế ETL chuyên nghiệp, bạn tạo <strong>Staging Queries</strong> (Connection Only) làm nguồn cho các query khác:</p>
+      <div class="code-block">
+        <div class="code-header"><span>Ví dụ Staging Pattern</span></div>
+        <pre><code>// stg_DonHang (Connection Only — không tải vào sheet)
+let Source = Csv.Document(File.Contents(pFolder & "DonHang.csv"),
+    [Delimiter=",", Encoding=65001]),
+    Headers = Table.PromoteHeaders(Source),
+    Typed = Table.TransformColumnTypes(Headers, {
+        {"NgayDat", type date}, {"SoLuong", Int64.Type}
+    })
+in Typed
+
+// rpt_DoanhThu (Load to Table — dùng stg_DonHang)
+let Source = stg_DonHang,
+    Grouped = Table.Group(Source, {"ThangDat"},
+        {{"TongDoanhThu", each List.Sum([SoLuong]), type number}})
+in Grouped</code></pre>
+      </div>
+      <div class="info-box tip">
+        <span class="info-icon">💡</span>
+        <div>
+          <strong>Lợi ích Staging:</strong> Giảm trùng lặp code, dễ bảo trì, tối ưu hiệu năng (chuẩn hóa 1 lần, dùng nhiều nơi). Đặt tên prefix <code>stg_</code> để phân biệt.
+        </div>
+      </div>
+
+      <!-- Practice -->
+      <div class="practice-box">
+        <h3>Bài tập 4.1: Kết nối từ CSV</h3>
+        <p><strong>Mục tiêu:</strong> Thực hành import file CSV vào Power Query</p>
+        <ol>
+          <li>Tạo file <span class="inline-code">SanPham.csv</span> bằng Notepad với nội dung:
+            <div class="code-block"><pre><code>MaSP,TenSP,DonGia,SoLuong,DanhMuc
+SP001,Laptop Dell,15000000,50,Máy tính
+SP002,Chuột Logitech,350000,200,Phụ kiện
+SP003,Bàn phím Corsair,1200000,100,Phụ kiện
+SP004,Màn hình Samsung,5500000,75,Màn hình
+SP005,Tai nghe Sony,2800000,150,Phụ kiện</code></pre></div>
+          </li>
+          <li>Lưu file với encoding <strong>UTF-8</strong></li>
+          <li>Mở Excel → Data → Get Data → From File → From Text/CSV</li>
+          <li>Chọn file → kiểm tra Delimiter = Comma, Encoding = UTF-8</li>
+          <li>Transform Data → kiểm tra dữ liệu trong Power Query Editor</li>
+          <li>Đổi kiểu dữ liệu: DonGia và SoLuong → Whole Number</li>
+          <li>Close & Load</li>
+        </ol>
+      </div>
+
+      <div class="practice-box">
+        <h3>Bài tập 4.2: Kết nối từ nhiều file trong folder</h3>
+        <p><strong>Mục tiêu:</strong> Thực hành Combine Files from Folder</p>
+        <ol>
+          <li>Tạo thư mục <span class="inline-code">DoanhThu</span> trên Desktop</li>
+          <li>Tạo 3 file Excel trong thư mục, mỗi file có cùng cấu trúc:
+            <ul>
+              <li><span class="inline-code">DoanhThu_T1.xlsx</span>: Cột MaCH, TenCH, DoanhThu (5 dòng)</li>
+              <li><span class="inline-code">DoanhThu_T2.xlsx</span>: Cùng cấu trúc (5 dòng khác)</li>
+              <li><span class="inline-code">DoanhThu_T3.xlsx</span>: Cùng cấu trúc (5 dòng khác)</li>
+            </ul>
+          </li>
+          <li>Mở Excel mới → Data → Get Data → From File → <strong>From Folder</strong></li>
+          <li>Chọn thư mục DoanhThu → nhấn <strong>Combine & Transform Data</strong></li>
+          <li>Quan sát cột <span class="inline-code">Source.Name</span> cho biết dữ liệu từ file nào</li>
+          <li>Close & Load → kiểm tra dữ liệu 15 dòng (5 × 3 file)</li>
+          <li><strong>Thử thêm file thứ 4:</strong> Tạo <span class="inline-code">DoanhThu_T4.xlsx</span> → đặt vào thư mục → Refresh All → dữ liệu tự động cập nhật!</li>
+        </ol>
+      </div>
+
+      <div class="practice-box">
+        <h3>Bài tập 4.3: Thiết lập Auto Refresh</h3>
+        <p><strong>Mục tiêu:</strong> Cấu hình tự động cập nhật dữ liệu</p>
+        <ol>
+          <li>Sử dụng query từ bài tập 4.1 hoặc 4.2</li>
+          <li>Right-click vào bảng kết quả trong Excel</li>
+          <li>Chọn <strong>Table</strong> → <strong>External Data Properties</strong></li>
+          <li>Đánh dấu ☑️ <strong>Refresh data when opening the file</strong></li>
+          <li>Đánh dấu ☑️ <strong>Refresh every</strong> → nhập <strong>5</strong> minutes</li>
+          <li>Nhấn OK → đóng và mở lại file → quan sát dữ liệu tự động refresh</li>
+        </ol>
+      </div>
+
+      <!-- Navigation -->
+      <div class="chapter-nav">
+        <a href="chuong3-cai-dat.html" class="nav-prev">
+          <div>
+            <div class="nav-label">← Chương trước</div>
+            <div class="nav-title">III. Cài đặt và hiển thị</div>
+          </div>
+        </a>
+        <a href="chuong5-tach-du-lieu.html" class="nav-next">
+          <div>
+            <div class="nav-label">Chương tiếp →</div>
+            <div class="nav-title">V. Tách dữ liệu</div>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <footer class="footer">
+      <p>📘 Giáo trình Power Query Excel — Chuyên đề đào tạo &copy; 2026</p>
+    </footer>
+  </main>
+
+  <script>
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('open');
+      document.getElementById('overlay').classList.toggle('open');
+    }
+  </script>
+</body>
+</html>

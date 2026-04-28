@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chương V: Tách dữ liệu trong Power Query - Giáo trình Power Query Excel</title>
+  <meta name="description" content="Hướng dẫn tách dữ liệu trong Power Query: Split Column by Delimiter, Number of Characters, Positions, Uppercase/Lowercase.">
+  <link rel="stylesheet" href="index.css">
+</head>
+<body>
+  <script>
+    if (sessionStorage.getItem('pq_logged_in') !== 'true') {
+      window.location.href = 'login.html';
+    }
+  </script>
+
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-icon">⚡</div>
+      <div class="brand-text">Power Query Excel<span>Giáo trình đào tạo</span></div>
+    </div>
+    <div class="sidebar-nav">
+      <div class="nav-section">
+        <div class="nav-section-title">Trang chủ</div>
+        <a href="index.html" class="nav-item"><span class="nav-icon">🏠</span>Tổng quan giáo trình</a>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-title">Nội dung chương</div>
+        <a href="chuong1-tong-quan.html" class="nav-item"><span class="nav-number">I</span>Tổng quan về Power Query</a>
+        <a href="chuong2-ung-dung.html" class="nav-item"><span class="nav-number">II</span>Ứng dụng xử lý dữ liệu</a>
+        <a href="chuong3-cai-dat.html" class="nav-item"><span class="nav-number">III</span>Cài đặt và hiển thị</a>
+        <a href="chuong4-ket-noi.html" class="nav-item"><span class="nav-number">IV</span>Kết nối & cập nhật dữ liệu</a>
+        <a href="chuong5-tach-du-lieu.html" class="nav-item active"><span class="nav-number">V</span>Tách dữ liệu</a>
+        <a href="chuong6-gop-du-lieu.html" class="nav-item"><span class="nav-number">VI</span>Gộp dữ liệu</a>
+        <a href="chuong7-chuyen-doi.html" class="nav-item"><span class="nav-number">VII</span>Chuyển đổi cấu trúc</a>
+        <a href="chuong8-column.html" class="nav-item"><span class="nav-number">VIII</span>Xử lý với Column</a>
+        <a href="chuong9-cong-thuc-ham.html" class="nav-item"><span class="nav-number">IX</span>Công thức và hàm</a>
+        <a href="chuong10-lam-sach.html" class="nav-item"><span class="nav-number">X</span>Làm sạch dữ liệu</a>
+        <a href="chuong11-python-r-ai.html" class="nav-item"><span class="nav-number">XI</span>Python, R và AI</a>
+        <a href="chuong12-nang-cao.html" class="nav-item"><span class="nav-number">XII</span>Kỹ thuật nâng cao</a>
+        <a href="chuong13-tu-dong-hoa.html" class="nav-item"><span class="nav-number">XIII</span>Tự động hóa</a>
+      </div>
+    
+      <div class="nav-section">
+        <div class="nav-section-title">Bài tập</div>
+        <a href="bai-tap-tong-hop.html" class="nav-item"><span class="nav-icon">📝</span>20 Bài tập tổng hợp</a>
+      </div>
+    </div>
+  </nav>
+
+  <header class="mobile-header">
+    <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+    <span style="margin-left:12px;font-weight:600;font-size:15px;">Chương V</span>
+  </header>
+  <div class="sidebar-overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+  <main class="main-content">
+    <div class="chapter-header">
+      <div class="chapter-breadcrumb">
+        <a href="index.html">Trang chủ</a><span class="sep">›</span><span>Chương V</span>
+      </div>
+      <div class="chapter-number">📘 CHƯƠNG V</div>
+      <h1>Tách dữ liệu trong Power Query</h1>
+      <p class="chapter-desc">Nắm vững các kỹ thuật Split Column để tách một cột thành nhiều cột dựa trên dấu phân cách, số ký tự, vị trí, hoặc kiểu chữ.</p>
+    </div>
+
+    <div class="chapter-body">
+
+      <h2>5.1 Giới thiệu về Split Column</h2>
+      <p>Trong thực tế, dữ liệu thường được ghi gộn trong một cột (ví dụ: họ và tên trong cùng một ô, mã vùng và số điện thoại, ngày và giờ...). Chức năng <strong>Split Column</strong> trong Power Query cho phép bạn tách chúng ra thành nhiều cột riêng biệt.</p>
+
+      <div class="figure">
+        <img src="images/split_column.png" alt="Split Column trong Power Query">
+        <div class="caption">Hình 5.1: Minh họa tách cột trong Power Query</div>
+      </div>
+
+      <h3>Cách truy cập Split Column</h3>
+      <p>Trong Power Query Editor, chọn cột muốn tách → sử dụng một trong hai cách:</p>
+      <ul>
+        <li><strong>Cách 1:</strong> Tab <strong>Home</strong> → nhóm Transform → <strong>Split Column</strong></li>
+        <li><strong>Cách 2:</strong> Tab <strong>Transform</strong> → <strong>Split Column</strong></li>
+        <li><strong>Cách 3:</strong> Chuột phải lên cột → <strong>Split Column</strong></li>
+      </ul>
+
+      <h2>5.2 Split Column by Delimiter (Theo dấu phân cách)</h2>
+      <p>Phương pháp phổ biến nhất — tách cột dựa trên một ký tự phân cách cụ thể (dấu cách, phẩy, gạch ngang, chấm phẩy...).</p>
+
+      <h3>Các bước thực hiện</h3>
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h4>Chọn cột cần tách</h4>
+          <p>Nhấp vào tiêu đề cột trong Data Preview</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h4>Chọn Split Column → By Delimiter</h4>
+          <p>Home hoặc Transform → Split Column → <strong>By Delimiter</strong></p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h4>Cấu hình</h4>
+          <p>Chọn hoặc nhập dấu phân cách. Chọn vị trí tách:
+            <ul>
+              <li><strong>At each occurrence of the delimiter:</strong> Tách tại mỗi lần xuất hiện</li>
+              <li><strong>At the left-most delimiter:</strong> Tách tại dấu phân cách đầu tiên (từ trái)</li>
+              <li><strong>At the right-most delimiter:</strong> Tách tại dấu phân cách cuối cùng (từ phải)</li>
+            </ul>
+          </p>
+        </div>
+      </div>
+
+      <h3>Ví dụ minh họa</h3>
+      <table class="styled-table">
+        <thead>
+          <tr>
+            <th>Dữ liệu gốc (Họ tên)</th>
+            <th>Delimiter</th>
+            <th>Kết quả Cột 1</th>
+            <th>Kết quả Cột 2</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Nguyễn Văn A</td>
+            <td>Dấu cách (left-most)</td>
+            <td>Nguyễn</td>
+            <td>Văn A</td>
+          </tr>
+          <tr>
+            <td>Nguyễn Văn A</td>
+            <td>Dấu cách (right-most)</td>
+            <td>Nguyễn Văn</td>
+            <td>A</td>
+          </tr>
+          <tr>
+            <td>Nguyễn Văn A</td>
+            <td>Dấu cách (each)</td>
+            <td>Nguyễn</td>
+            <td>Văn | A</td>
+          </tr>
+          <tr>
+            <td>HN-001-2024</td>
+            <td>Dấu gạch ngang (-)</td>
+            <td>HN</td>
+            <td>001 | 2024</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="code-block">
+        <div class="code-header"><span>M Language</span></div>
+        <pre><code>// Tách cột "Họ tên" theo dấu cách, tại vị trí cuối cùng
+= Table.SplitColumn(
+    PreviousStep,
+    "Họ tên",
+    Splitter.SplitTextByEachDelimiter({" "}, QuoteStyle.Csv, true),
+    {"Họ đệm", "Tên"}
+)</code></pre>
+      </div>
+
+      <h2>5.3 Split Column by Number of Characters (Theo số ký tự)</h2>
+      <p>Tách cột dựa trên số lượng ký tự cố định — hữu ích khi dữ liệu có độ dài chuẩn (mã sản phẩm, mã vùng...).</p>
+
+      <h3>Cấu hình</h3>
+      <ul>
+        <li><strong>Number of characters:</strong> Số ký tự muốn tách (ví dụ: 3)</li>
+        <li><strong>Split:</strong>
+          <ul>
+            <li>Once, as far left as possible — tách 1 lần từ trái</li>
+            <li>Once, as far right as possible — tách 1 lần từ phải</li>
+            <li>Repeatedly — tách lặp lại mỗi N ký tự</li>
+          </ul>
+        </li>
+      </ul>
+
+      <h3>Ví dụ</h3>
+      <table class="styled-table">
+        <thead>
+          <tr>
+            <th>Dữ liệu gốc</th>
+            <th>Số ký tự</th>
+            <th>Kết quả Cột 1</th>
+            <th>Kết quả Cột 2</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>HCMSP001</td>
+            <td>3 (left)</td>
+            <td>HCM</td>
+            <td>SP001</td>
+          </tr>
+          <tr>
+            <td>0912345678</td>
+            <td>4 (left)</td>
+            <td>0912</td>
+            <td>345678</td>
+          </tr>
+          <tr>
+            <td>ABCDEF</td>
+            <td>2 (repeatedly)</td>
+            <td>AB</td>
+            <td>CD | EF</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>5.4 Split Column by Positions (Theo vị trí)</h2>
+      <p>Chỉ định cụ thể các vị trí ký tự để tách — cho phép tách không đều:</p>
+
+      <h3>Ví dụ</h3>
+      <p>Mã nhân viên: <span class="inline-code">HNIT0015</span> gồm:</p>
+      <ul>
+        <li><strong>Vị trí 0-1:</strong> Mã chi nhánh (HN)</li>
+        <li><strong>Vị trí 2-3:</strong> Mã phòng ban (IT)</li>
+        <li><strong>Vị trí 4-7:</strong> Số thứ tự (0015)</li>
+      </ul>
+
+      <p>Cấu hình: Nhập positions = <span class="inline-code">2, 4</span> → kết quả 3 cột: HN | IT | 0015</p>
+
+      <h2>5.5 Split Column by Uppercase/Lowercase</h2>
+      <p>Tách cột tại vị trí chuyển đổi giữa chữ hoa và chữ thường:</p>
+
+      <h3>By Lowercase to Uppercase</h3>
+      <p>Tách tại vị trí chữ thường chuyển sang chữ hoa:</p>
+      <table class="styled-table">
+        <thead>
+          <tr><th>Gốc</th><th>Cột 1</th><th>Cột 2</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>hoChiMinh</td><td>ho</td><td>ChiMinh</td></tr>
+          <tr><td>firstName</td><td>first</td><td>Name</td></tr>
+        </tbody>
+      </table>
+
+      <h3>By Uppercase to Lowercase</h3>
+      <p>Tách tại vị trí chữ hoa chuyển sang chữ thường:</p>
+      <table class="styled-table">
+        <thead>
+          <tr><th>Gốc</th><th>Cột 1</th><th>Cột 2</th><th>Cột 3</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>HoChiMinh</td><td>Ho</td><td>Chi</td><td>Minh</td></tr>
+          <tr><td>FirstName</td><td>First</td><td>Name</td><td></td></tr>
+        </tbody>
+      </table>
+
+      <div class="info-box tip">
+        <span class="info-icon">💡</span>
+        <div>
+          <strong>Ứng dụng:</strong> Phương pháp này rất hữu ích khi xử lý dữ liệu từ các hệ thống sử dụng quy tắc camelCase hoặc PascalCase.
+        </div>
+      </div>
+
+      <h2>5.6 Split Column by Digit/Non-Digit</h2>
+      <p>Tách tại vị trí chuyển đổi giữa ký tự chữ và ký tự số:</p>
+
+      <table class="styled-table">
+        <thead>
+          <tr><th>Gốc</th><th>Cột 1</th><th>Cột 2</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>ABC123</td><td>ABC</td><td>123</td></tr>
+          <tr><td>Room305</td><td>Room</td><td>305</td></tr>
+          <tr><td>SP00125</td><td>SP</td><td>00125</td></tr>
+        </tbody>
+      </table>
+
+      <h2>5.7 Split Rows (Tách theo dòng)</h2>
+      <p>Ngoài tách cột, Power Query còn cho phép tách một ô chứa nhiều giá trị thành nhiều dòng:</p>
+
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h4>Chọn cột chứa nhiều giá trị</h4>
+          <p>Ví dụ: cột "Sản phẩm" chứa "Laptop, Chuột, Bàn phím" trong 1 ô</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h4>Split Column → By Delimiter</h4>
+          <p>Trong phần <strong>Advanced options</strong> → chọn <strong>Split into Rows</strong> (thay vì mặc định Split into Columns)</p>
+        </div>
+      </div>
+
+      <h3>Ví dụ</h3>
+      <table class="styled-table">
+        <thead><tr><th>Trước (1 dòng)</th><th>Sau (3 dòng)</th></tr></thead>
+        <tbody>
+          <tr><td>KH001 | Laptop, Chuột, Bàn phím</td><td>KH001 | Laptop<br>KH001 | Chuột<br>KH001 | Bàn phím</td></tr>
+        </tbody>
+      </table>
+
+      <h2>5.8 Sort & Filter nâng cao</h2>
+      <p>Ngoài Sort/Filter cơ bản, Power Query có nhiều kỹ thuật lọc mạnh mẽ:</p>
+
+      <h3>Multi-level Sort</h3>
+      <div class="code-block">
+        <div class="code-header"><span>M Language - Sort nhiều cấp</span></div>
+        <pre><code>// Sort theo PhongBan (A→Z), sau đó theo Luong (lớn→nhỏ)
+= Table.Sort(Source, {
+    {"PhongBan", Order.Ascending},
+    {"Luong", Order.Descending}
+})</code></pre>
+      </div>
+
+      <h3>Keep / Remove Rows</h3>
+      <table class="styled-table">
+        <thead><tr><th>Hàm</th><th>Mô tả</th><th>Menu</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Table.FirstN</strong></td><td>Giữ N dòng đầu</td><td>Home → Keep Rows → Keep Top Rows</td></tr>
+          <tr><td><strong>Table.LastN</strong></td><td>Giữ N dòng cuối</td><td>Home → Keep Rows → Keep Bottom Rows</td></tr>
+          <tr><td><strong>Table.Range</strong></td><td>Giữ từ dòng X, lấy N dòng</td><td>Home → Keep Rows → Keep Range of Rows</td></tr>
+          <tr><td><strong>Table.AlternateRows</strong></td><td>Giữ/bỏ dòng xen kẽ</td><td>Home → Remove Rows → Remove Alternate Rows</td></tr>
+          <tr><td><strong>Table.RemoveRowsWithErrors</strong></td><td>Xóa dòng có lỗi</td><td>Home → Remove Rows → Remove Errors</td></tr>
+          <tr><td><strong>Table.SelectRows</strong></td><td>Lọc theo điều kiện</td><td>Filter dropdown trên cột</td></tr>
+        </tbody>
+      </table>
+
+      <div class="code-block">
+        <div class="code-header"><span>M Language - Keep/Remove Rows</span></div>
+        <pre><code>// Giữ 10 dòng đầu
+= Table.FirstN(Source, 10)
+
+// Giữ dòng từ vị trí 5, lấy 20 dòng
+= Table.Range(Source, 5, 20)
+
+// Xóa dòng xen kẽ (bỏ header phụ mỗi 50 dòng)
+= Table.AlternateRows(Source, 49, 1, 50)
+
+// Lọc phức hợp: nhiều điều kiện
+= Table.SelectRows(Source, each
+    [PhongBan] = "IT" and
+    [Luong] >= 15000000 and
+    [NgayVaoLam] >= #date(2020,1,1)
+)</code></pre>
+      </div>
+
+      <!-- Practice -->
+      <div class="practice-box">
+        <h3>Bài tập 5.1: Tách Họ và Tên</h3>
+        <p><strong>Mục tiêu:</strong> Sử dụng Split by Delimiter để tách họ đệm và tên</p>
+        <ol>
+          <li>Tạo bảng Excel với cột <span class="inline-code">Họ và tên</span>:
+            <ul>
+              <li>Nguyễn Văn An</li>
+              <li>Trần Thị Bình</li>
+              <li>Lê Hoàng Minh Châu</li>
+              <li>Phạm Đức</li>
+              <li>Hoàng Thị Kim Dung</li>
+            </ul>
+          </li>
+          <li>Mở Power Query → chọn cột "Họ và tên"</li>
+          <li>Split Column → By Delimiter → chọn <strong>Space</strong></li>
+          <li>Chọn <strong>At the right-most delimiter</strong> → OK</li>
+          <li>Đổi tên cột thành "Họ đệm" và "Tên"</li>
+          <li>Close & Load → kiểm tra kết quả</li>
+        </ol>
+      </div>
+
+      <div class="practice-box">
+        <h3>Bài tập 5.2: Tách mã sản phẩm</h3>
+        <p><strong>Mục tiêu:</strong> Sử dụng Split by Number of Characters và by Positions</p>
+        <ol>
+          <li>Tạo bảng với cột <span class="inline-code">MaSP</span>:
+            <ul>
+              <li>HCMDT001 (HCM = chi nhánh, DT = danh mục, 001 = STT)</li>
+              <li>HNPK015</li>
+              <li>DNMH023</li>
+              <li>HCMPK100</li>
+            </ul>
+          </li>
+          <li>Mở Power Query</li>
+          <li>Split Column → By Positions → nhập: <span class="inline-code">3, 5</span></li>
+          <li>Đổi tên 3 cột thành: "Chi nhánh", "Danh mục", "STT"</li>
+          <li>Close & Load → kiểm tra kết quả</li>
+        </ol>
+      </div>
+
+      <div class="practice-box">
+        <h3>Bài tập 5.3: Tách số điện thoại và năm sinh</h3>
+        <p><strong>Mục tiêu:</strong> Kết hợp nhiều kỹ thuật Split Column</p>
+        <ol>
+          <li>Tạo bảng với dữ liệu:
+            <table class="styled-table" style="margin:10px 0;">
+              <thead><tr><th>Thông tin</th><th>SĐT-NgaySinh</th></tr></thead>
+              <tbody>
+                <tr><td>Nguyễn Văn A</td><td>0912-345-678 | 15/03/1990</td></tr>
+                <tr><td>Trần Thị B</td><td>0987-654-321 | 22/07/1995</td></tr>
+                <tr><td>Lê Văn C</td><td>0376-123-456 | 01/12/1988</td></tr>
+              </tbody>
+            </table>
+          </li>
+          <li>Mở Power Query</li>
+          <li><strong>Bước 1:</strong> Tách cột "SĐT-NgaySinh" by Delimiter <span class="inline-code">|</span> → thành "SĐT" và "NgàySinh"</li>
+          <li><strong>Bước 2:</strong> Tách cột "SĐT" by Delimiter <span class="inline-code">-</span> (each occurrence) → thành 3 phần</li>
+          <li><strong>Bước 3:</strong> Trim cột "NgàySinh" để loại bỏ khoảng trắng</li>
+          <li><strong>Bước 4:</strong> Đổi kiểu dữ liệu "NgàySinh" thành Date</li>
+          <li>Close & Load</li>
+        </ol>
+      </div>
+
+      <!-- Navigation -->
+      <div class="chapter-nav">
+        <a href="chuong4-ket-noi.html" class="nav-prev">
+          <div>
+            <div class="nav-label">← Chương trước</div>
+            <div class="nav-title">IV. Kết nối & cập nhật dữ liệu</div>
+          </div>
+        </a>
+        <a href="chuong6-gop-du-lieu.html" class="nav-next">
+          <div>
+            <div class="nav-label">Chương tiếp →</div>
+            <div class="nav-title">VI. Gộp dữ liệu</div>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <footer class="footer">
+      <p>📘 Giáo trình Power Query Excel — Chuyên đề đào tạo &copy; 2026</p>
+    </footer>
+  </main>
+
+  <script>
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('open');
+      document.getElementById('overlay').classList.toggle('open');
+    }
+  </script>
+</body>
+</html>

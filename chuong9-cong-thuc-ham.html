@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chương IX: Công thức và hàm trong Power Query - Giáo trình Power Query Excel</title>
+  <meta name="description" content="Ngôn ngữ M, cấu trúc let...in, hàm Text, Number, Date, List, Table, Custom Function trong Power Query.">
+  <link rel="stylesheet" href="index.css">
+</head>
+<body>
+  <script>
+    if (sessionStorage.getItem('pq_logged_in') !== 'true') {
+      window.location.href = 'login.html';
+    }
+  </script>
+
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-icon">⚡</div>
+      <div class="brand-text">Power Query Excel<span>Giáo trình đào tạo</span></div>
+    </div>
+    <div class="sidebar-nav">
+      <div class="nav-section">
+        <div class="nav-section-title">Trang chủ</div>
+        <a href="index.html" class="nav-item"><span class="nav-icon">🏠</span>Tổng quan giáo trình</a>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-title">Nội dung chương</div>
+        <a href="chuong1-tong-quan.html" class="nav-item"><span class="nav-number">I</span>Tổng quan về Power Query</a>
+        <a href="chuong2-ung-dung.html" class="nav-item"><span class="nav-number">II</span>Ứng dụng xử lý dữ liệu</a>
+        <a href="chuong3-cai-dat.html" class="nav-item"><span class="nav-number">III</span>Cài đặt và hiển thị</a>
+        <a href="chuong4-ket-noi.html" class="nav-item"><span class="nav-number">IV</span>Kết nối & cập nhật dữ liệu</a>
+        <a href="chuong5-tach-du-lieu.html" class="nav-item"><span class="nav-number">V</span>Tách dữ liệu</a>
+        <a href="chuong6-gop-du-lieu.html" class="nav-item"><span class="nav-number">VI</span>Gộp dữ liệu</a>
+        <a href="chuong7-chuyen-doi.html" class="nav-item"><span class="nav-number">VII</span>Chuyển đổi cấu trúc</a>
+        <a href="chuong8-column.html" class="nav-item"><span class="nav-number">VIII</span>Xử lý với Column</a>
+        <a href="chuong9-cong-thuc-ham.html" class="nav-item active"><span class="nav-number">IX</span>Công thức và hàm</a>
+        <a href="chuong10-lam-sach.html" class="nav-item"><span class="nav-number">X</span>Làm sạch dữ liệu</a>
+        <a href="chuong11-python-r-ai.html" class="nav-item"><span class="nav-number">XI</span>Python, R và AI</a>
+        <a href="chuong12-nang-cao.html" class="nav-item"><span class="nav-number">XII</span>Kỹ thuật nâng cao</a>
+        <a href="chuong13-tu-dong-hoa.html" class="nav-item"><span class="nav-number">XIII</span>Tự động hóa</a>
+      </div>
+    
+      <div class="nav-section">
+        <div class="nav-section-title">Bài tập</div>
+        <a href="bai-tap-tong-hop.html" class="nav-item"><span class="nav-icon">📝</span>20 Bài tập tổng hợp</a>
+      </div>
+    </div>
+  </nav>
+
+  <header class="mobile-header">
+    <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+    <span style="margin-left:12px;font-weight:600;font-size:15px;">Chương IX</span>
+  </header>
+  <div class="sidebar-overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+  <main class="main-content">
+    <div class="chapter-header">
+      <div class="chapter-breadcrumb">
+        <a href="index.html">Trang chủ</a><span class="sep">›</span><span>Chương IX</span>
+      </div>
+      <div class="chapter-number">📘 CHƯƠNG IX</div>
+      <h1>Thiết lập công thức và hàm trong Power Query</h1>
+      <p class="chapter-desc">Làm chủ ngôn ngữ M — cấu trúc let...in, các hàm Text, Number, Date, List, Table và cách tạo Custom Function.</p>
+    </div>
+
+    <div class="chapter-body">
+
+      <h2>9.1 Giới thiệu ngôn ngữ M</h2>
+      <p><strong>M (Power Query Formula Language)</strong> là ngôn ngữ lập trình hàm (functional language) đứng phía sau mọi thao tác trong Power Query. Mỗi khi bạn nhấp nút trên giao diện, Power Query tự động sinh ra code M tương ứng.</p>
+
+      <div class="figure">
+        <img src="images/m_language.png" alt="Ngôn ngữ M trong Power Query">
+        <div class="caption">Hình 9.1: Cấu trúc ngôn ngữ M trong Power Query</div>
+      </div>
+
+      <h3>Đặc điểm của ngôn ngữ M</h3>
+      <ul class="feature-list">
+        <li><span class="check">✓</span> <strong>Case-sensitive:</strong> Phân biệt chữ hoa/thường (<span class="inline-code">Table.Sort</span> ≠ <span class="inline-code">table.sort</span>)</li>
+        <li><span class="check">✓</span> <strong>Functional:</strong> Mọi thứ đều là biểu thức trả về giá trị</li>
+        <li><span class="check">✓</span> <strong>Lazy evaluation:</strong> Chỉ thực thi khi cần kết quả</li>
+        <li><span class="check">✓</span> <strong>Immutable:</strong> Giá trị không thay đổi sau khi gán</li>
+        <li><span class="check">✓</span> <strong>Tích hợp:</strong> Giao diện tự sinh code M, bạn có thể chỉnh sửa trực tiếp</li>
+      </ul>
+
+      <h3>Nơi viết code M</h3>
+      <ul>
+        <li><strong>Formula Bar:</strong> Viết/sửa từng bước</li>
+        <li><strong>Advanced Editor:</strong> Xem và chỉnh sửa toàn bộ query (View → Advanced Editor)</li>
+        <li><strong>Custom Column:</strong> Viết công thức cho cột mới</li>
+      </ul>
+
+      <h2>9.2 Cấu trúc let...in</h2>
+      <p>Mọi query trong Power Query đều có cấu trúc <span class="inline-code">let...in</span>:</p>
+
+      <div class="code-block">
+        <div class="code-header"><span>M Language - Cấu trúc cơ bản</span></div>
+        <pre><code>let
+    // Khai báo các biến (steps)
+    Bước1 = biểu_thức_1,
+    Bước2 = biểu_thức_2(Bước1),
+    Bước3 = biểu_thức_3(Bước2)
+in
+    // Trả về kết quả cuối cùng
+    Bước3</code></pre>
+      </div>
+
+      <h3>Quy tắc cú pháp</h3>
+      <table class="styled-table">
+        <thead><tr><th>Quy tắc</th><th>Ví dụ</th></tr></thead>
+        <tbody>
+          <tr><td>Mỗi bước kết thúc bằng dấu <strong>phẩy</strong></td><td><span class="inline-code">Source = ...,</span></td></tr>
+          <tr><td>Bước cuối <strong>không</strong> có dấu phẩy</td><td><span class="inline-code">FinalStep = ...</span></td></tr>
+          <tr><td>Tên bước có ký tự đặc biệt → dùng <span class="inline-code">#"..."</span></td><td><span class="inline-code">#"Changed Type"</span></td></tr>
+          <tr><td>Comment 1 dòng</td><td><span class="inline-code">// đây là comment</span></td></tr>
+          <tr><td>Comment nhiều dòng</td><td><span class="inline-code">/* comment */</span></td></tr>
+          <tr><td>Tham chiếu cột</td><td><span class="inline-code">[TênCột]</span></td></tr>
+          <tr><td>Chuỗi văn bản</td><td><span class="inline-code">"Hello"</span></td></tr>
+          <tr><td>Ngày tháng</td><td><span class="inline-code">#date(2024, 3, 15)</span></td></tr>
+        </tbody>
+      </table>
+
+      <h3>Ví dụ hoàn chỉnh</h3>
+      <div class="code-block">
+        <div class="code-header"><span>M Language - Query hoàn chỉnh</span></div>
+        <pre><code>let
+    // Bước 1: Lấy dữ liệu từ bảng Excel
+    Source = Excel.CurrentWorkbook(){[Name="BangNhanVien"]}[Content],
+
+    // Bước 2: Thiết lập kiểu dữ liệu
+    #"Changed Type" = Table.TransformColumnTypes(Source, {
+        {"HoTen", type text},
+        {"Tuoi", Int64.Type},
+        {"Luong", type number},
+        {"NgayVaoLam", type date}
+    }),
+
+    // Bước 3: Lọc nhân viên trên 25 tuổi
+    #"Filtered Rows" = Table.SelectRows(#"Changed Type",
+        each [Tuoi] > 25
+    ),
+
+    // Bước 4: Thêm cột thâm niên
+    #"Added ThamNien" = Table.AddColumn(#"Filtered Rows", "ThamNien",
+        each Date.Year(DateTime.LocalNow()) - Date.Year([NgayVaoLam])
+    ),
+
+    // Bước 5: Sắp xếp theo lương giảm dần
+    #"Sorted" = Table.Sort(#"Added ThamNien",
+        {{"Luong", Order.Descending}}
+    )
+in
+    #"Sorted"</code></pre>
+      </div>
+
+      <h2>9.3 Hàm Text (Xử lý văn bản)</h2>
+      <p>Các hàm xử lý chuỗi ký tự phổ biến:</p>
+
+      <table class="styled-table">
+        <thead><tr><th>Hàm</th><th>Mô tả</th><th>Ví dụ</th></tr></thead>
+        <tbody>
+          <tr><td><span class="inline-code">Text.Upper</span></td><td>Chuyển thành CHỮ HOA</td><td><span class="inline-code">Text.Upper("hello")</span> → "HELLO"</td></tr>
+          <tr><td><span class="inline-code">Text.Lower</span></td><td>Chuyển thành chữ thường</td><td><span class="inline-code">Text.Lower("HELLO")</span> → "hello"</td></tr>
+          <tr><td><span class="inline-code">Text.Proper</span></td><td>Viết Hoa Chữ Cái Đầu</td><td><span class="inline-code">Text.Proper("hello world")</span> → "Hello World"</td></tr>
+          <tr><td><span class="inline-code">Text.Trim</span></td><td>Xóa khoảng trắng 2 đầu</td><td><span class="inline-code">Text.Trim("  hello  ")</span> → "hello"</td></tr>
+          <tr><td><span class="inline-code">Text.Clean</span></td><td>Xóa ký tự non-printable</td><td>Xóa ký tự tab, newline...</td></tr>
+          <tr><td><span class="inline-code">Text.Contains</span></td><td>Kiểm tra chứa chuỗi con</td><td><span class="inline-code">Text.Contains("Hello", "ell")</span> → true</td></tr>
+          <tr><td><span class="inline-code">Text.StartsWith</span></td><td>Kiểm tra bắt đầu bằng</td><td><span class="inline-code">Text.StartsWith("Hello", "He")</span> → true</td></tr>
+          <tr><td><span class="inline-code">Text.EndsWith</span></td><td>Kiểm tra kết thúc bằng</td><td><span class="inline-code">Text.EndsWith("Hello", "lo")</span> → true</td></tr>
+          <tr><td><span class="inline-code">Text.Length</span></td><td>Độ dài chuỗi</td><td><span class="inline-code">Text.Length("Hello")</span> → 5</td></tr>
+          <tr><td><span class="inline-code">Text.Start</span></td><td>N ký tự đầu</td><td><span class="inline-code">Text.Start("Hello", 3)</span> → "Hel"</td></tr>
+          <tr><td><span class="inline-code">Text.End</span></td><td>N ký tự cuối</td><td><span class="inline-code">Text.End("Hello", 2)</span> → "lo"</td></tr>
+          <tr><td><span class="inline-code">Text.Replace</span></td><td>Thay thế chuỗi</td><td><span class="inline-code">Text.Replace("Hello", "l", "r")</span> → "Herro"</td></tr>
+          <tr><td><span class="inline-code">Text.Combine</span></td><td>Nối danh sách chuỗi</td><td><span class="inline-code">Text.Combine({"A","B","C"}, "-")</span> → "A-B-C"</td></tr>
+          <tr><td><span class="inline-code">Text.From</span></td><td>Chuyển giá trị thành text</td><td><span class="inline-code">Text.From(123)</span> → "123"</td></tr>
+        </tbody>
+      </table>
+
+      <div class="code-block">
+        <div class="code-header"><span>M Language - Ví dụ hàm Text</span></div>
+        <pre><code>// Custom Column: Chuẩn hóa email
+= Text.Lower(Text.Trim([Email]))
+
+// Custom Column: Lấy tên miền email
+= Text.AfterDelimiter([Email], "@")
+
+// Custom Column: Tạo mã nhân viên
+= "NV-" & Text.PadStart(Text.From([STT]), 4, "0")
+// Kết quả: NV-0001, NV-0025...</code></pre>
+      </div>
+
+      <h2>9.4 Hàm Number (Xử lý số)</h2>
+      <table class="styled-table">
+        <thead><tr><th>Hàm</th><th>Mô tả</th><th>Ví dụ</th></tr></thead>
+        <tbody>
+          <tr><td><span class="inline-code">Number.Round</span></td><td>Làm tròn</td><td><span class="inline-code">Number.Round(3.456, 2)</span> → 3.46</td></tr>
+          <tr><td><span class="inline-code">Number.RoundUp</span></td><td>Làm tròn lên</td><td><span class="inline-code">Number.RoundUp(3.12, 1)</span> → 3.2</td></tr>
+          <tr><td><span class="inline-code">Number.RoundDown</span></td><td>Làm tròn xuống</td><td><span class="inline-code">Number.RoundDown(3.99, 0)</span> → 3</td></tr>
+          <tr><td><span class="inline-code">Number.From</span></td><td>Chuyển thành số</td><td><span class="inline-code">Number.From("123")</span> → 123</td></tr>
+          <tr><td><span class="inline-code">Number.Abs</span></td><td>Giá trị tuyệt đối</td><td><span class="inline-code">Number.Abs(-5)</span> → 5</td></tr>
+          <tr><td><span class="inline-code">Number.Power</span></td><td>Lũy thừa</td><td><span class="inline-code">Number.Power(2, 10)</span> → 1024</td></tr>
+          <tr><td><span class="inline-code">Number.Sqrt</span></td><td>Căn bậc hai</td><td><span class="inline-code">Number.Sqrt(16)</span> → 4</td></tr>
+          <tr><td><span class="inline-code">Number.Mod</span></td><td>Chia lấy dư</td><td><span class="inline-code">Number.Mod(10, 3)</span> → 1</td></tr>
+          <tr><td><span class="inline-code">Number.IntegerDivide</span></td><td>Chia lấy phần nguyên</td><td><span class="inline-code">Number.IntegerDivide(10, 3)</span> → 3</td></tr>
+        </tbody>
+      </table>
+
+      <h2>9.5 Hàm Date / Time (Xử lý ngày tháng)</h2>
+      <table class="styled-table">
+        <thead><tr><th>Hàm</th><th>Mô tả</th><th>Ví dụ</th></tr></thead>
+        <tbody>
+          <tr><td><span class="inline-code">Date.Year</span></td><td>Lấy năm</td><td><span class="inline-code">Date.Year(#date(2024,3,15))</span> → 2024</td></tr>
+          <tr><td><span class="inline-code">Date.Month</span></td><td>Lấy tháng</td><td><span class="inline-code">Date.Month(#date(2024,3,15))</span> → 3</td></tr>
+          <tr><td><span class="inline-code">Date.Day</span></td><td>Lấy ngày</td><td><span class="inline-code">Date.Day(#date(2024,3,15))</span> → 15</td></tr>
+          <tr><td><span class="inline-code">Date.DayOfWeek</span></td><td>Ngày trong tuần (0-6)</td><td><span class="inline-code">Date.DayOfWeek(#date(2024,3,15))</span> → 5 (Thứ 6)</td></tr>
+          <tr><td><span class="inline-code">Date.DayOfYear</span></td><td>Ngày trong năm</td><td><span class="inline-code">Date.DayOfYear(#date(2024,3,15))</span> → 75</td></tr>
+          <tr><td><span class="inline-code">Date.WeekOfYear</span></td><td>Tuần trong năm</td><td><span class="inline-code">Date.WeekOfYear(#date(2024,3,15))</span> → 11</td></tr>
+          <tr><td><span class="inline-code">Date.StartOfMonth</span></td><td>Ngày đầu tháng</td><td>→ 01/03/2024</td></tr>
+          <tr><td><span class="inline-code">Date.EndOfMonth</span></td><td>Ngày cuối tháng</td><td>→ 31/03/2024</td></tr>
+          <tr><td><span class="inline-code">Date.AddDays</span></td><td>Cộng thêm ngày</td><td><span class="inline-code">Date.AddDays(ngay, 30)</span></td></tr>
+          <tr><td><span class="inline-code">Date.AddMonths</span></td><td>Cộng thêm tháng</td><td><span class="inline-code">Date.AddMonths(ngay, 3)</span></td></tr>
+          <tr><td><span class="inline-code">Date.From</span></td><td>Chuyển thành Date</td><td><span class="inline-code">Date.From("2024-03-15")</span></td></tr>
+          <tr><td><span class="inline-code">DateTime.LocalNow()</span></td><td>Ngày giờ hiện tại</td><td>→ 15/03/2024 14:30:00</td></tr>
+          <tr><td><span class="inline-code">Duration.Days</span></td><td>Số ngày từ Duration</td><td>Tính khoảng cách giữa 2 ngày</td></tr>
+        </tbody>
+      </table>
+
+      <div class="code-block">
+        <div class="code-header"><span>M Language - Ví dụ hàm Date</span></div>
+        <pre><code>// Custom Column: Tính tuổi
+= Date.Year(DateTime.LocalNow()) - Date.Year([NgaySinh])
+
+// Custom Column: Tính số ngày kể từ ngày đặt hàng
+= Duration.Days(DateTime.LocalNow() - [NgayDat])
+
+// Custom Column: Lấy tên quý
+= "Q" & Text.From(Date.QuarterOfYear([NgayDat]))
+
+// Custom Column: Kiểm tra cuối tuần
+= if Date.DayOfWeek([Ngay], Day.Monday) >= 5
+  then "Cuối tuần"
+  else "Ngày thường"</code></pre>
+      </div>
+
+      <h2>9.6 Hàm List (Xử lý danh sách)</h2>
+      <p>Hàm List thao tác trên danh sách giá trị — thường dùng trong Group By hoặc xử lý cột:</p>
+
+      <table class="styled-table">
+        <thead><tr><th>Hàm</th><th>Mô tả</th><th>Ví dụ</th></tr></thead>
+        <tbody>
+          <tr><td><span class="inline-code">List.Sum</span></td><td>Tổng</td><td><span class="inline-code">List.Sum({1,2,3})</span> → 6</td></tr>
+          <tr><td><span class="inline-code">List.Average</span></td><td>Trung bình</td><td><span class="inline-code">List.Average({1,2,3})</span> → 2</td></tr>
+          <tr><td><span class="inline-code">List.Min / List.Max</span></td><td>Nhỏ nhất / Lớn nhất</td><td><span class="inline-code">List.Max({1,2,3})</span> → 3</td></tr>
+          <tr><td><span class="inline-code">List.Count</span></td><td>Đếm phần tử</td><td><span class="inline-code">List.Count({1,2,3})</span> → 3</td></tr>
+          <tr><td><span class="inline-code">List.Distinct</span></td><td>Giá trị duy nhất</td><td><span class="inline-code">List.Distinct({1,1,2,3})</span> → {1,2,3}</td></tr>
+          <tr><td><span class="inline-code">List.Sort</span></td><td>Sắp xếp</td><td><span class="inline-code">List.Sort({3,1,2})</span> → {1,2,3}</td></tr>
+          <tr><td><span class="inline-code">List.Contains</span></td><td>Kiểm tra phần tử</td><td><span class="inline-code">List.Contains({1,2,3}, 2)</span> → true</td></tr>
+          <tr><td><span class="inline-code">List.FirstN</span></td><td>N phần tử đầu</td><td><span class="inline-code">List.FirstN({1,2,3,4}, 2)</span> → {1,2}</td></tr>
+          <tr><td><span class="inline-code">List.Generate</span></td><td>Tạo danh sách tùy chỉnh</td><td>Tạo dãy số, ngày...</td></tr>
+        </tbody>
+      </table>
+
+      <h2>9.7 Hàm Table (Xử lý bảng)</h2>
+      <p>Các hàm Table là nền tảng của mọi query:</p>
+
+      <table class="styled-table">
+        <thead><tr><th>Hàm</th><th>Mô tả</th></tr></thead>
+        <tbody>
+          <tr><td><span class="inline-code">Table.SelectRows</span></td><td>Lọc dòng theo điều kiện</td></tr>
+          <tr><td><span class="inline-code">Table.SelectColumns</span></td><td>Chọn các cột cần giữ</td></tr>
+          <tr><td><span class="inline-code">Table.RemoveColumns</span></td><td>Xóa cột</td></tr>
+          <tr><td><span class="inline-code">Table.AddColumn</span></td><td>Thêm cột mới</td></tr>
+          <tr><td><span class="inline-code">Table.RenameColumns</span></td><td>Đổi tên cột</td></tr>
+          <tr><td><span class="inline-code">Table.Sort</span></td><td>Sắp xếp</td></tr>
+          <tr><td><span class="inline-code">Table.Group</span></td><td>Nhóm dữ liệu</td></tr>
+          <tr><td><span class="inline-code">Table.TransformColumnTypes</span></td><td>Đổi kiểu dữ liệu</td></tr>
+          <tr><td><span class="inline-code">Table.NestedJoin</span></td><td>Merge Queries</td></tr>
+          <tr><td><span class="inline-code">Table.Combine</span></td><td>Append Queries</td></tr>
+          <tr><td><span class="inline-code">Table.RowCount</span></td><td>Đếm số dòng</td></tr>
+          <tr><td><span class="inline-code">Table.FirstN / Table.LastN</span></td><td>Lấy N dòng đầu/cuối</td></tr>
+          <tr><td><span class="inline-code">Table.Distinct</span></td><td>Xóa dòng trùng lặp</td></tr>
+          <tr><td><span class="inline-code">Table.Pivot / Table.UnpivotOtherColumns</span></td><td>Pivot / Unpivot</td></tr>
+        </tbody>
+      </table>
+
+      <h2>9.8 Biểu thức điều kiện (if...then...else)</h2>
+      <div class="code-block">
+        <div class="code-header"><span>M Language - Biểu thức điều kiện</span></div>
+        <pre><code>// Cú pháp cơ bản
+= if [điều_kiện] then [giá_trị_đúng] else [giá_trị_sai]
+
+// Lồng nhiều điều kiện
+= if [Diem] >= 8.5 then "Giỏi"
+  else if [Diem] >= 7 then "Khá"
+  else if [Diem] >= 5 then "Trung bình"
+  else "Yếu"
+
+// Kết hợp nhiều điều kiện (and, or, not)
+= if [Tuoi] >= 18 and [DiemTB] >= 5 then "Đạt" else "Không đạt"
+
+// Xử lý null
+= if [GiaTri] = null then 0 else [GiaTri]
+
+// Sử dụng try...otherwise cho lỗi
+= try [SoLuong] * [DonGia] otherwise 0</code></pre>
+      </div>
+
+      <h2>9.9 Custom Function (Hàm tùy chỉnh)</h2>
+      <p>Bạn có thể tạo hàm riêng để tái sử dụng trong nhiều query:</p>
+
+      <h3>Cách tạo Custom Function</h3>
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h4>Tạo Blank Query</h4>
+          <p>Data → Get Data → From Other Sources → <strong>Blank Query</strong></p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h4>Viết hàm trong Advanced Editor</h4>
+          <p>View → Advanced Editor → xóa code mặc định → viết hàm mới</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h4>Đặt tên rõ ràng</h4>
+          <p>Đổi tên query thành tên hàm có ý nghĩa (ví dụ: fnTinhThue, fnChuanHoaTen)</p>
+        </div>
+      </div>
+
+      <h3>Ví dụ Custom Function</h3>
+      <div class="code-block">
+        <div class="code-header"><span>M Language - Custom Function: Tính thuế TNCN</span></div>
+        <pre><code>// Hàm tính thuế thu nhập cá nhân theo bậc
+// Đặt tên query: fnTinhThueTNCN
+(luong as number) as number =>
+let
+    giamTru = 11000000,
+    thuNhapChiuThue = if luong - giamTru > 0
+                      then luong - giamTru
+                      else 0,
+    thue =
+        if thuNhapChiuThue <= 5000000 then thuNhapChiuThue * 0.05
+        else if thuNhapChiuThue <= 10000000 then 250000 + (thuNhapChiuThue - 5000000) * 0.1
+        else if thuNhapChiuThue <= 18000000 then 750000 + (thuNhapChiuThue - 10000000) * 0.15
+        else if thuNhapChiuThue <= 32000000 then 1950000 + (thuNhapChiuThue - 18000000) * 0.2
+        else 4750000 + (thuNhapChiuThue - 32000000) * 0.25
+in
+    thue</code></pre>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span>M Language - Sử dụng Custom Function</span></div>
+        <pre><code>// Trong query khác, gọi hàm đã tạo:
+= Table.AddColumn(PreviousStep, "Thuế TNCN",
+    each fnTinhThueTNCN([Luong])
+)</code></pre>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span>M Language - Custom Function: Chuẩn hóa tên</span></div>
+        <pre><code>// Hàm chuẩn hóa họ tên tiếng Việt
+// Đặt tên query: fnChuanHoaTen
+(ten as text) as text =>
+let
+    trimmed = Text.Trim(ten),
+    cleaned = Text.Clean(trimmed),
+    proper = Text.Proper(cleaned)
+in
+    proper</code></pre>
+      </div>
+
+      <div class="info-box tip">
+        <span class="info-icon">💡</span>
+        <div>
+          <strong>Mẹo:</strong> Sau khi tạo Custom Function, bạn có thể gọi nó trong <strong>Add Column → Invoke Custom Function</strong> từ giao diện — không cần viết code!
+        </div>
+      </div>
+
+      <h2>9.10 Xử lý lỗi (Error Handling)</h2>
+      <div class="code-block">
+        <div class="code-header"><span>M Language - Error Handling</span></div>
+        <pre><code>// try...otherwise: Xử lý lỗi gracefully
+= try Number.From([GiaTri]) otherwise 0
+
+// Kiểm tra và thay thế error
+= try [CotA] / [CotB] otherwise null
+
+// Xóa dòng có lỗi
+= Table.RemoveRowsWithErrors(PreviousStep, {"CotCanKiemTra"})
+
+// Thay thế toàn bộ error trong cột
+= Table.ReplaceErrorValues(PreviousStep, {{"CotA", 0}, {"CotB", ""}})</code></pre>
+      </div>
+
+      <h2>9.11 Từ khóa "each" trong M</h2>
+      <p>Từ khóa <span class="inline-code">each</span> là viết tắt của hàm vô danh nhận 1 tham số <span class="inline-code">_</span> (underscore). Hiểu <span class="inline-code">each</span> là chìa khóa để đọc code M:</p>
+
+      <div class="code-block">
+        <div class="code-header"><span>M Language - each keyword</span></div>
+        <pre><code>// Hai cách viết tương đương:
+// Cách 1: Dùng each (ngắn gọn)
+= Table.SelectRows(Source, each [Tuoi] > 25)
+
+// Cách 2: Viết function đầy đủ
+= Table.SelectRows(Source, (_) => _[Tuoi] > 25)
+
+// each lồng nhau (cho cột trong bảng lồng)
+= Table.AddColumn(Source, "TenSP",
+    each each [TenSanPham]  // each thứ 2 cho inner table
+)
+
+// each với biến _
+= List.Transform({1,2,3,4,5}, each _ * 2)
+// Kết quả: {2, 4, 6, 8, 10}</code></pre>
+      </div>
+
+      <h2>9.12 Hàm đệ quy (Recursive Functions)</h2>
+      <p>M hỗ trợ đệ quy thông qua ký tự <span class="inline-code">@</span> để tự tham chiếu:</p>
+
+      <div class="code-block">
+        <div class="code-header"><span>M Language - Hàm đệ quy: Giai thừa</span></div>
+        <pre><code>// Tính giai thừa n!
+let
+    fnGiaiThua = (n as number) as number =>
+        if n <= 1 then 1
+        else n * @fnGiaiThua(n - 1)
+in
+    fnGiaiThua(5)  // Kết quả: 120</code></pre>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span>M Language - Đệ quy: Web Pagination</span></div>
+        <pre><code>// Lấy tất cả trang từ API có phân trang
+let
+    fnGetAllPages = (url as text) as list =>
+    let
+        response = Json.Document(Web.Contents(url)),
+        data = response[results],
+        nextUrl = try response[next] otherwise null,
+        moreData = if nextUrl <> null
+                   then @fnGetAllPages(nextUrl)
+                   else {}
+    in
+        data & moreData
+in
+    fnGetAllPages("https://api.example.com/data?page=1")</code></pre>
+      </div>
+
+      <div class="info-box warning">
+        <span class="info-icon">⚠️</span>
+        <div>
+          <strong>Lưu ý:</strong> Ký tự <span class="inline-code">@</span> trước tên hàm (<span class="inline-code">@fnGiaiThua</span>) là bắt buộc khi gọi đệ quy trong M. Không có <span class="inline-code">@</span> sẽ báo lỗi circular reference.
+        </div>
+      </div>
+
+      <h2>9.13 Query Diagnostics (Chẩn đoán hiệu suất)</h2>
+      <p>Power Query cung cấp công cụ chẩn đoán giúp phân tích hiệu suất query:</p>
+
+      <h3>Cách sử dụng</h3>
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h4>Bật Diagnostics</h4>
+          <p>Tab Tools → <strong>Start Diagnostics</strong></p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h4>Thực hiện thao tác</h4>
+          <p>Refresh query, áp dụng bước mới, hoặc preview dữ liệu</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h4>Dừng và xem kết quả</h4>
+          <p>Tab Tools → <strong>Stop Diagnostics</strong> → 2 bảng mới được tạo:</p>
+        </div>
+      </div>
+
+      <table class="styled-table">
+        <thead><tr><th>Bảng</th><th>Nội dung</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>Diagnostics_Detailed</strong></td>
+            <td>Chi tiết từng thao tác: thời gian, loại (Evaluation, Partition, MashupEvaluation), data source</td>
+          </tr>
+          <tr>
+            <td><strong>Diagnostics_Aggregated</strong></td>
+            <td>Tổng hợp: tổng thời gian, số lần gọi, tỷ lệ Query Folding</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="info-box tip">
+        <span class="info-icon">💡</span>
+        <div>
+          <strong>Mẹo tối ưu:</strong> Kiểm tra Diagnostics khi query chạy chậm. Tìm các bước có <em>Exclusive Duration</em> cao và cố gắng: (1) Đưa bước filter lên trước, (2) Giữ Query Folding càng nhiều càng tốt, (3) Giảm số cột trước khi xử lý nặng.
+        </div>
+      </div>
+
+      <h2>9.14 Power Query Values: Record, List, Table</h2>
+      <p>Trong M, mọi thứ đều là <strong>value</strong>. Ba cấu trúc cốt lõi cần nắm vững:</p>
+
+      <table class="styled-table">
+        <thead><tr><th>Loại</th><th>Ký hiệu</th><th>Ví dụ</th><th>Truy cập</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>Record</strong></td>
+            <td><span class="inline-code">[ ]</span></td>
+            <td><span class="inline-code">[Name="An", Age=25]</span></td>
+            <td><span class="inline-code">record[Name]</span> → "An"</td>
+          </tr>
+          <tr>
+            <td><strong>List</strong></td>
+            <td><span class="inline-code">{ }</span></td>
+            <td><span class="inline-code">{"A", "B", "C"}</span></td>
+            <td><span class="inline-code">list{0}</span> → "A" (0-index)</td>
+          </tr>
+          <tr>
+            <td><strong>Table</strong></td>
+            <td><span class="inline-code">#table</span></td>
+            <td><span class="inline-code">#table({"Col1","Col2"}, {{"a",1}})</span></td>
+            <td><span class="inline-code">table{0}[Col1]</span> → "a"</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="code-block">
+        <div class="code-header"><span>M Language - Chuyển đổi giữa Record, List, Table</span></div>
+        <pre><code>// Record → Table (1 dòng)
+= Record.ToTable([Name="An", Age=25, City="HCM"])
+
+// List → Table (1 cột)
+= Table.FromList({"Hà Nội", "HCM", "Đà Nẵng"}, Splitter.SplitByNothing())
+
+// Table → List (lấy 1 cột)
+= Table.Column(Source, "TenTP")  // → {"HN", "HCM", "DN"}
+
+// Table → Record (lấy 1 dòng)
+= Source{0}  // → [MaNV="NV01", HoTen="An", ...]
+
+// Tạo Table từ danh sách Records
+= Table.FromRecords({
+    [Name="An", Score=85],
+    [Name="Binh", Score=92],
+    [Name="Chau", Score=78]
+})</code></pre>
+      </div>
+
+      <h2>9.15 Tạo Calendar Table (Bảng lịch) bằng M</h2>
+      <p>Bảng lịch (Date Dimension) là nền tảng cho phân tích theo thời gian trong Power BI:</p>
+
+      <div class="code-block">
+        <div class="code-header"><span>M Language - Calendar Table đầy đủ</span></div>
+        <pre><code>let
+    // Tham số
+    StartDate = #date(2020, 1, 1),
+    EndDate = #date(2025, 12, 31),
+
+    // Tạo danh sách ngày
+    DayCount = Duration.Days(EndDate - StartDate) + 1,
+    DateList = List.Dates(StartDate, DayCount, #duration(1,0,0,0)),
+
+    // Chuyển thành Table
+    ToTable = Table.FromList(DateList, Splitter.SplitByNothing(), {"Date"}),
+    SetType = Table.TransformColumnTypes(ToTable, {{"Date", type date}}),
+
+    // Thêm các cột phân tích
+    AddYear = Table.AddColumn(SetType, "Nam", each Date.Year([Date]), Int64.Type),
+    AddMonth = Table.AddColumn(AddYear, "Thang", each Date.Month([Date]), Int64.Type),
+    AddMonthName = Table.AddColumn(AddMonth, "TenThang",
+        each Date.ToText([Date], "MMMM", "vi-VN"), type text),
+    AddQuarter = Table.AddColumn(AddMonthName, "Quy",
+        each "Q" & Text.From(Date.QuarterOfYear([Date])), type text),
+    AddWeekday = Table.AddColumn(AddQuarter, "ThuTrongTuan",
+        each Date.DayOfWeekName([Date], "vi-VN"), type text),
+    AddWeekNum = Table.AddColumn(AddWeekday, "TuanTrongNam",
+        each Date.WeekOfYear([Date]), Int64.Type),
+    AddDayOfYear = Table.AddColumn(AddWeekNum, "NgayTrongNam",
+        each Date.DayOfYear([Date]), Int64.Type),
+    AddIsWeekend = Table.AddColumn(AddDayOfYear, "LaCuoiTuan",
+        each Date.DayOfWeek([Date], Day.Monday) >= 5, type logical),
+    AddYearMonth = Table.AddColumn(AddIsWeekend, "NamThang",
+        each Date.ToText([Date], "yyyy-MM"), type text)
+in
+    AddYearMonth</code></pre>
+      </div>
+
+      <div class="info-box tip">
+        <span class="info-icon">💡</span>
+        <div>
+          <strong>Ứng dụng:</strong> Calendar Table dùng để: Join với fact table theo ngày → phân tích doanh thu theo Tháng/Quý/Năm, so sánh cùng kỳ (YoY), tính MTD/YTD trong Power BI. Đây là bảng <em>Dimension</em> quan trọng nhất.
+        </div>
+      </div>
+
+      <h2>9.16 List.Accumulate — "Hidden Gem" của Power Query</h2>
+      <p><span class="inline-code">List.Accumulate</span> là hàm mạnh nhất cho xử lý tuần tự — tương đương vòng lặp for/reduce trong các ngôn ngữ khác:</p>
+
+      <div class="code-block">
+        <div class="code-header"><span>Cú pháp</span></div>
+        <pre><code>List.Accumulate(
+    list,           // Danh sách duyệt qua
+    seed,           // Giá trị khởi tạo
+    accumulator     // Hàm (state, current) => newState
+)</code></pre>
+      </div>
+
+      <h3>Ví dụ thực tế</h3>
+      <div class="code-block">
+        <div class="code-header"><span>M Language - List.Accumulate</span></div>
+        <pre><code>// 1. Running Total (cộng dồn)
+= List.Accumulate({1,2,3,4,5}, 0, (state, current) => state + current)
+// Kết quả: 15
+
+// 2. Nối chuỗi (String concatenation)
+= List.Accumulate({"Hà", "Nội", "Việt", "Nam"}, "",
+    (state, current) => state & " " & current)
+// Kết quả: " Hà Nội Việt Nam"
+
+// 3. Replace nhiều ký tự trong chuỗi
+= List.Accumulate(
+    {{"á","a"}, {"é","e"}, {"ô","o"}, {"ứ","u"}},
+    "Đà Nẵng có bãi biển đẹp",
+    (state, pair) => Text.Replace(state, pair{0}, pair{1})
+)
+
+// 4. Xóa nhiều cột động
+= List.Accumulate(
+    {"Col_Temp1", "Col_Temp2", "Col_Test"},
+    Source,
+    (state, colName) =>
+        if List.Contains(Table.ColumnNames(state), colName)
+        then Table.RemoveColumns(state, {colName})
+        else state
+)</code></pre>
+      </div>
+
+      <h2>9.17 List.Generate vs List.Accumulate</h2>
+      <table class="styled-table">
+        <thead><tr><th>Tiêu chí</th><th>List.Generate</th><th>List.Accumulate</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>Mục đích</strong></td>
+            <td>Tạo danh sách mới</td>
+            <td>Tính toán tích lũy → 1 giá trị cuối</td>
+          </tr>
+          <tr>
+            <td><strong>Output</strong></td>
+            <td>List (nhiều phần tử)</td>
+            <td>Một giá trị duy nhất (number, text, table...)</td>
+          </tr>
+          <tr>
+            <td><strong>Điều kiện dừng</strong></td>
+            <td>Có (condition function)</td>
+            <td>Không — chạy hết list</td>
+          </tr>
+          <tr>
+            <td><strong>Ví dụ</strong></td>
+            <td>Tạo danh sách ngày, pagination API</td>
+            <td>Running total, multi-replace, xóa cột động</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="code-block">
+        <div class="code-header"><span>M Language - So sánh</span></div>
+        <pre><code>// List.Generate: tạo chuỗi Fibonacci
+= List.Generate(
+    () => [a=0, b=1],
+    each [a] < 100,
+    each [a=[b], b=[a]+[b]],
+    each [a]
+)  // → {0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89}
+
+// List.Accumulate: cộng dồn Fibonacci
+= List.Accumulate(
+    {0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89},
+    0,
+    (state, current) => state + current
+)  // → 232</code></pre>
+      </div>
+
+      <h2>9.18 Reusing Query Steps: Reference vs Duplicate</h2>
+      <p>Khi tái sử dụng logic query, có 2 cách: <strong>Reference</strong> và <strong>Duplicate</strong>:</p>
+      <table class="styled-table">
+        <thead><tr><th>Tiêu chí</th><th>Reference</th><th>Duplicate</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Mối quan hệ</strong></td><td>Phụ thuộc query gốc (linked)</td><td>Độc lập hoàn toàn (copy)</td></tr>
+          <tr><td><strong>Khi gốc thay đổi</strong></td><td>Tự cập nhật theo</td><td>Không ảnh hưởng</td></tr>
+          <tr><td><strong>Hiệu suất</strong></td><td>Tốt hơn (chạy 1 lần, dùng nhiều nơi)</td><td>Kém hơn (chạy lại từ đầu)</td></tr>
+          <tr><td><strong>Khi nào dùng</strong></td><td>ETL pipeline: stg → rpt</td><td>Thử nghiệm, không muốn ảnh hưởng gốc</td></tr>
+        </tbody>
+      </table>
+      <div class="code-block">
+        <div class="code-header"><span>Cách dùng</span></div>
+        <pre><code>// Reference: Right-click query → Reference
+// → Tạo query mới LẤY KẾT QUẢ từ query gốc
+let Source = stg_DonHang  // ← Reference tới query gốc
+in Table.Group(Source, {"Thang"}, ...)
+
+// Duplicate: Right-click query → Duplicate
+// → Copy TOÀN BỘ steps vào query mới (độc lập)</code></pre>
+      </div>
+      <div class="info-box tip">
+        <span class="info-icon">💡</span>
+        <div>
+          <strong>Best Practice:</strong> Dùng <strong>Reference</strong> cho ETL pipeline (Raw → Staging → Output). Dùng <strong>Duplicate</strong> khi muốn thử nghiệm mà không ảnh hưởng query gốc.
+        </div>
+      </div>
+
+      <!-- Practice -->
+      <div class="practice-box">
+        <h3>Bài tập 9.1: Viết công thức M cơ bản</h3>
+        <p><strong>Mục tiêu:</strong> Thực hành viết công thức M trong Custom Column và Advanced Editor</p>
+        <ol>
+          <li>Tạo bảng dữ liệu nhân viên:
+            <table class="styled-table" style="margin:8px 0;">
+              <thead><tr><th>HoTen</th><th>NgaySinh</th><th>Email</th><th>Luong</th></tr></thead>
+              <tbody>
+                <tr><td>  nguyễn văn an  </td><td>15/03/1990</td><td>AN.NGUYEN@Company.COM</td><td>25000000</td></tr>
+                <tr><td>trần thị bình</td><td>22/07/1995</td><td>Binh.Tran@Gmail.com</td><td>18000000</td></tr>
+                <tr><td>LÊ HOÀNG CHÂU</td><td>01/12/1988</td><td>chau.le@COMPANY.com</td><td>35000000</td></tr>
+              </tbody>
+            </table>
+          </li>
+          <li>Mở Power Query, tạo các Custom Column:
+            <ul>
+              <li><strong>"HoTen_Chuan":</strong> <span class="inline-code">Text.Proper(Text.Trim([HoTen]))</span></li>
+              <li><strong>"Email_Chuan":</strong> <span class="inline-code">Text.Lower(Text.Trim([Email]))</span></li>
+              <li><strong>"Tuoi":</strong> <span class="inline-code">Date.Year(DateTime.LocalNow()) - Date.Year([NgaySinh])</span></li>
+              <li><strong>"LuongRound":</strong> <span class="inline-code">Number.Round([Luong] / 1000000, 1)</span> (triệu đồng)</li>
+            </ul>
+          </li>
+          <li>Mở Advanced Editor → quan sát code M được sinh ra</li>
+          <li>Close & Load</li>
+        </ol>
+      </div>
+
+      <div class="practice-box">
+        <h3>Bài tập 9.2: Biểu thức điều kiện nâng cao</h3>
+        <p><strong>Mục tiêu:</strong> Sử dụng if...then...else phức tạp</p>
+        <ol>
+          <li>Tạo bảng điểm sinh viên:
+            <table class="styled-table" style="margin:8px 0;">
+              <thead><tr><th>MaSV</th><th>HoTen</th><th>Diem</th><th>SoBuoiVang</th></tr></thead>
+              <tbody>
+                <tr><td>SV001</td><td>An</td><td>8.5</td><td>2</td></tr>
+                <tr><td>SV002</td><td>Bình</td><td>6.0</td><td>8</td></tr>
+                <tr><td>SV003</td><td>Châu</td><td>4.5</td><td>3</td></tr>
+                <tr><td>SV004</td><td>Dung</td><td>7.2</td><td>12</td></tr>
+                <tr><td>SV005</td><td>Em</td><td>9.0</td><td>0</td></tr>
+              </tbody>
+            </table>
+          </li>
+          <li>Tạo Custom Column <strong>"XepLoai":</strong>
+            <div class="code-block"><pre><code>= if [Diem] >= 8.5 then "Giỏi"
+  else if [Diem] >= 7 then "Khá"
+  else if [Diem] >= 5 then "Trung bình"
+  else "Yếu"</code></pre></div>
+          </li>
+          <li>Tạo Custom Column <strong>"KetQua":</strong>
+            <div class="code-block"><pre><code>= if [Diem] >= 5 and [SoBuoiVang] < 10
+  then "Đạt"
+  else "Không đạt"</code></pre></div>
+          </li>
+          <li>Tạo Custom Column <strong>"HocBong":</strong>
+            <div class="code-block"><pre><code>= if [Diem] >= 9 and [SoBuoiVang] = 0
+  then 5000000
+  else if [Diem] >= 8.5
+  then 3000000
+  else 0</code></pre></div>
+          </li>
+          <li>Close & Load</li>
+        </ol>
+      </div>
+
+      <div class="practice-box">
+        <h3>Bài tập 9.3: Tạo Custom Function</h3>
+        <p><strong>Mục tiêu:</strong> Tạo và sử dụng hàm tùy chỉnh</p>
+        <ol>
+          <li><strong>Tạo hàm fnPhanLoaiKH:</strong>
+            <ul>
+              <li>Data → Get Data → From Other Sources → Blank Query</li>
+              <li>Advanced Editor → nhập code:</li>
+            </ul>
+            <div class="code-block"><pre><code>(doanhThu as number) as text =>
+  if doanhThu >= 100000000 then "VIP"
+  else if doanhThu >= 50000000 then "Gold"
+  else if doanhThu >= 10000000 then "Silver"
+  else "Standard"</code></pre></div>
+          </li>
+          <li>Đổi tên query thành <span class="inline-code">fnPhanLoaiKH</span> → Done</li>
+          <li>Tạo bảng khách hàng:
+            <table class="styled-table" style="margin:8px 0;">
+              <thead><tr><th>MaKH</th><th>TenKH</th><th>DoanhThu</th></tr></thead>
+              <tbody>
+                <tr><td>KH01</td><td>Công ty A</td><td>150000000</td></tr>
+                <tr><td>KH02</td><td>Công ty B</td><td>30000000</td></tr>
+                <tr><td>KH03</td><td>Công ty C</td><td>75000000</td></tr>
+                <tr><td>KH04</td><td>Cá nhân D</td><td>5000000</td></tr>
+              </tbody>
+            </table>
+          </li>
+          <li>Mở Power Query cho bảng KH → Add Column → <strong>Invoke Custom Function</strong></li>
+          <li>Chọn Function: fnPhanLoaiKH, Column: DoanhThu</li>
+          <li>Kết quả: VIP, Standard, Gold, Standard</li>
+          <li>Close & Load</li>
+        </ol>
+      </div>
+
+      <div class="practice-box">
+        <h3>Bài tập 9.4: Viết query hoàn chỉnh bằng M</h3>
+        <p><strong>Mục tiêu:</strong> Viết toàn bộ query bằng Advanced Editor</p>
+        <ol>
+          <li>Tạo Blank Query → mở Advanced Editor</li>
+          <li>Viết code M tạo bảng nhân viên trực tiếp:
+            <div class="code-block"><pre><code>let
+    Source = #table(
+        {"HoTen", "PhongBan", "Luong", "NamVaoLam"},
+        {
+            {"Nguyễn Văn An", "IT", 25000000, 2018},
+            {"Trần Thị Bình", "KD", 18000000, 2020},
+            {"Lê Hoàng Châu", "IT", 35000000, 2015},
+            {"Phạm Thị Dung", "HR", 12000000, 2023},
+            {"Hoàng Văn Em", "KD", 28000000, 2019}
+        }
+    ),
+    SetTypes = Table.TransformColumnTypes(Source, {
+        {"HoTen", type text}, {"PhongBan", type text},
+        {"Luong", type number}, {"NamVaoLam", Int64.Type}
+    }),
+    AddThamNien = Table.AddColumn(SetTypes, "ThamNien",
+        each Date.Year(DateTime.LocalNow()) - [NamVaoLam]
+    ),
+    AddCapBac = Table.AddColumn(AddThamNien, "CapBac",
+        each if [ThamNien] >= 8 then "Senior"
+             else if [ThamNien] >= 4 then "Mid"
+             else "Junior"
+    ),
+    Sorted = Table.Sort(AddCapBac, {{"Luong", Order.Descending}})
+in
+    Sorted</code></pre></div>
+          </li>
+          <li>Nhấn Done → kiểm tra kết quả</li>
+          <li>Close & Load</li>
+        </ol>
+      </div>
+
+      <!-- Navigation -->
+      <div class="chapter-nav">
+        <a href="chuong8-column.html" class="nav-prev">
+          <div>
+            <div class="nav-label">← Chương trước</div>
+            <div class="nav-title">VIII. Xử lý với Column</div>
+          </div>
+        </a>
+        <a href="chuong10-lam-sach.html" class="nav-next">
+          <div>
+            <div class="nav-label">Chương tiếp →</div>
+            <div class="nav-title">X. Làm sạch dữ liệu</div>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <footer class="footer">
+      <p>📘 Giáo trình Power Query Excel — Chuyên đề đào tạo &copy; 2026</p>
+    </footer>
+  </main>
+
+  <script>
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('open');
+      document.getElementById('overlay').classList.toggle('open');
+    }
+  </script>
+</body>
+</html>

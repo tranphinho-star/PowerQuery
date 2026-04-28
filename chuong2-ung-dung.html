@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chuong II: ?ng d?ng x? lý d? li?u th?c t? - Giáo trình Power Query Excel</title>
+  <meta name="description" content="Các ?ng d?ng th?c t? c?a Power Query: t?ng h?p báo cáo, làm s?ch d? li?u, import da ngu?n, t? d?ng c?p nh?t.">
+  <link rel="stylesheet" href="index.css">
+</head>
+<body>
+  <script>
+    if (sessionStorage.getItem('pq_logged_in') !== 'true') {
+      window.location.href = 'login.html';
+    }
+  </script>
+
+  <!-- Sidebar -->
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-icon">?</div>
+      <div class="brand-text">Power Query Excel<span>Giáo trình dào t?o</span></div>
+    </div>
+    <div class="sidebar-nav">
+      <div class="nav-section">
+        <div class="nav-section-title">Trang ch?</div>
+        <a href="index.html" class="nav-item"><span class="nav-icon">??</span>T?ng quan giáo trình</a>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-title">N?i dung chuong</div>
+        <a href="chuong1-tong-quan.html" class="nav-item"><span class="nav-number">I</span>T?ng quan v? Power Query</a>
+        <a href="chuong2-ung-dung.html" class="nav-item active"><span class="nav-number">II</span>?ng d?ng x? lý d? li?u</a>
+        <a href="chuong3-cai-dat.html" class="nav-item"><span class="nav-number">III</span>Cài d?t và hi?n th?</a>
+        <a href="chuong4-ket-noi.html" class="nav-item"><span class="nav-number">IV</span>K?t n?i & c?p nh?t d? li?u</a>
+        <a href="chuong5-tach-du-lieu.html" class="nav-item"><span class="nav-number">V</span>Tách d? li?u</a>
+        <a href="chuong6-gop-du-lieu.html" class="nav-item"><span class="nav-number">VI</span>G?p d? li?u</a>
+        <a href="chuong7-chuyen-doi.html" class="nav-item"><span class="nav-number">VII</span>Chuy?n d?i c?u trúc</a>
+        <a href="chuong8-column.html" class="nav-item"><span class="nav-number">VIII</span>X? lý v?i Column</a>
+        <a href="chuong9-cong-thuc-ham.html" class="nav-item"><span class="nav-number">IX</span>Công th?c và hàm</a>
+        <a href="chuong10-lam-sach.html" class="nav-item"><span class="nav-number">X</span>Làm s?ch d? li?u</a>
+        <a href="chuong11-python-r-ai.html" class="nav-item"><span class="nav-number">XI</span>Python, R và AI</a>
+        <a href="chuong12-nang-cao.html" class="nav-item"><span class="nav-number">XII</span>K? thu?t nâng cao</a>
+        <a href="chuong13-tu-dong-hoa.html" class="nav-item"><span class="nav-number">XIII</span>T? d?ng hóa</a>
+      </div>
+    
+      <div class="nav-section">
+        <div class="nav-section-title">Bài t?p</div>
+        <a href="bai-tap-tong-hop.html" class="nav-item"><span class="nav-icon">??</span>20 Bài t?p t?ng h?p</a>
+      </div>
+    </div>
+  </nav>
+
+  <header class="mobile-header">
+    <button class="menu-toggle" onclick="toggleSidebar()">?</button>
+    <span style="margin-left:12px;font-weight:600;font-size:15px;">Chuong II</span>
+  </header>
+  <div class="sidebar-overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+  <main class="main-content">
+    <div class="chapter-header">
+      <div class="chapter-breadcrumb">
+        <a href="index.html">Trang ch?</a><span class="sep">›</span><span>Chuong II</span>
+      </div>
+      <div class="chapter-number">?? CHUONG II</div>
+      <h1>M?t s? ?ng d?ng x? lý d? li?u th?c t?</h1>
+      <p class="chapter-desc">Khám phá cách Power Query gi?i quy?t các v?n d? d? li?u th?c t? hàng ngày: t?ng h?p báo cáo, làm s?ch d? li?u, import da ngu?n và t? d?ng hóa quy trình.</p>
+    </div>
+
+    <div class="chapter-body">
+
+      <h2>2.1 T?ng h?p báo cáo t? nhi?u file Excel</h2>
+      <p>Trong th?c t?, d? li?u thu?ng du?c luu tr? trong nhi?u file Excel riêng bi?t (ví d?: m?i tháng m?t file, m?i chi nhánh m?t file). Power Query cho phép b?n <strong>g?p t?t c? file trong m?t folder</strong> ch? v?i vài bu?c.</p>
+
+      <h3>Tình hu?ng th?c t?</h3>
+      <div class="info-box note">
+        <span class="info-icon">??</span>
+        <div>
+          <strong>Ví d?:</strong> B? ph?n k? toán nh?n báo cáo doanh thu t? <strong>12 chi nhánh</strong>, m?i chi nhánh g?i 1 file Excel hàng tháng. C?n t?ng h?p t?t c? vào 1 b?ng duy nh?t d? phân tích.
+        </div>
+      </div>
+
+      <h3>Các bu?c th?c hi?n</h3>
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h4>Chu?n b? thu m?c</h4>
+          <p>Ð?t t?t c? file Excel c?n g?p vào <strong>cùng m?t thu m?c</strong>. Ð?m b?o các file có c?u trúc c?t gi?ng nhau.</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h4>K?t n?i thu m?c</h4>
+          <p>Vào tab <strong>Data</strong> ? <strong>Get Data</strong> ? <strong>From File</strong> ? <strong>From Folder</strong>. Ch?n du?ng d?n thu m?c ch?a các file.</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h4>Combine & Transform</h4>
+          <p>Nh?n <strong>Combine & Transform Data</strong>. Power Query s? t? d?ng nh?n di?n c?u trúc và g?p toàn b? d? li?u t? t?t c? file.</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <h4>X? lý và Load</h4>
+          <p>Th?c hi?n các thao tác chuy?n d?i c?n thi?t (l?c, d?i tên c?t, thay d?i ki?u d? li?u) r?i ch?n <strong>Close & Load</strong>.</p>
+        </div>
+      </div>
+
+      <div class="info-box tip">
+        <span class="info-icon">??</span>
+        <div>
+          <strong>M?o:</strong> Khi có file m?i du?c thêm vào thu m?c, ch? c?n <strong>Refresh</strong> query d? d? li?u t? d?ng c?p nh?t — không c?n setup l?i t? d?u!
+        </div>
+      </div>
+
+      <h2>2.2 Làm s?ch d? li?u (Data Cleaning)</h2>
+      <p>D? li?u th?c t? thu?ng có nhi?u v?n d?: kho?ng tr?ng th?a, d? li?u trùng l?p, giá tr? null, d?nh d?ng không nh?t quán. Power Query cung c?p nhi?u công c? d? gi?i quy?t các v?n d? này.</p>
+
+      <h3>Các v?n d? d? li?u ph? bi?n và cách x? lý</h3>
+      <table class="styled-table">
+        <thead>
+          <tr>
+            <th>V?n d?</th>
+            <th>Gi?i pháp trong Power Query</th>
+            <th>Thao tác</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Kho?ng tr?ng th?a</td>
+            <td>Trim</td>
+            <td>Transform ? Format ? Trim</td>
+          </tr>
+          <tr>
+            <td>Ch? hoa/thu?ng không nh?t quán</td>
+            <td>UPPER / lower / Capitalize</td>
+            <td>Transform ? Format ? ch?n ki?u</td>
+          </tr>
+          <tr>
+            <td>D? li?u trùng l?p</td>
+            <td>Remove Duplicates</td>
+            <td>Home ? Remove Rows ? Remove Duplicates</td>
+          </tr>
+          <tr>
+            <td>Giá tr? null / tr?ng</td>
+            <td>Replace Values / Remove Errors</td>
+            <td>Transform ? Replace Values</td>
+          </tr>
+          <tr>
+            <td>Sai ki?u d? li?u</td>
+            <td>Change Type</td>
+            <td>Nh?p vào icon ki?u d? li?u trên header c?t</td>
+          </tr>
+          <tr>
+            <td>C?t không c?n thi?t</td>
+            <td>Remove Columns</td>
+            <td>Home ? Remove Columns</td>
+          </tr>
+          <tr>
+            <td>Dòng header b? l?n trong data</td>
+            <td>Use First Row as Headers</td>
+            <td>Transform ? Use First Row as Headers</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>2.3 Import d? li?u t? Web</h2>
+      <p>Power Query cho phép l?y d? li?u tr?c ti?p t? trang web (ví d?: t? giá ngo?i t?, b?ng x?p h?ng, giá ch?ng khoán).</p>
+
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h4>K?t n?i Web</h4>
+          <p>Tab Data ? Get Data ? From Other Sources ? <strong>From Web</strong>. Nh?p URL c?a trang web ch?a b?ng d? li?u.</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h4>Ch?n b?ng d? li?u</h4>
+          <p>Power Query s? phân tích trang web và li?t kê các b?ng tìm du?c. Ch?n b?ng phù h?p và nh?n <strong>Transform Data</strong>.</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h4>X? lý và c?p nh?t</h4>
+          <p>Th?c hi?n các bu?c clean data n?u c?n, sau dó Close & Load. D? li?u có th? du?c <strong>Refresh</strong> d? l?y thông tin m?i nh?t t? web.</p>
+        </div>
+      </div>
+
+      <h2>2.4 K?t h?p d? li?u t? nhi?u ngu?n</h2>
+      <p>M?t trong nh?ng th? m?nh l?n nh?t c?a Power Query là kh? nang <strong>k?t h?p d? li?u t? nhi?u ngu?n khác nhau</strong> — ví d?: g?p d? li?u t? file Excel v?i d? li?u t? SQL Server, ho?c k?t h?p thông tin t? CSV v?i d? li?u web.</p>
+
+      <h3>Ví d? tình hu?ng</h3>
+      <div class="info-box note">
+        <span class="info-icon">??</span>
+        <div>
+          <strong>Tình hu?ng:</strong> B?n có b?ng <strong>Ðon hàng</strong> trong file Excel (ch?a Mã SP, SL, Ngày) và b?ng <strong>S?n ph?m</strong> trong SQL Server (ch?a Mã SP, Tên SP, Giá). C?n k?t h?p hai b?ng d? tính doanh thu.
+        </div>
+      </div>
+
+      <p>Gi?i pháp: S? d?ng <strong>Merge Queries</strong> v?i c?t <span class="inline-code">Mã SP</span> làm khóa n?i — tuong t? phép JOIN trong SQL. Chi ti?t cách th?c hi?n s? du?c trình bày ? <a href="chuong6-gop-du-lieu.html" style="color:var(--primary);font-weight:600;">Chuong VI: G?p d? li?u</a>.</p>
+
+      <h2>2.5 T? d?ng c?p nh?t báo cáo d?nh k?</h2>
+      <p>Sau khi thi?t l?p các bu?c x? lý, Power Query luu toàn b? quy trình. B?n ch? c?n <strong>Refresh</strong> d? c?p nh?t d? li?u m?i:</p>
+
+      <ul>
+        <li><strong>Refresh th? công:</strong> Tab Data ? Refresh All (ho?c <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>F5</kbd>)</li>
+        <li><strong>Refresh khi m? file:</strong> Right-click vào query ? Connection Properties ? dánh d?u "Refresh data when opening the file"</li>
+        <li><strong>Refresh t? d?ng theo chu k?:</strong> Connection Properties ? dánh d?u "Refresh every X minutes"</li>
+      </ul>
+
+      <div class="info-box warning">
+        <span class="info-icon">??</span>
+        <div>
+          <strong>Luu ý:</strong> Refresh t? d?ng ch? ho?t d?ng khi file Excel dang m?. Ð?i v?i refresh n?n không c?n m? file, c?n s? d?ng Power Automate ho?c Power BI Service.
+        </div>
+      </div>
+
+      <h2>2.6 X? lý d? li?u t? PDF</h2>
+      <p>T? Excel 365 và Excel 2021, Power Query h? tr? trích xu?t b?ng d? li?u tr?c ti?p t? file PDF — r?t h?u ích khi nh?n báo cáo d?ng PDF.</p>
+
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h4>K?t n?i PDF</h4>
+          <p>Tab Data ? Get Data ? From File ? <strong>From PDF</strong>. Ch?n file PDF c?n import.</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h4>Ch?n b?ng</h4>
+          <p>Power Query li?t kê các b?ng và trang tìm du?c trong PDF. Ch?n b?ng phù h?p.</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h4>Clean data</h4>
+          <p>D? li?u t? PDF thu?ng c?n nhi?u bu?c clean: Use First Row as Headers, Remove Columns, Change Type...</p>
+        </div>
+      </div>
+
+      <!-- Practice -->
+      <div class="practice-box">
+        <h3>Bài t?p 2.1: T?ng h?p d? li?u bán hàng</h3>
+        <p><strong>M?c tiêu:</strong> Th?c hành t?ng h?p d? li?u t? nhi?u sheet trong 1 file Excel</p>
+        <ol>
+          <li>T?o file Excel tên <span class="inline-code">BanHang2024.xlsx</span> v?i 3 sheet: <strong>Thang1</strong>, <strong>Thang2</strong>, <strong>Thang3</strong></li>
+          <li>M?i sheet có c?u trúc: <span class="inline-code">MaSP</span> | <span class="inline-code">TenSP</span> | <span class="inline-code">SoLuong</span> | <span class="inline-code">DonGia</span> | <span class="inline-code">ThanhTien</span> (nh?p 5-8 dòng m?i sheet)</li>
+          <li>M? Power Query: Data ? Get Data ? From File ? From Excel Workbook ? ch?n file</li>
+          <li>Ch?n sheet <strong>Thang1</strong> ? Transform Data</li>
+          <li>Trong Power Query Editor: Home ? <strong>Append Queries</strong> ? ch?n Thang2 và Thang3</li>
+          <li>Ki?m tra d? li?u dã g?p d? 3 tháng</li>
+          <li>Xóa các dòng trùng l?p (n?u có): Home ? Remove Rows ? Remove Duplicates</li>
+          <li>Close & Load d? xem k?t qu?</li>
+        </ol>
+      </div>
+
+      <div class="practice-box">
+        <h3>Bài t?p 2.2: Làm s?ch d? li?u khách hàng</h3>
+        <p><strong>M?c tiêu:</strong> Th?c hành k? nang Data Cleaning</p>
+        <ol>
+          <li>T?o b?ng d? li?u khách hàng v?i các v?n d? sau:
+            <ul>
+              <li>C?t "H? tên" có kho?ng tr?ng th?a: <span class="inline-code">"  Nguy?n Van A  "</span></li>
+              <li>C?t "Email" có ch? hoa/thu?ng l?n l?n: <span class="inline-code">"NguyenVanA@Gmail.COM"</span></li>
+              <li>C?t "SÐT" có giá tr? tr?ng ? m?t s? dòng</li>
+              <li>Có 2-3 dòng d? li?u trùng l?p hoàn toàn</li>
+              <li>C?t "Ngày sinh" ? d?ng text, không ph?i Date</li>
+            </ul>
+          </li>
+          <li>M? Power Query và th?c hi?n l?n lu?t:
+            <ul>
+              <li>Trim c?t "H? tên"</li>
+              <li>Lowercase c?t "Email"</li>
+              <li>Replace null trong "SÐT" b?ng "Chua có"</li>
+              <li>Remove Duplicates</li>
+              <li>Change Type c?t "Ngày sinh" thành Date</li>
+            </ul>
+          </li>
+          <li>Close & Load và ki?m tra k?t qu?</li>
+        </ol>
+      </div>
+
+      <div class="practice-box">
+        <h3>Bài t?p 2.3: Import d? li?u t? Web</h3>
+        <p><strong>M?c tiêu:</strong> Th?c hành l?y d? li?u t? trang web</p>
+        <ol>
+          <li>M? Excel ? tab Data ? Get Data ? From Other Sources ? <strong>From Web</strong></li>
+          <li>Nh?p URL: <span class="inline-code">https://vi.wikipedia.org/wiki/Danh_sách_qu?c_gia_theo_dân_s?</span></li>
+          <li>Ch?n b?ng phù h?p trong Navigator</li>
+          <li>Trong Power Query Editor:
+            <ul>
+              <li>Xóa các c?t không c?n thi?t (gi? l?i: STT, Qu?c gia, Dân s?)</li>
+              <li>Ð?i ki?u d? li?u c?t "Dân s?" thành Number</li>
+              <li>S?p x?p theo dân s? gi?m d?n</li>
+              <li>Gi? l?i 20 dòng d?u (Home ? Keep Rows ? Keep Top Rows)</li>
+            </ul>
+          </li>
+          <li>Close & Load</li>
+          <li>Th? Refresh All (<kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>F5</kbd>) d? c?p nh?t d? li?u m?i nh?t</li>
+        </ol>
+      </div>
+
+      <!-- Navigation -->
+      <div class="chapter-nav">
+        <a href="chuong1-tong-quan.html" class="nav-prev">
+          <div>
+            <div class="nav-label">? Chuong tru?c</div>
+            <div class="nav-title">I. T?ng quan v? Power Query</div>
+          </div>
+        </a>
+        <a href="chuong3-cai-dat.html" class="nav-next">
+          <div>
+            <div class="nav-label">Chuong ti?p ?</div>
+            <div class="nav-title">III. Cài d?t và hi?n th?</div>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <footer class="footer">
+      <p>?? Giáo trình Power Query Excel — Chuyên d? dào t?o &copy; 2026</p>
+    </footer>
+  </main>
+
+  <script>
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('open');
+      document.getElementById('overlay').classList.toggle('open');
+    }
+  </script>
+</body>
+</html>

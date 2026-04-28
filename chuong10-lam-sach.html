@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chương X: Làm sạch dữ liệu - Giáo trình Power Query Excel</title>
+  <meta name="description" content="Trim, Clean, Remove Duplicates, Remove Errors, Column Quality/Distribution/Profile, Parse values trong Power Query.">
+  <link rel="stylesheet" href="index.css">
+</head>
+<body>
+  <script>
+    if (sessionStorage.getItem('pq_logged_in') !== 'true') {
+      window.location.href = 'login.html';
+    }
+  </script>
+
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-icon">⚡</div>
+      <div class="brand-text">Power Query Excel<span>Giáo trình đào tạo</span></div>
+    </div>
+    <div class="sidebar-nav">
+      <div class="nav-section">
+        <div class="nav-section-title">Trang chủ</div>
+        <a href="index.html" class="nav-item"><span class="nav-icon">🏠</span>Tổng quan giáo trình</a>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-title">Nội dung chương</div>
+        <a href="chuong1-tong-quan.html" class="nav-item"><span class="nav-number">I</span>Tổng quan về Power Query</a>
+        <a href="chuong2-ung-dung.html" class="nav-item"><span class="nav-number">II</span>Ứng dụng xử lý dữ liệu</a>
+        <a href="chuong3-cai-dat.html" class="nav-item"><span class="nav-number">III</span>Cài đặt và hiển thị</a>
+        <a href="chuong4-ket-noi.html" class="nav-item"><span class="nav-number">IV</span>Kết nối & cập nhật dữ liệu</a>
+        <a href="chuong5-tach-du-lieu.html" class="nav-item"><span class="nav-number">V</span>Tách dữ liệu</a>
+        <a href="chuong6-gop-du-lieu.html" class="nav-item"><span class="nav-number">VI</span>Gộp dữ liệu</a>
+        <a href="chuong7-chuyen-doi.html" class="nav-item"><span class="nav-number">VII</span>Chuyển đổi cấu trúc</a>
+        <a href="chuong8-column.html" class="nav-item"><span class="nav-number">VIII</span>Xử lý với Column</a>
+        <a href="chuong9-cong-thuc-ham.html" class="nav-item"><span class="nav-number">IX</span>Công thức và hàm</a>
+        <a href="chuong10-lam-sach.html" class="nav-item active"><span class="nav-number">X</span>Làm sạch dữ liệu</a>
+        <a href="chuong11-python-r-ai.html" class="nav-item"><span class="nav-number">XI</span>Python, R và AI</a>
+        <a href="chuong12-nang-cao.html" class="nav-item"><span class="nav-number">XII</span>Kỹ thuật nâng cao</a>
+        <a href="chuong13-tu-dong-hoa.html" class="nav-item"><span class="nav-number">XIII</span>Tự động hóa</a>
+      </div>
+    
+      <div class="nav-section">
+        <div class="nav-section-title">Bài tập</div>
+        <a href="bai-tap-tong-hop.html" class="nav-item"><span class="nav-icon">📝</span>20 Bài tập tổng hợp</a>
+      </div>
+    </div>
+  </nav>
+
+  <header class="mobile-header">
+    <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+    <span style="margin-left:12px;font-weight:600;font-size:15px;">Chương X</span>
+  </header>
+  <div class="sidebar-overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+  <main class="main-content">
+    <div class="chapter-header">
+      <div class="chapter-breadcrumb">
+        <a href="index.html">Trang chủ</a><span class="sep">›</span><span>Chương X</span>
+      </div>
+      <div class="chapter-number">📘 CHƯƠNG X</div>
+      <h1>Làm sạch dữ liệu trong Power Query</h1>
+      <p class="chapter-desc">Nắm vững kỹ thuật làm sạch dữ liệu: Trim, Clean, Remove Duplicates, xử lý Error/Null, Column Quality/Distribution/Profile.</p>
+    </div>
+
+    <div class="chapter-body">
+
+      <h2>10.1 Tại sao phải làm sạch dữ liệu?</h2>
+      <p>Dữ liệu thực tế luôn chứa "nhiễu" — khoảng trắng thừa, lỗi chính tả, giá trị null, dòng trùng lặp, định dạng không đồng nhất. <strong>Data Cleansing</strong> là bước quan trọng nhất trong quy trình ETL.</p>
+
+      <div class="figure">
+        <img src="images/data_cleansing.png" alt="Quy trình làm sạch dữ liệu">
+        <div class="caption">Hình 10.1: Quy trình làm sạch dữ liệu trong Power Query</div>
+      </div>
+
+      <div class="comparison-grid">
+        <div class="comparison-card">
+          <div class="comp-icon">🧹</div>
+          <h4>Dữ liệu bẩn</h4>
+          <p>Khoảng trắng thừa, ký tự đặc biệt, dạng text không nhất quán → phân tích sai</p>
+        </div>
+        <div class="comparison-card">
+          <div class="comp-icon">✨</div>
+          <h4>Dữ liệu sạch</h4>
+          <p>Chuẩn hóa, nhất quán, không lỗi → phân tích chính xác, báo cáo tin cậy</p>
+        </div>
+      </div>
+
+      <h2>10.2 Trim, Clean và Format Text</h2>
+
+      <h3>Trim (Xóa khoảng trắng)</h3>
+      <p>Xóa khoảng trắng thừa ở đầu và cuối chuỗi:</p>
+      <ul>
+        <li>Chọn cột → Transform → Format → <strong>Trim</strong></li>
+        <li>M code: <span class="inline-code">Text.Trim([CotText])</span></li>
+      </ul>
+
+      <h3>Clean (Xóa ký tự non-printable)</h3>
+      <p>Xóa ký tự điều khiển không hiển thị (tab, line break, carriage return...):</p>
+      <ul>
+        <li>Chọn cột → Transform → Format → <strong>Clean</strong></li>
+        <li>M code: <span class="inline-code">Text.Clean([CotText])</span></li>
+      </ul>
+
+      <h3>Format Text</h3>
+      <table class="styled-table">
+        <thead><tr><th>Chức năng</th><th>Đường dẫn</th><th>M code</th></tr></thead>
+        <tbody>
+          <tr><td><strong>UPPERCASE</strong></td><td>Transform → Format → UPPERCASE</td><td><span class="inline-code">Text.Upper([Col])</span></td></tr>
+          <tr><td><strong>lowercase</strong></td><td>Transform → Format → lowercase</td><td><span class="inline-code">Text.Lower([Col])</span></td></tr>
+          <tr><td><strong>Capitalize Each Word</strong></td><td>Transform → Format → Capitalize</td><td><span class="inline-code">Text.Proper([Col])</span></td></tr>
+          <tr><td><strong>Trim + Clean</strong></td><td>Áp dụng cả hai</td><td><span class="inline-code">Text.Clean(Text.Trim([Col]))</span></td></tr>
+        </tbody>
+      </table>
+
+      <div class="info-box tip">
+        <span class="info-icon">💡</span>
+        <div>
+          <strong>Best Practice:</strong> Luôn áp dụng <strong>Trim + Clean</strong> cho mọi cột text ngay sau khi import dữ liệu. Đây là bước đầu tiên và quan trọng nhất trong data cleansing.
+        </div>
+      </div>
+
+      <h2>10.3 Remove / Replace Errors</h2>
+      <p>Xử lý các giá trị lỗi (Error) trong dữ liệu:</p>
+
+      <table class="styled-table">
+        <thead><tr><th>Thao tác</th><th>Cách thực hiện</th><th>M code</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Remove Errors</strong> (xóa dòng lỗi)</td><td>Chọn cột → Home → Remove Rows → Remove Errors</td><td><span class="inline-code">Table.RemoveRowsWithErrors(Source, {"CotA"})</span></td></tr>
+          <tr><td><strong>Replace Errors</strong> (thay thế lỗi)</td><td>Chọn cột → Transform → Replace Errors</td><td><span class="inline-code">Table.ReplaceErrorValues(Source, {{"CotA", 0}})</span></td></tr>
+          <tr><td><strong>Keep Errors</strong> (chỉ giữ dòng lỗi)</td><td>Chọn cột → Home → Keep Rows → Keep Errors</td><td><span class="inline-code">Table.SelectRowsWithErrors(Source, {"CotA"})</span></td></tr>
+        </tbody>
+      </table>
+
+      <h2>10.4 Xử lý giá trị Null</h2>
+      <table class="styled-table">
+        <thead><tr><th>Thao tác</th><th>Cách thực hiện</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Replace null</strong> bằng giá trị cụ thể</td><td>Transform → Replace Values → Value to Find: <strong>null</strong> → Replace With: giá trị mới</td></tr>
+          <tr><td><strong>Remove Blank Rows</strong></td><td>Home → Remove Rows → Remove Blank Rows</td></tr>
+          <tr><td><strong>Fill Down</strong> (điền giá trị xuống)</td><td>Chọn cột → Transform → Fill → Down</td></tr>
+          <tr><td><strong>Fill Up</strong> (điền giá trị lên)</td><td>Chọn cột → Transform → Fill → Up</td></tr>
+        </tbody>
+      </table>
+
+      <div class="code-block">
+        <div class="code-header"><span>M Language - Xử lý Null nâng cao</span></div>
+        <pre><code>// Thay null bằng giá trị mặc định
+= if [GiaTri] = null then 0 else [GiaTri]
+
+// Thay null bằng giá trị từ cột khác
+= if [Email] = null then [EmailPhu] else [Email]
+
+// Đếm số null trong cột
+= List.Count(List.Select(Table.Column(Source, "CotA"), each _ = null))</code></pre>
+      </div>
+
+      <h2>10.5 Remove Duplicates (Xóa dữ liệu trùng)</h2>
+      <ol>
+        <li>Chọn một hoặc nhiều cột làm tiêu chí</li>
+        <li>Home → <strong>Remove Rows</strong> → <strong>Remove Duplicates</strong></li>
+        <li>Power Query giữ lại <strong>dòng đầu tiên</strong> của mỗi nhóm giá trị trùng</li>
+      </ol>
+
+      <div class="info-box warning">
+        <span class="info-icon">⚠️</span>
+        <div>
+          <strong>Lưu ý:</strong> Remove Duplicates dựa trên <strong>các cột đang được chọn</strong>. Nếu chọn 1 cột: xóa dòng trùng giá trị cột đó. Nếu chọn 3 cột: xóa dòng trùng <em>tổ hợp</em> 3 cột.
+        </div>
+      </div>
+
+      <h2>10.6 Remove / Keep Rows</h2>
+      <p>Các thao tác lọc dòng trong tab Home → Remove Rows / Keep Rows:</p>
+
+      <table class="styled-table">
+        <thead><tr><th>Nhóm</th><th>Thao tác</th><th>Mô tả</th></tr></thead>
+        <tbody>
+          <tr><td rowspan="5"><strong>Remove Rows</strong></td><td>Remove Top Rows</td><td>Xóa N dòng đầu</td></tr>
+          <tr><td>Remove Bottom Rows</td><td>Xóa N dòng cuối</td></tr>
+          <tr><td>Remove Alternate Rows</td><td>Xóa dòng xen kẽ</td></tr>
+          <tr><td>Remove Duplicates</td><td>Xóa dòng trùng</td></tr>
+          <tr><td>Remove Blank Rows</td><td>Xóa dòng trống</td></tr>
+          <tr><td rowspan="4"><strong>Keep Rows</strong></td><td>Keep Top Rows</td><td>Giữ N dòng đầu</td></tr>
+          <tr><td>Keep Bottom Rows</td><td>Giữ N dòng cuối</td></tr>
+          <tr><td>Keep Range of Rows</td><td>Giữ từ dòng X, Y dòng</td></tr>
+          <tr><td>Keep Duplicates</td><td>Chỉ giữ dòng trùng</td></tr>
+        </tbody>
+      </table>
+
+      <h2>10.7 Parse Values</h2>
+      <p>Phân tích giá trị JSON hoặc XML chứa trong cột text:</p>
+      <ul>
+        <li><strong>Parse JSON:</strong> Chọn cột text chứa JSON → Transform → <strong>Parse</strong> → JSON</li>
+        <li><strong>Parse XML:</strong> Chọn cột text chứa XML → Transform → <strong>Parse</strong> → XML</li>
+      </ul>
+      <p>Sau khi parse, sử dụng các nút <strong>Expand</strong> (↔️) để mở rộng cấu trúc lồng nhau.</p>
+
+      <h2>10.8 Advanced Text Analytics (Phân tích văn bản nâng cao)</h2>
+      <p>Power Query có thể thực hiện <strong>keyword search</strong> và phân tích văn bản mà không cần Python/R:</p>
+
+      <h3>Tìm kiếm keyword trong cột text</h3>
+      <div class="code-block">
+        <div class="code-header"><span>M Language - Keyword Search</span></div>
+        <pre><code>// Kiểm tra cột "MoTa" có chứa từ khóa không
+= Table.AddColumn(Source, "CoKhuyenMai", each
+    Text.Contains(Text.Lower([MoTa]), "khuyến mãi")
+    or Text.Contains(Text.Lower([MoTa]), "giảm giá")
+    or Text.Contains(Text.Lower([MoTa]), "sale"),
+    type logical)</code></pre>
+      </div>
+
+      <h3>Tìm kiếm từ danh sách keyword bên ngoài</h3>
+      <p>Thay vì hardcode, dùng <strong>bảng keyword riêng</strong> (dễ cập nhật):</p>
+      <div class="code-block">
+        <div class="code-header"><span>M Language - Dynamic Keyword Lookup</span></div>
+        <pre><code>// Bảng Keywords: keyword | NhomTu
+// "khuyến mãi" | "Promotion"
+// "lỗi"        | "Issue"
+// "trả hàng"   | "Return"
+
+= Table.AddColumn(Source, "MatchedKeywords", each
+    let moTa = Text.Lower([MoTa]) in
+    Table.SelectRows(Keywords,
+        each Text.Contains(moTa, Text.Lower([keyword]))
+    )[NhomTu]
+)
+// Kết quả: list các nhóm từ phù hợp cho mỗi dòng</code></pre>
+      </div>
+
+      <h3>Đếm số từ & Extract từ quan trọng</h3>
+      <div class="code-block">
+        <div class="code-header"><span>M Language - Text Analysis</span></div>
+        <pre><code>// Đếm số từ
+= Table.AddColumn(Source, "SoTu", each
+    List.Count(Text.Split(Text.Trim([MoTa]), " ")),
+    Int64.Type)
+
+// Extract N từ đầu tiên
+= Table.AddColumn(Source, "TomTat", each
+    let words = Text.Split(Text.Trim([MoTa]), " "),
+        first5 = List.FirstN(words, 5)
+    in Text.Combine(first5, " ") & "...",
+    type text)
+
+// Tìm từ xuất hiện nhiều nhất
+= let
+    AllWords = List.Combine(
+        List.Transform(Source[MoTa],
+            each Text.Split(Text.Lower(Text.Trim(_)), " "))),
+    WordCount = List.Transform(List.Distinct(AllWords),
+        (w) => [Word = w, Count = List.Count(
+            List.Select(AllWords, each _ = w))]),
+    Sorted = List.Sort(WordCount,
+        each [Count], Order.Descending)
+in Table.FromRecords(List.FirstN(Sorted, 20))</code></pre>
+      </div>
+
+      <h2>10.9 Data Validation từ Power Query Output</h2>
+      <p>Tạo <strong>dropdown list tự động cập nhật</strong> từ dữ liệu Power Query:</p>
+
+      <h3>Cách 1: Dùng Table Reference</h3>
+      <ol>
+        <li>Load PQ → Table (VD: <code>tbl_KhachHang</code>)</li>
+        <li>Chọn ô cần dropdown → <strong>Data → Data Validation</strong></li>
+        <li>Allow: <strong>List</strong> → Source: <code>=INDIRECT("tbl_KhachHang[HoTen]")</code></li>
+      </ol>
+
+      <h3>Cách 2: Dùng Dynamic Named Range</h3>
+      <ol>
+        <li>Tạo Named Range: <code>=UNIQUE(tbl_KhachHang[ThanhPho])</code></li>
+        <li>Data Validation → Source: <code>=rng_ThanhPho</code></li>
+      </ol>
+
+      <h3>Cách 3: Dependent Dropdowns (phụ thuộc nhau)</h3>
+      <div class="code-block">
+        <div class="code-header"><span>Cascading Dropdown</span></div>
+        <pre><code>// Dropdown 1: Chọn Tỉnh/TP
+= UNIQUE(tbl_DiaChi[TinhTP])
+
+// Dropdown 2: Quận/Huyện theo Tỉnh đã chọn
+= UNIQUE(FILTER(tbl_DiaChi[QuanHuyen],
+    tbl_DiaChi[TinhTP] = $B$2))
+// $B$2 = ô chứa giá trị dropdown 1</code></pre>
+      </div>
+      <div class="info-box tip">
+        <span class="info-icon">💡</span>
+        <div>
+          Khi Refresh Power Query → Table cập nhật → Named Range tự mở rộng → Dropdown list tự thêm giá trị mới. <strong>Zero maintenance!</strong>
+        </div>
+      </div>
+
+      <h2>10.10 Column Diagnostics (Chẩn đoán chất lượng dữ liệu)</h2>
+      <p>Power Query cung cấp 3 công cụ phân tích chất lượng dữ liệu (View tab):</p>
+
+      <table class="styled-table">
+        <thead><tr><th>Công cụ</th><th>Hiển thị</th><th>Hữu ích khi</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Column Quality</strong></td><td>% Valid ✅ | Error ❌ | Empty ⬜ cho mỗi cột</td><td>Nhanh chóng tìm cột có vấn đề</td></tr>
+          <tr><td><strong>Column Distribution</strong></td><td>Distinct values + Unique values (histogram)</td><td>Phát hiện trùng, outlier</td></tr>
+          <tr><td><strong>Column Profile</strong></td><td>Statistics chi tiết: min, max, avg, std, count, null%</td><td>Phân tích sâu 1 cột cụ thể</td></tr>
+        </tbody>
+      </table>
+
+      <div class="info-box warning">
+        <span class="info-icon">⚠️</span>
+        <div>
+          <strong>Mặc định:</strong> Column Profile chỉ phân tích <strong>1000 dòng đầu</strong>. Để phân tích toàn bộ: click "<em>Column profiling based on top 1000 rows</em>" ở status bar → chọn "<strong>Column profiling based on entire data set</strong>".
+        </div>
+      </div>
+
+      <h2>10.11 Chuẩn hóa Geographic & Categorical Fields</h2>
+      <p>Dữ liệu địa lý/phân loại thường không đồng nhất. Chuẩn hóa bằng <strong>Replace + Mapping Table</strong>:</p>
+
+      <div class="code-block">
+        <div class="code-header"><span>M Language - Chuẩn hóa</span></div>
+        <pre><code>// Chuẩn hóa tên tỉnh/thành phố
+= Table.ReplaceValue(Source, each [ThanhPho], each
+    let tp = Text.Trim(Text.Lower([ThanhPho])) in
+    if Text.Contains(tp, "hcm") or Text.Contains(tp, "sài gòn")
+        or Text.Contains(tp, "saigon") or Text.Contains(tp, "sg")
+    then "TP.HCM"
+    else if Text.Contains(tp, "hà nội") or Text.Contains(tp, "hanoi")
+        or Text.Contains(tp, "hn")
+    then "Hà Nội"
+    else Text.Proper([ThanhPho]),
+    Replacer.ReplaceValue, {"ThanhPho"})
+
+// Hoặc dùng Mapping Table (chuyên nghiệp hơn)
+// MappingTable: RawName | StandardName
+= Table.NestedJoin(Source, "ThanhPho",
+    MappingTable, "RawName", "Map", JoinKind.LeftOuter)
+// → Expand Map[StandardName]</code></pre>
+      </div>
+
+      <!-- Practice -->
+      <div class="practice-box">
+        <h3>Bài tập 10.1: Làm sạch dữ liệu cơ bản</h3>
+        <p><strong>Mục tiêu:</strong> Thực hành Trim, Clean, Remove Duplicates, Replace null</p>
+        <ol>
+          <li>Tạo bảng với dữ liệu "bẩn":
+            <table class="styled-table" style="margin:8px 0;">
+              <thead><tr><th>HoTen</th><th>Email</th><th>SoDT</th><th>DiaChi</th></tr></thead>
+              <tbody>
+                <tr><td>  nguyễn văn an  </td><td>an@company.com</td><td>0912345678</td><td>HCM</td></tr>
+                <tr><td>TRẦN THỊ BÌNH</td><td></td><td>0987654321</td><td>Hà Nội</td></tr>
+                <tr><td>  nguyễn văn an  </td><td>an@company.com</td><td>0912345678</td><td>HCM</td></tr>
+                <tr><td>Lê Hoàng Châu</td><td>chau@gmail.com</td><td></td><td></td></tr>
+              </tbody>
+            </table>
+          </li>
+          <li>Mở Power Query</li>
+          <li>Chọn cột HoTen → Transform → Format → <strong>Trim</strong> → <strong>Capitalize Each Word</strong></li>
+          <li>Chọn cột HoTen → Home → Remove Rows → <strong>Remove Duplicates</strong></li>
+          <li>Chọn cột DiaChi → Transform → Replace Values → null → "Không rõ"</li>
+          <li>Bật View → Column Quality → quan sát phần trăm Valid/Empty/Error</li>
+          <li>Close & Load</li>
+        </ol>
+      </div>
+
+      <div class="practice-box">
+        <h3>Bài tập 10.2: Xử lý Error và Null nâng cao</h3>
+        <p><strong>Mục tiêu:</strong> Xử lý lỗi và giá trị null phức tạp</p>
+        <ol>
+          <li>Tạo bảng:
+            <table class="styled-table" style="margin:8px 0;">
+              <thead><tr><th>SanPham</th><th>GiaBan</th><th>SoLuong</th><th>GiamGia</th></tr></thead>
+              <tbody>
+                <tr><td>Laptop</td><td>15000000</td><td>10</td><td>5%</td></tr>
+                <tr><td>Chuột</td><td>350000</td><td>abc</td><td></td></tr>
+                <tr><td>Bàn phím</td><td>không rõ</td><td>30</td><td>10%</td></tr>
+                <tr><td>Màn hình</td><td>5500000</td><td>20</td><td>15%</td></tr>
+              </tbody>
+            </table>
+          </li>
+          <li>Đổi cột SoLuong → Whole Number (dòng "abc" sẽ thành Error)</li>
+          <li>Đổi cột GiaBan → Number (dòng "không rõ" sẽ thành Error)</li>
+          <li>Transform → Replace Errors → nhập 0</li>
+          <li>Replace null trong GiamGia → "0%"</li>
+          <li>Bật Column Quality + Column Profile → kiểm tra kết quả</li>
+          <li>Close & Load</li>
+        </ol>
+      </div>
+
+      <div class="practice-box">
+        <h3>Bài tập 10.3: Quy trình làm sạch hoàn chỉnh</h3>
+        <p><strong>Mục tiêu:</strong> Áp dụng toàn bộ kỹ thuật cleansing</p>
+        <ol>
+          <li>Tạo bảng doanh thu 20 dòng với các vấn đề: khoảng trắng thừa, dòng trùng, cột chứa null, format số không đồng nhất</li>
+          <li>Áp dụng quy trình:
+            <ul>
+              <li>Bước 1: Trim + Clean tất cả cột text</li>
+              <li>Bước 2: Remove Blank Rows</li>
+              <li>Bước 3: Remove Duplicates</li>
+              <li>Bước 4: Replace Errors bằng 0</li>
+              <li>Bước 5: Fill Down cho cột có null</li>
+              <li>Bước 6: Chuẩn hóa text (Proper case)</li>
+            </ul>
+          </li>
+          <li>Bật Column Quality + Profile → xác nhận 100% Valid</li>
+          <li>Close & Load</li>
+        </ol>
+      </div>
+
+      <!-- Navigation -->
+      <div class="chapter-nav">
+        <a href="chuong9-cong-thuc-ham.html" class="nav-prev">
+          <div>
+            <div class="nav-label">← Chương trước</div>
+            <div class="nav-title">IX. Công thức và hàm</div>
+          </div>
+        </a>
+        <a href="chuong11-python-r-ai.html" class="nav-next">
+          <div>
+            <div class="nav-label">Chương tiếp →</div>
+            <div class="nav-title">XI. Python, R và AI</div>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <footer class="footer">
+      <p>📘 Giáo trình Power Query Excel — Chuyên đề đào tạo &copy; 2026</p>
+    </footer>
+  </main>
+
+  <script>
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('open');
+      document.getElementById('overlay').classList.toggle('open');
+    }
+  </script>
+</body>
+</html>

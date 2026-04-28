@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chương I: Tổng quan về Power Query - Giáo trình Power Query Excel</title>
+  <meta name="description" content="Tìm hiểu Power Query là gì, quy trình ETL, lợi ích tự động hóa và giao diện Power Query Editor trong Excel.">
+  <link rel="stylesheet" href="index.css">
+</head>
+<body>
+  <script>
+    if (sessionStorage.getItem('pq_logged_in') !== 'true') {
+      window.location.href = 'login.html';
+    }
+  </script>
+
+  <!-- Sidebar -->
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-icon">⚡</div>
+      <div class="brand-text">Power Query Excel<span>Giáo trình đào tạo</span></div>
+    </div>
+    <div class="sidebar-nav">
+      <div class="nav-section">
+        <div class="nav-section-title">Trang chủ</div>
+        <a href="index.html" class="nav-item"><span class="nav-icon">🏠</span>Tổng quan giáo trình</a>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-title">Nội dung chương</div>
+        <a href="chuong1-tong-quan.html" class="nav-item active"><span class="nav-number">I</span>Tổng quan về Power Query</a>
+        <a href="chuong2-ung-dung.html" class="nav-item"><span class="nav-number">II</span>Ứng dụng xử lý dữ liệu</a>
+        <a href="chuong3-cai-dat.html" class="nav-item"><span class="nav-number">III</span>Cài đặt và hiển thị</a>
+        <a href="chuong4-ket-noi.html" class="nav-item"><span class="nav-number">IV</span>Kết nối & cập nhật dữ liệu</a>
+        <a href="chuong5-tach-du-lieu.html" class="nav-item"><span class="nav-number">V</span>Tách dữ liệu</a>
+        <a href="chuong6-gop-du-lieu.html" class="nav-item"><span class="nav-number">VI</span>Gộp dữ liệu</a>
+        <a href="chuong7-chuyen-doi.html" class="nav-item"><span class="nav-number">VII</span>Chuyển đổi cấu trúc</a>
+        <a href="chuong8-column.html" class="nav-item"><span class="nav-number">VIII</span>Xử lý với Column</a>
+        <a href="chuong9-cong-thuc-ham.html" class="nav-item"><span class="nav-number">IX</span>Công thức và hàm</a>
+        <a href="chuong10-lam-sach.html" class="nav-item"><span class="nav-number">X</span>Làm sạch dữ liệu</a>
+        <a href="chuong11-python-r-ai.html" class="nav-item"><span class="nav-number">XI</span>Python, R và AI</a>
+        <a href="chuong12-nang-cao.html" class="nav-item"><span class="nav-number">XII</span>Kỹ thuật nâng cao</a>
+        <a href="chuong13-tu-dong-hoa.html" class="nav-item"><span class="nav-number">XIII</span>Tự động hóa</a>
+      </div>
+    
+      <div class="nav-section">
+        <div class="nav-section-title">Bài tập</div>
+        <a href="bai-tap-tong-hop.html" class="nav-item"><span class="nav-icon">📝</span>20 Bài tập tổng hợp</a>
+      </div>
+    </div>
+  </nav>
+
+  <header class="mobile-header">
+    <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+    <span style="margin-left:12px;font-weight:600;font-size:15px;">Chương I</span>
+  </header>
+  <div class="sidebar-overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+  <main class="main-content">
+    <!-- Chapter Header -->
+    <div class="chapter-header">
+      <div class="chapter-breadcrumb">
+        <a href="index.html">Trang chủ</a>
+        <span class="sep">›</span>
+        <span>Chương I</span>
+      </div>
+      <div class="chapter-number">📘 CHƯƠNG I</div>
+      <h1>Tổng quan về Power Query</h1>
+      <p class="chapter-desc">Hiểu rõ Power Query là gì, vai trò trong quy trình xử lý dữ liệu ETL, lợi ích vượt trội và làm quen với giao diện Power Query Editor.</p>
+    </div>
+
+    <!-- Chapter Body -->
+    <div class="chapter-body">
+
+      <h2>1.1 Power Query là gì?</h2>
+      <p><strong>Power Query</strong> là một công cụ mạnh mẽ được tích hợp trong Microsoft Excel và Power BI, giúp người dùng thu thập, kết nối, chuyển đổi và làm sạch dữ liệu từ nhiều nguồn khác nhau một cách hiệu quả.</p>
+      
+      <p>Power Query được Microsoft giới thiệu lần đầu vào năm 2013 dưới dạng add-in cho Excel 2010 và 2013. Từ phiên bản Excel 2016 trở đi, Power Query đã được tích hợp sẵn với tên gọi <strong>"Get & Transform Data"</strong> trong tab Data.</p>
+
+      <div class="info-box important">
+        <span class="info-icon">💡</span>
+        <div>
+          <strong>Điểm quan trọng:</strong> Power Query thực hiện quy trình <strong>ETL (Extract – Transform – Load)</strong>, giúp tự động hóa việc xử lý dữ liệu mà không cần viết code phức tạp.
+        </div>
+      </div>
+
+      <h3>Đặc điểm nổi bật của Power Query</h3>
+      <ul class="feature-list">
+        <li><span class="check">✓</span> <strong>Không cần viết code:</strong> Giao diện trực quan, kéo-thả, phù hợp mọi trình độ</li>
+        <li><span class="check">✓</span> <strong>Kết nối đa nguồn:</strong> Excel, CSV, SQL, Web, SharePoint, JSON, PDF...</li>
+        <li><span class="check">✓</span> <strong>Tự động hóa:</strong> Lưu lại các bước xử lý, chỉ cần Refresh để cập nhật</li>
+        <li><span class="check">✓</span> <strong>Xử lý dữ liệu lớn:</strong> Hiệu suất cao với hàng triệu dòng dữ liệu</li>
+        <li><span class="check">✓</span> <strong>Ngôn ngữ M:</strong> Hỗ trợ ngôn ngữ lập trình M cho xử lý nâng cao</li>
+        <li><span class="check">✓</span> <strong>Tích hợp Excel:</strong> Kết quả được load trực tiếp vào Excel worksheet</li>
+      </ul>
+
+      <h2>1.2 Quy trình ETL (Extract – Transform – Load)</h2>
+      <p>Power Query hoạt động theo quy trình <strong>ETL</strong> — ba bước cơ bản trong xử lý dữ liệu:</p>
+
+      <div class="figure">
+        <img src="images/etl_process.png" alt="Quy trình ETL trong Power Query">
+        <div class="caption">Hình 1.1: Quy trình ETL (Extract – Transform – Load) trong Power Query</div>
+      </div>
+
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h4>Extract (Trích xuất)</h4>
+          <p>Kết nối và lấy dữ liệu từ các nguồn như file Excel, CSV, cơ sở dữ liệu SQL, trang web, API, SharePoint, và nhiều nguồn khác.</p>
+        </div>
+      </div>
+
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h4>Transform (Chuyển đổi)</h4>
+          <p>Làm sạch, lọc, tách/gộp cột, thay đổi kiểu dữ liệu, pivot/unpivot, tính toán và biến đổi dữ liệu theo yêu cầu.</p>
+        </div>
+      </div>
+
+      <div class="step-card">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h4>Load (Tải)</h4>
+          <p>Đưa dữ liệu đã xử lý vào Excel worksheet, Data Model, hoặc chỉ tạo connection để sử dụng sau.</p>
+        </div>
+      </div>
+
+      <h2>1.3 Lợi ích của Power Query</h2>
+
+      <div class="comparison-grid">
+        <div class="comparison-card">
+          <div class="comp-icon">⏱️</div>
+          <h4>Tiết kiệm thời gian</h4>
+          <p>Tự động hóa các công việc lặp đi lặp lại, chỉ cần Refresh để cập nhật dữ liệu mới.</p>
+        </div>
+        <div class="comparison-card">
+          <div class="comp-icon">🎯</div>
+          <h4>Giảm thiểu sai sót</h4>
+          <p>Loại bỏ lỗi thủ công khi copy-paste, đảm bảo dữ liệu nhất quán.</p>
+        </div>
+        <div class="comparison-card">
+          <div class="comp-icon">🔗</div>
+          <h4>Kết nối đa nguồn</h4>
+          <p>Tổng hợp dữ liệu từ nhiều file, database, web trong một quy trình duy nhất.</p>
+        </div>
+        <div class="comparison-card">
+          <div class="comp-icon">📊</div>
+          <h4>Dữ liệu sạch</h4>
+          <p>Chuẩn hóa, làm sạch dữ liệu trước khi phân tích, tạo báo cáo chính xác.</p>
+        </div>
+      </div>
+
+      <h2>1.4 So sánh Power Query với các phương pháp khác</h2>
+      
+      <table class="styled-table">
+        <thead>
+          <tr>
+            <th>Tiêu chí</th>
+            <th>Thủ công (Copy-Paste)</th>
+            <th>VBA Macro</th>
+            <th>Power Query</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Độ khó</strong></td>
+            <td>Dễ</td>
+            <td>Khó (cần lập trình)</td>
+            <td>Trung bình (giao diện trực quan)</td>
+          </tr>
+          <tr>
+            <td><strong>Tự động hóa</strong></td>
+            <td>❌ Không</td>
+            <td>✅ Có</td>
+            <td>✅ Có (Refresh)</td>
+          </tr>
+          <tr>
+            <td><strong>Kết nối đa nguồn</strong></td>
+            <td>❌ Hạn chế</td>
+            <td>⚠️ Phức tạp</td>
+            <td>✅ Dễ dàng</td>
+          </tr>
+          <tr>
+            <td><strong>Xử lý dữ liệu lớn</strong></td>
+            <td>❌ Chậm</td>
+            <td>⚠️ Trung bình</td>
+            <td>✅ Nhanh</td>
+          </tr>
+          <tr>
+            <td><strong>Bảo trì</strong></td>
+            <td>❌ Khó</td>
+            <td>⚠️ Cần chuyên gia</td>
+            <td>✅ Dễ (Applied Steps)</td>
+          </tr>
+          <tr>
+            <td><strong>Đường cong học tập</strong></td>
+            <td>Thấp</td>
+            <td>Cao</td>
+            <td>Trung bình</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>1.5 Giao diện Power Query Editor</h2>
+      <p>Power Query Editor là môi trường làm việc chính, nơi bạn thực hiện mọi thao tác chuyển đổi dữ liệu. Giao diện gồm các thành phần chính:</p>
+
+      <div class="figure">
+        <img src="images/power_query_editor.png" alt="Giao diện Power Query Editor">
+        <div class="caption">Hình 1.2: Giao diện Power Query Editor trong Excel</div>
+      </div>
+
+      <h3>Các thành phần chính</h3>
+      <ol>
+        <li><strong>Ribbon (Thanh công cụ):</strong> Chứa các tab Home, Transform, Add Column, View với đầy đủ công cụ xử lý dữ liệu.</li>
+        <li><strong>Queries Panel (Bảng truy vấn):</strong> Hiển thị danh sách tất cả queries trong workbook, cho phép quản lý và tổ chức.</li>
+        <li><strong>Data Preview (Xem trước dữ liệu):</strong> Hiển thị dữ liệu dạng bảng, cho phép tương tác trực tiếp như lọc, sắp xếp.</li>
+        <li><strong>Applied Steps (Các bước đã áp dụng):</strong> Danh sách các bước xử lý theo thứ tự, có thể chỉnh sửa, xóa hoặc thêm bước mới.</li>
+        <li><strong>Formula Bar (Thanh công thức):</strong> Hiển thị công thức M tương ứng với bước đang chọn.</li>
+      </ol>
+
+      <div class="info-box tip">
+        <span class="info-icon">💡</span>
+        <div>
+          <strong>Mẹo:</strong> Mỗi thao tác bạn thực hiện trong Power Query Editor sẽ tự động tạo một bước (step) trong Applied Steps. Bạn có thể quay lại bất kỳ bước nào để chỉnh sửa hoặc xóa mà không ảnh hưởng đến các bước khác.
+        </div>
+      </div>
+
+      <h3>Các Tab chính trong Ribbon</h3>
+      <table class="styled-table">
+        <thead>
+          <tr>
+            <th>Tab</th>
+            <th>Chức năng chính</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Home</strong></td>
+            <td>Close & Load, Refresh, Manage Columns, Reduce Rows, Sort, Split Column, Merge/Append Queries</td>
+          </tr>
+          <tr>
+            <td><strong>Transform</strong></td>
+            <td>Data Type, Replace Values, Transpose, Pivot/Unpivot, Group By, Fill, Move Column</td>
+          </tr>
+          <tr>
+            <td><strong>Add Column</strong></td>
+            <td>Custom Column, Conditional Column, Index Column, Column from Examples</td>
+          </tr>
+          <tr>
+            <td><strong>View</strong></td>
+            <td>Formula Bar, Column Profile, Column Quality, Column Distribution</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>1.6 Query Settings Panel</h2>
+      <p>Bên phải Power Query Editor có panel <strong>Query Settings</strong>, chứa hai phần quan trọng:</p>
+
+      <h3>Properties</h3>
+      <ul>
+        <li><strong>Name:</strong> Tên query — nên đặt tên rõ ràng, mô tả nội dung (ví dụ: "DonHang_2024" thay vì "Query1")</li>
+        <li><strong>All Properties:</strong> Thêm mô tả (Description) cho query, giúp quản lý khi có nhiều queries</li>
+      </ul>
+
+      <h3>Applied Steps</h3>
+      <p>Danh sách các bước xử lý theo thứ tự. Mỗi bước tương ứng với một dòng code M:</p>
+      <ul>
+        <li>Nhấp vào bước → xem kết quả tại bước đó</li>
+        <li>Right-click → <strong>Rename</strong> để đặt tên bước có ý nghĩa</li>
+        <li>Right-click → <strong>Insert Step After</strong> để thêm bước mới</li>
+        <li>Right-click → <strong>Move Up/Down</strong> để thay đổi thứ tự</li>
+        <li>Nhấn ❌ để xóa bước</li>
+      </ul>
+
+      <div class="info-box tip">
+        <span class="info-icon">💡</span>
+        <div>
+          <strong>Best Practice:</strong> Luôn đặt tên có ý nghĩa cho queries và các bước quan trọng. Điều này giúp bạn và đồng nghiệp dễ dàng hiểu và bảo trì query sau này.
+        </div>
+      </div>
+
+      <h2>1.7 Privacy Levels (Mức độ riêng tư)</h2>
+      <p>Khi kết hợp dữ liệu từ nhiều nguồn, Power Query yêu cầu bạn thiết lập <strong>Privacy Level</strong> để đảm bảo an toàn dữ liệu:</p>
+
+      <table class="styled-table">
+        <thead>
+          <tr><th>Privacy Level</th><th>Mô tả</th><th>Ví dụ</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Private</strong></td>
+            <td>Nguồn dữ liệu nhạy cảm, không được chia sẻ với nguồn khác</td>
+            <td>Database nội bộ, file lương nhân viên</td>
+          </tr>
+          <tr>
+            <td><strong>Organizational</strong></td>
+            <td>Dữ liệu chia sẻ trong tổ chức, có thể kết hợp với nhau</td>
+            <td>SharePoint, file trên server công ty</td>
+          </tr>
+          <tr>
+            <td><strong>Public</strong></td>
+            <td>Dữ liệu công khai, ai cũng có thể truy cập</td>
+            <td>Dữ liệu từ web, API công khai</td>
+          </tr>
+          <tr>
+            <td><strong>None</strong></td>
+            <td>Không xác định — có thể gây cảnh báo khi kết hợp</td>
+            <td>Nguồn chưa được phân loại</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p>Thiết lập: File → Options → Query Options → <strong>Privacy</strong> → chọn "Always ignore Privacy Level settings" (cho môi trường phát triển) hoặc cấu hình từng Data Source.</p>
+
+      <div class="info-box warning">
+        <span class="info-icon">⚠️</span>
+        <div>
+          <strong>Lưu ý:</strong> Nếu bạn nhận được lỗi <em>"Formula.Firewall"</em>, nguyên nhân thường do conflict Privacy Levels. Hãy kiểm tra Data Source Settings và thiết lập Privacy Level phù hợp.
+        </div>
+      </div>
+
+      <h2>1.8 Query Folding (Gấp truy vấn)</h2>
+      <p><strong>Query Folding</strong> là khả năng Power Query chuyển các bước xử lý thành native query (ví dụ: SQL) để thực thi trực tiếp trên nguồn dữ liệu, thay vì tải toàn bộ dữ liệu rồi xử lý cục bộ.</p>
+
+      <div class="comparison-grid">
+        <div class="comparison-card">
+          <div class="comp-icon">✅</div>
+          <h4>Có Query Folding</h4>
+          <p>Bước xử lý được đẩy về server → chỉ trả về kết quả → <strong>nhanh, tiết kiệm tài nguyên</strong></p>
+        </div>
+        <div class="comparison-card">
+          <div class="comp-icon">❌</div>
+          <h4>Không Query Folding</h4>
+          <p>Toàn bộ dữ liệu tải về máy → xử lý cục bộ → <strong>chậm với dữ liệu lớn</strong></p>
+        </div>
+      </div>
+
+      <h3>Kiểm tra Query Folding</h3>
+      <ol>
+        <li>Right-click vào bất kỳ bước nào trong Applied Steps</li>
+        <li>Nếu thấy <strong>"View Native Query"</strong> → bước đó được fold ✅</li>
+        <li>Nếu option bị mờ (grayed out) → bước đó KHÔNG fold ❌</li>
+      </ol>
+
+      <div class="info-box tip">
+        <span class="info-icon">💡</span>
+        <div>
+          <strong>Best Practice:</strong> Khi làm việc với database lớn, hãy đặt các bước có thể fold (Filter, Select Columns, Sort) <em>trước</em> các bước không fold (Custom Column, Merge Columns) để tối ưu hiệu suất.
+        </div>
+      </div>
+
+      <h2>1.7 Thinking Like a Database (Tư duy dữ liệu)</h2>
+      <p>Trước khi sử dụng Power Query hiệu quả, cần hiểu <strong>tư duy cơ sở dữ liệu</strong> — cách tổ chức dữ liệu tối ưu:</p>
+
+      <h3>Flat Table vs Star Schema</h3>
+      <table class="styled-table">
+        <thead><tr><th>Tiêu chí</th><th>Flat Table (bảng phẳng)</th><th>Star Schema (mô hình sao)</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Cấu trúc</strong></td><td>1 bảng duy nhất chứa tất cả</td><td>1 bảng Fact + nhiều bảng Dimension</td></tr>
+          <tr><td><strong>Dữ liệu trùng</strong></td><td>Rất nhiều (lặp tên SP, KH...)</td><td>Tối thiểu (dùng mã tham chiếu)</td></tr>
+          <tr><td><strong>Dung lượng</strong></td><td>Lớn</td><td>Nhỏ hơn nhiều</td></tr>
+          <tr><td><strong>Bảo trì</strong></td><td>Khó (sửa 1 chỗ, phải sửa nhiều dòng)</td><td>Dễ (sửa 1 lần trong Dimension)</td></tr>
+          <tr><td><strong>Khi nào dùng</strong></td><td>Dữ liệu nhỏ, đơn giản</td><td>Dữ liệu lớn, phân tích chuyên sâu</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Fact Table vs Dimension Table</h3>
+      <ul>
+        <li><strong>Fact Table (Bảng sự kiện):</strong> Chứa dữ liệu giao dịch, đo lường — VD: DonHang (MaDH, MaSP, MaKH, SoLuong, NgayDat)</li>
+        <li><strong>Dimension Table (Bảng chiều):</strong> Chứa thông tin mô tả — VD: SanPham (MaSP, TenSP, DanhMuc, DonGia), KhachHang (MaKH, HoTen, DiaChi)</li>
+      </ul>
+
+      <div class="info-box tip">
+        <span class="info-icon">💡</span>
+        <div>
+          <strong>Tại sao cần normalize?</strong> Khi dữ liệu tổ chức theo Star Schema, Power Query Merge giữa Fact ↔ Dimension sẽ hiệu quả hơn, dễ bảo trì, và tải vào Data Model/Power Pivot tối ưu.
+        </div>
+      </div>
+
+      <!-- Practice -->
+      <div class="practice-box">
+        <h3>Bài tập 1.1: Khám phá giao diện Power Query Editor</h3>
+        <p><strong>Mục tiêu:</strong> Làm quen với giao diện Power Query Editor</p>
+        <ol>
+          <li>Mở Excel, tạo một bảng dữ liệu đơn giản với các cột: <span class="inline-code">Họ tên</span>, <span class="inline-code">Tuổi</span>, <span class="inline-code">Thành phố</span>, <span class="inline-code">Lương</span> (nhập 5-10 dòng dữ liệu)</li>
+          <li>Chọn toàn bộ bảng dữ liệu → vào tab <strong>Data</strong> → chọn <strong>From Table/Range</strong></li>
+          <li>Quan sát Power Query Editor mở ra, xác định:
+            <ul>
+              <li>Queries Panel ở bên trái</li>
+              <li>Data Preview ở giữa</li>
+              <li>Applied Steps ở bên phải</li>
+              <li>Formula Bar ở phía trên</li>
+            </ul>
+          </li>
+          <li>Thử nhấp vào từng tab: Home, Transform, Add Column, View để xem các công cụ</li>
+          <li>Nhấp vào nút dropdown trên tiêu đề cột "Thành phố" để thử tính năng lọc</li>
+          <li>Chọn <strong>Close & Load</strong> để đóng Editor và tải dữ liệu về Excel</li>
+        </ol>
+      </div>
+
+      <div class="practice-box">
+        <h3>Bài tập 1.2: Tìm hiểu Applied Steps</h3>
+        <p><strong>Mục tiêu:</strong> Hiểu cách Applied Steps hoạt động</p>
+        <ol>
+          <li>Mở lại Power Query Editor (double-click vào bảng query trong Excel)</li>
+          <li>Quan sát panel <strong>Applied Steps</strong> bên phải — ghi nhận các bước đã có</li>
+          <li>Thực hiện: Lọc cột "Tuổi" > 25</li>
+          <li>Thực hiện: Sắp xếp cột "Lương" giảm dần</li>
+          <li>Quan sát thấy 2 bước mới xuất hiện trong Applied Steps</li>
+          <li>Nhấp vào bước đầu tiên (Source) để xem dữ liệu gốc</li>
+          <li>Nhấp vào bước cuối cùng để xem kết quả cuối cùng</li>
+          <li>Thử xóa bước "Sorted Rows" bằng cách nhấp chuột phải → Delete</li>
+          <li>Chọn <strong>Close & Load</strong></li>
+        </ol>
+      </div>
+
+      <!-- Navigation -->
+      <div class="chapter-nav">
+        <a href="index.html" class="nav-prev">
+          <div>
+            <div class="nav-label">← Quay lại</div>
+            <div class="nav-title">Trang chủ</div>
+          </div>
+        </a>
+        <a href="chuong2-ung-dung.html" class="nav-next">
+          <div>
+            <div class="nav-label">Chương tiếp →</div>
+            <div class="nav-title">II. Ứng dụng xử lý dữ liệu</div>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <footer class="footer">
+      <p>📘 Giáo trình Power Query Excel — Chuyên đề đào tạo &copy; 2026</p>
+    </footer>
+  </main>
+
+  <script>
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('open');
+      document.getElementById('overlay').classList.toggle('open');
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Giáo trình Power Query Excel - Từ Cơ Bản Đến Nâng Cao</title>
+  <meta name="description" content="Giáo trình Power Query Excel toàn diện với 13 chương, bao gồm lý thuyết, bài tập thực hành và hình ảnh minh họa chi tiết.">
+  <link rel="stylesheet" href="index.css">
+</head>
+<body>
+  <script>
+    if (sessionStorage.getItem('pq_logged_in') !== 'true') {
+      window.location.href = 'login.html';
+    }
+  </script>
+
+  <!-- Sidebar -->
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-icon">⚡</div>
+      <div class="brand-text">
+        Power Query Excel
+        <span>Giáo trình đào tạo</span>
+      </div>
+    </div>
+    <div class="sidebar-nav">
+      <div class="nav-section">
+        <div class="nav-section-title">Trang chủ</div>
+        <a href="index.html" class="nav-item active">
+          <span class="nav-icon">🏠</span>
+          Tổng quan giáo trình
+        </a>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-title">Nội dung chương</div>
+        <a href="chuong1-tong-quan.html" class="nav-item">
+          <span class="nav-number">I</span>
+          Tổng quan về Power Query
+        </a>
+        <a href="chuong2-ung-dung.html" class="nav-item">
+          <span class="nav-number">II</span>
+          Ứng dụng xử lý dữ liệu
+        </a>
+        <a href="chuong3-cai-dat.html" class="nav-item">
+          <span class="nav-number">III</span>
+          Cài đặt và hiển thị
+        </a>
+        <a href="chuong4-ket-noi.html" class="nav-item">
+          <span class="nav-number">IV</span>
+          Kết nối & cập nhật dữ liệu
+        </a>
+        <a href="chuong5-tach-du-lieu.html" class="nav-item">
+          <span class="nav-number">V</span>
+          Tách dữ liệu
+        </a>
+        <a href="chuong6-gop-du-lieu.html" class="nav-item">
+          <span class="nav-number">VI</span>
+          Gộp dữ liệu
+        </a>
+        <a href="chuong7-chuyen-doi.html" class="nav-item">
+          <span class="nav-number">VII</span>
+          Chuyển đổi cấu trúc
+        </a>
+        <a href="chuong8-column.html" class="nav-item">
+          <span class="nav-number">VIII</span>
+          Xử lý với Column
+        </a>
+        <a href="chuong9-cong-thuc-ham.html" class="nav-item">
+          <span class="nav-number">IX</span>
+          Công thức và hàm
+        </a>
+        <a href="chuong10-lam-sach.html" class="nav-item"><span class="nav-number">X</span>Làm sạch dữ liệu</a>
+        <a href="chuong11-python-r-ai.html" class="nav-item"><span class="nav-number">XI</span>Python, R và AI</a>
+        <a href="chuong12-nang-cao.html" class="nav-item"><span class="nav-number">XII</span>Kỹ thuật nâng cao</a>
+        <a href="chuong13-tu-dong-hoa.html" class="nav-item"><span class="nav-number">XIII</span>Tự động hóa</a>
+      </div>
+    
+      <div class="nav-section">
+        <div class="nav-section-title">Bài tập</div>
+        <a href="bai-tap-tong-hop.html" class="nav-item"><span class="nav-icon">📝</span>20 Bài tập tổng hợp</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Mobile Header -->
+  <header class="mobile-header">
+    <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+    <span style="margin-left:12px;font-weight:600;font-size:15px;">Power Query Excel</span>
+  </header>
+  <div class="sidebar-overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <!-- Hero -->
+    <section class="hero">
+      <div class="hero-content">
+        <div class="hero-badge">📘 Chuyên đề đào tạo</div>
+        <h1>Giáo trình <span>Power Query</span> trong Excel</h1>
+        <p>Nắm vững công cụ Power Query để thu thập, chuyển đổi và tự động hóa quy trình xử lý dữ liệu trong Excel — từ cơ bản đến nâng cao với bài tập thực hành chi tiết.</p>
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <div class="stat-value">13</div>
+            <div class="stat-label">Chương học</div>
+          </div>
+          <div class="hero-stat">
+            <div class="stat-value">45+</div>
+            <div class="stat-label">Bài tập</div>
+          </div>
+          <div class="hero-stat">
+            <div class="stat-value">30+</div>
+            <div class="stat-label">Hình minh họa</div>
+          </div>
+          <div class="hero-stat">
+            <div class="stat-value">ETL</div>
+            <div class="stat-label">Quy trình</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Chapter Cards -->
+    <section class="content-section">
+      <div class="section-header">
+        <h2>📚 Nội dung giáo trình</h2>
+        <p>13 chương bao gồm đầy đủ lý thuyết, hướng dẫn từng bước và bài tập thực hành</p>
+      </div>
+
+      <div class="chapter-grid">
+        <!-- Chapter 1 -->
+        <a href="chuong1-tong-quan.html" class="chapter-card">
+          <div class="card-number">I</div>
+          <h3>Tổng quan về Power Query</h3>
+          <p>Giới thiệu Power Query, quy trình ETL, lợi ích tự động hóa và giao diện Power Query Editor.</p>
+          <div class="card-tags">
+            <span>ETL</span>
+            <span>Tổng quan</span>
+            <span>Giao diện</span>
+          </div>
+          <div class="card-arrow">→</div>
+        </a>
+
+        <!-- Chapter 2 -->
+        <a href="chuong2-ung-dung.html" class="chapter-card">
+          <div class="card-number">II</div>
+          <h3>Ứng dụng xử lý dữ liệu thực tế</h3>
+          <p>Các tình huống thực tế: tổng hợp báo cáo, làm sạch dữ liệu, import từ nhiều nguồn.</p>
+          <div class="card-tags">
+            <span>Thực tế</span>
+            <span>Làm sạch</span>
+            <span>Tổng hợp</span>
+          </div>
+          <div class="card-arrow">→</div>
+        </a>
+
+        <!-- Chapter 3 -->
+        <a href="chuong3-cai-dat.html" class="chapter-card">
+          <div class="card-number">III</div>
+          <h3>Cài đặt và hiển thị Power Query</h3>
+          <p>Hướng dẫn cài đặt trên Excel 2010-365, mở Power Query Editor và tùy chỉnh giao diện.</p>
+          <div class="card-tags">
+            <span>Cài đặt</span>
+            <span>Excel 2016+</span>
+            <span>Add-in</span>
+          </div>
+          <div class="card-arrow">→</div>
+        </a>
+
+        <!-- Chapter 4 -->
+        <a href="chuong4-ket-noi.html" class="chapter-card">
+          <div class="card-number">IV</div>
+          <h3>Kết nối và cập nhật dữ liệu</h3>
+          <p>Kết nối đa nguồn: File, Database, Web, SharePoint. Thiết lập Refresh tự động.</p>
+          <div class="card-tags">
+            <span>Kết nối</span>
+            <span>Refresh</span>
+            <span>Đa nguồn</span>
+          </div>
+          <div class="card-arrow">→</div>
+        </a>
+
+        <!-- Chapter 5 -->
+        <a href="chuong5-tach-du-lieu.html" class="chapter-card">
+          <div class="card-number">V</div>
+          <h3>Tách dữ liệu trong Power Query</h3>
+          <p>Split Column theo Delimiter, Number of Characters, Positions, Uppercase/Lowercase.</p>
+          <div class="card-tags">
+            <span>Split Column</span>
+            <span>Delimiter</span>
+            <span>Positions</span>
+          </div>
+          <div class="card-arrow">→</div>
+        </a>
+
+        <!-- Chapter 6 -->
+        <a href="chuong6-gop-du-lieu.html" class="chapter-card">
+          <div class="card-number">VI</div>
+          <h3>Gộp dữ liệu trong Power Query</h3>
+          <p>Merge Queries (Join), Append Queries, Merge Columns, Combine Files từ Folder.</p>
+          <div class="card-tags">
+            <span>Merge</span>
+            <span>Append</span>
+            <span>Join</span>
+          </div>
+          <div class="card-arrow">→</div>
+        </a>
+
+        <!-- Chapter 7 -->
+        <a href="chuong7-chuyen-doi.html" class="chapter-card">
+          <div class="card-number">VII</div>
+          <h3>Chuyển đổi cấu trúc dữ liệu</h3>
+          <p>Transpose, Unpivot, Pivot Column, Group By, Fill Down/Up.</p>
+          <div class="card-tags">
+            <span>Pivot</span>
+            <span>Unpivot</span>
+            <span>Group By</span>
+          </div>
+          <div class="card-arrow">→</div>
+        </a>
+
+        <!-- Chapter 8 -->
+        <a href="chuong8-column.html" class="chapter-card">
+          <div class="card-number">VIII</div>
+          <h3>Xử lý với Column trong Power Query</h3>
+          <p>Add Column, Custom/Conditional Column, Data Type, Replace Values, Extract.</p>
+          <div class="card-tags">
+            <span>Custom Column</span>
+            <span>Data Type</span>
+            <span>Extract</span>
+          </div>
+          <div class="card-arrow">→</div>
+        </a>
+
+        <!-- Chapter 9 -->
+        <a href="chuong9-cong-thuc-ham.html" class="chapter-card">
+          <div class="card-number">IX</div>
+          <h3>Công thức và hàm trong Power Query</h3>
+          <p>Ngôn ngữ M, cấu trúc let...in, hàm Text/Number/Date, Custom Function.</p>
+          <div class="card-tags">
+            <span>Ngôn ngữ M</span>
+            <span>Custom Function</span>
+            <span>Hàm</span>
+          </div>
+          <div class="card-arrow">→</div>
+        </a>
+
+        <!-- Chapter 10 -->
+        <a href="chuong10-lam-sach.html" class="chapter-card">
+          <div class="card-number">X</div>
+          <h3>Làm sạch dữ liệu</h3>
+          <p>Trim, Clean, Remove Duplicates, xử lý Error/Null, Column Quality/Distribution/Profile.</p>
+          <div class="card-tags">
+            <span>Data Cleansing</span>
+            <span>Remove Errors</span>
+            <span>Column Profile</span>
+          </div>
+          <div class="card-arrow">→</div>
+        </a>
+
+        <!-- Chapter 11 -->
+        <a href="chuong11-python-r-ai.html" class="chapter-card">
+          <div class="card-number">XI</div>
+          <h3>Python, R và AI trong Power Query</h3>
+          <p>Python pandas scripting, R data.frame, AI Insights (Text Analytics, Vision, Azure ML).</p>
+          <div class="card-tags">
+            <span>Python</span>
+            <span>R</span>
+            <span>AI Insights</span>
+          </div>
+          <div class="card-arrow">→</div>
+        </a>
+
+        <!-- Chapter 12 -->
+        <a href="chuong12-nang-cao.html" class="chapter-card">
+          <div class="card-number">XII</div>
+          <h3>Kỹ thuật nâng cao</h3>
+          <p>Parameters, Advanced Web/API, Supporting Queries, Query Folding, Query Diagnostics.</p>
+          <div class="card-tags">
+            <span>Parameters</span>
+            <span>Web API</span>
+            <span>Query Folding</span>
+          </div>
+          <div class="card-arrow">→</div>
+        </a>
+
+        <!-- Chapter 13 -->
+        <a href="chuong13-tu-dong-hoa.html" class="chapter-card">
+          <div class="card-number">XIII</div>
+          <h3>Tự động hóa Power Query</h3>
+          <p>Scheduled Refresh, VBA Macro, Power Automate, Data Gateway, Best Practices.</p>
+          <div class="card-tags">
+            <span>Automation</span>
+            <span>VBA</span>
+            <span>Best Practices</span>
+          </div>
+          <div class="card-arrow">→</div>
+        </a>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p>📘 Giáo trình Power Query Excel — Chuyên đề đào tạo &copy; 2026</p>
+    </footer>
+  </main>
+
+  <script>
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('open');
+      document.getElementById('overlay').classList.toggle('open');
+    }
+  </script>
+</body>
+</html>

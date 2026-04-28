@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Đăng nhập - Power Query Excel</title>
+  <meta name="description" content="Đăng nhập để truy cập giáo trình Power Query Excel nội bộ.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      margin: 0; padding: 0; box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #0f1219;
+      background-image:
+        radial-gradient(ellipse at 20% 50%, rgba(33,115,70,0.08) 0%, transparent 60%),
+        radial-gradient(ellipse at 80% 20%, rgba(0,120,212,0.06) 0%, transparent 50%);
+      -webkit-font-smoothing: antialiased;
+      overflow: hidden;
+    }
+
+    /* Animated grid background */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+    }
+
+    .login-wrapper {
+      width: 100%;
+      max-width: 420px;
+      padding: 20px;
+      animation: fadeInUp 0.6s ease-out;
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Brand Header */
+    .brand {
+      text-align: center;
+      margin-bottom: 36px;
+    }
+
+    .brand-icon {
+      width: 64px;
+      height: 64px;
+      background: linear-gradient(135deg, #217346, #2d9d5e);
+      border-radius: 16px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      margin-bottom: 16px;
+      box-shadow: 0 8px 32px rgba(33,115,70,0.3);
+      position: relative;
+    }
+
+    .brand-icon::after {
+      content: '';
+      position: absolute;
+      inset: -3px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, rgba(33,115,70,0.4), rgba(45,157,94,0.1));
+      z-index: -1;
+    }
+
+    .brand h1 {
+      color: #fff;
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+    }
+
+    .brand h1 span {
+      background: linear-gradient(135deg, #2d9d5e, #a8e6cf);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .brand p {
+      color: #6b7a8d;
+      font-size: 14px;
+      margin-top: 6px;
+    }
+
+    /* Login Card */
+    .login-card {
+      background: linear-gradient(145deg, rgba(26,31,46,0.95), rgba(21,25,41,0.98));
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 20px;
+      padding: 36px 32px 32px;
+      backdrop-filter: blur(20px);
+      box-shadow:
+        0 24px 64px rgba(0,0,0,0.4),
+        inset 0 1px 0 rgba(255,255,255,0.05);
+    }
+
+    .login-card h2 {
+      color: #fff;
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .login-card .subtitle {
+      color: #6b7a8d;
+      font-size: 13.5px;
+      margin-bottom: 28px;
+    }
+
+    /* Error Message */
+    .error-msg {
+      display: none;
+      align-items: center;
+      gap: 10px;
+      background: rgba(239,68,68,0.1);
+      border: 1px solid rgba(239,68,68,0.2);
+      border-radius: 10px;
+      padding: 12px 16px;
+      margin-bottom: 20px;
+      font-size: 13.5px;
+      color: #fca5a5;
+      animation: shakeX 0.4s ease-out;
+    }
+
+    .error-msg.show {
+      display: flex;
+    }
+
+    @keyframes shakeX {
+      0%, 100% { transform: translateX(0); }
+      20% { transform: translateX(-6px); }
+      40% { transform: translateX(6px); }
+      60% { transform: translateX(-4px); }
+      80% { transform: translateX(4px); }
+    }
+
+    /* Form */
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      color: #8b95a5;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+
+    .input-wrap {
+      position: relative;
+    }
+
+    .input-wrap .icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 16px;
+      opacity: 0.5;
+      pointer-events: none;
+    }
+
+    .input-wrap input {
+      width: 100%;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+      padding: 14px 14px 14px 44px;
+      color: #fff;
+      font-size: 15px;
+      font-family: inherit;
+      transition: all 0.3s ease;
+      outline: none;
+    }
+
+    .input-wrap input::placeholder {
+      color: #4a5568;
+    }
+
+    .input-wrap input:focus {
+      border-color: #2d9d5e;
+      background: rgba(33,115,70,0.06);
+      box-shadow: 0 0 0 3px rgba(33,115,70,0.15);
+    }
+
+    /* Toggle password */
+    .toggle-pw {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 18px;
+      opacity: 0.4;
+      transition: opacity 0.2s;
+      padding: 4px;
+    }
+
+    .toggle-pw:hover {
+      opacity: 0.7;
+    }
+
+    /* Submit */
+    .btn-login {
+      width: 100%;
+      background: linear-gradient(135deg, #217346, #2d9d5e);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      padding: 15px;
+      font-size: 15px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 8px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-login::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .btn-login:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(33,115,70,0.35);
+    }
+
+    .btn-login:hover::before {
+      opacity: 1;
+    }
+
+    .btn-login:active {
+      transform: translateY(0);
+    }
+
+    .btn-login .spinner {
+      display: none;
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+    }
+
+    .btn-login.loading .btn-text { display: none; }
+    .btn-login.loading .spinner { display: inline-block; }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      margin-top: 28px;
+      color: #4a5568;
+      font-size: 12.5px;
+    }
+
+    /* Responsive */
+    @media (max-width: 480px) {
+      .login-card {
+        padding: 28px 20px 24px;
+        border-radius: 16px;
+      }
+      .brand h1 { font-size: 22px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="login-wrapper">
+    <!-- Brand -->
+    <div class="brand">
+      <div class="brand-icon">⚡</div>
+      <h1><span>Power Query</span> Excel</h1>
+      <p>Giáo trình đào tạo nội bộ</p>
+    </div>
+
+    <!-- Login Card -->
+    <div class="login-card">
+      <h2>Chào mừng trở lại</h2>
+      <p class="subtitle">Vui lòng đăng nhập để truy cập giáo trình</p>
+
+      <div class="error-msg" id="errorMsg">
+        <span>⚠️</span>
+        <span>Sai tên đăng nhập hoặc mật khẩu!</span>
+      </div>
+
+      <form id="loginForm" onsubmit="return handleLogin(event)">
+        <div class="form-group">
+          <label for="username">Tên đăng nhập</label>
+          <div class="input-wrap">
+            <span class="icon">👤</span>
+            <input type="text" id="username" placeholder="Nhập tên đăng nhập" autocomplete="username" autofocus>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="password">Mật khẩu</label>
+          <div class="input-wrap">
+            <span class="icon">🔒</span>
+            <input type="password" id="password" placeholder="Nhập mật khẩu" autocomplete="current-password">
+            <button type="button" class="toggle-pw" onclick="togglePassword()" title="Hiện/ẩn mật khẩu">🙈</button>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-login" id="btnLogin">
+          <span class="btn-text">🔐 Đăng nhập</span>
+          <span class="spinner"></span>
+        </button>
+      </form>
+    </div>
+
+    <div class="footer">
+      ⚡ Power Query Excel © 2026 — Tài liệu nội bộ
+    </div>
+  </div>
+
+  <script>
+    // SHA-256 hashes — credentials never stored in plaintext
+    const _h1 = '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918';
+    const _h2 = '67be10d98e9ab6d770578f47763baa3bec8e6b3ce68f323cafe00a65ffa43f0d';
+
+    async function sha256(str) {
+      const buf = await crypto.subtle.digest('SHA-256',
+        new TextEncoder().encode(str));
+      return Array.from(new Uint8Array(buf))
+        .map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    async function handleLogin(e) {
+      e.preventDefault();
+      const user = document.getElementById('username').value.trim().toLowerCase();
+      const pass = document.getElementById('password').value.trim();
+      const btn = document.getElementById('btnLogin');
+      const err = document.getElementById('errorMsg');
+
+      err.classList.remove('show');
+      btn.classList.add('loading');
+      btn.disabled = true;
+
+      const userHash = await sha256(user);
+      const passHash = await sha256(pass);
+
+      setTimeout(function() {
+        if (userHash === _h1 && passHash === _h2) {
+          sessionStorage.setItem('pq_logged_in', 'true');
+          sessionStorage.setItem('pq_login_time', new Date().toISOString());
+          window.location.href = 'index.html';
+        } else {
+          err.classList.add('show');
+          btn.classList.remove('loading');
+          btn.disabled = false;
+          document.getElementById('password').value = '';
+          document.getElementById('password').focus();
+        }
+      }, 600);
+
+      return false;
+    }
+
+    function togglePassword() {
+      const pw = document.getElementById('password');
+      const btn = document.querySelector('.toggle-pw');
+      if (pw.type === 'password') {
+        pw.type = 'text';
+        btn.textContent = '🐵';
+      } else {
+        pw.type = 'password';
+        btn.textContent = '🙈';
+      }
+    }
+
+    if (sessionStorage.getItem('pq_logged_in') === 'true') {
+      window.location.href = 'index.html';
+    }
+  </script>
+</body>
+</html>
