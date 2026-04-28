@@ -312,6 +312,7 @@ img {
 
 .hero-content {
   max-width: 800px;
+  margin: 0 auto;
   position: relative;
   z-index: 1;
 }
@@ -382,6 +383,7 @@ img {
 .content-section {
   padding: 48px;
   max-width: 1200px;
+  margin: 0 auto;
 }
 
 .section-header {
